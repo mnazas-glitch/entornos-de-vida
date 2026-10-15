@@ -115,6 +115,17 @@ footer.nav .barra-fila{gap:10px}
 .indgrab .btn.chico{min-height:34px;padding:4px 12px}
 @media (max-width:600px){.marca small{display:none}}
 .casilla-texto p{margin:0 0 12px}
+.documento{font-size:18px;line-height:1.6}
+.documento p{margin:0 0 12px}
+.documento ul{margin:0 0 12px;padding-left:22px}
+.documento li{margin:4px 0}
+h3.doc-t{text-transform:none;letter-spacing:0;color:var(--texto);font-size:18px;margin:20px 0 6px}
+.recuadro{border:2px solid var(--azul);border-radius:12px;padding:4px 16px 12px;margin:18px 0;background:var(--azul-suave)}
+.rotulo-firma{display:block;font-weight:600;margin-bottom:6px;font-size:16px}
+.firma{border:1px dashed var(--tenue);border-radius:12px;background:#fff;overflow:hidden}
+.firma.llena{border-style:solid;border-color:var(--ok)}
+.firma canvas{display:block;width:100%;height:170px;touch-action:none;cursor:crosshair}
+.firma-pie{display:flex;justify-content:space-between;align-items:center;padding:6px 8px;border-top:1px solid #e3e7ec;background:#f7f9fb;color:#333}
 .op.grande{min-height:64px;font-size:18px;font-weight:600}
 @keyframes lat{50%{opacity:.25}}
 .clip{display:flex;align-items:center;gap:10px;padding:6px 0;border-top:1px solid var(--linea);font-size:15px}
@@ -162,7 +173,7 @@ table.datos td.n{text-align:right;font-variant-numeric:tabular-nums}
 "use strict";
 const INST = {"version": "V2.0 17/7/2026", "titulo": "Análisis de determinantes de salud con enfoque territorial, en población de 18 años o más. República de Panamá. Años 2026-2027", "investigadores": "Investigadores: Dra. Iranela Miranda, Dr.Gresky Gutiérrez,Dra. María Mercedes Castrejón, Dra. Luz Romero, Dr.Jaime Sevillano, Dr. Manuel Nazas, Dr. Juan Carlos Luria, Mgter Iset Trujillo, Dr. Heraclides Gómez, Dra. Tamara Villafañez, Licda. Muriel Rangel y Licda. Ariadna Candanedo, Dra. Olga Quirós, Dr. Alexis Castillo y Licda. Shanira Pineda.", "parte1_instruccion": "Parte I. Responda cada pregunta marcando la respuesta seleccionada.", "parte1": [{"letra": "A", "titulo": "Preguntas sobre aspectos sociodemográficos", "preguntas": [{"texto": "El sexo al que pertenece es:", "opciones": ["Hombre", "Mujer"]}, {"texto": "Indique a qué grupo de edad pertenece:", "opciones": ["18 a 24 años", "25 a 34 años", "35 a 44 años", "45 a 54 años", "55 a 64 años", "65 años o más"]}, {"texto": "Coloque el Nivel Educativo al que pertenece:", "opciones": ["Sin estudios formales", "Primaria", "Secundaria", "Técnico", "Licenciatura", "Postgrado o especialización", "Doctorado"]}, {"texto": "Indique su Nacionalidad:", "opciones": ["Panameña", "Extranjero/a"]}, {"texto": "Marque la situación actual en cuanto a su ocupación:", "opciones": ["Empleado: del gobierno, de empresa privada, de una cooperativa, de servicio doméstico o de una organización sin fines de lucro.", "Trabajador por cuenta propia: que ha desarrollado su propio negocio o empresa o ejerce por su cuenta propia su profesión. No tiene a su cargo otros empleados.", "Patrono o Dueño: persona que ha explotado su propia empresa, solo o asociado, ejerce por su cuenta una profesión, pero tiene a su cargo uno o más empleados que reciben una remuneración.", "Trabajador Familiar: ejerce una profesión no remunerada, en una empresa o negocio explotado por un miembro de su familia.", "Miembro de una Cooperativa de Producción: participa de una modalidad asociativa de empresa que se dedica a producir algún artículo o bien."]}, {"texto": "Coloque el grupo ocupacional al que pertenece:", "opciones": ["Directores y gerentes de los sectores públicos, privados y de organizaciones de interés social.", "Profesionales, científicos y otros intelectuales.", "Técnicos y profesionales de nivel medio.", "Empleados de oficina.", "Trabajadores de los servicios y vendedores de comercios y mercados.", "Agricultores, trabajadores agropecuarios, forestales, de la pesca y caza.", "Artesanos, trabajadores de la minería, la construcción, la industria manufacturera, la mecánica y ocupaciones afines.", "Operadores de instalaciones fijas y máquinas (Manejo de máquinas e instalaciones industriales de gran tamaño); montadores, ensambladores, conductores y operadores de maquinarias móviles.", "Trabajadores no calificados de los servicios (Vendedores ambulantes, personal de limpieza, conserjería, mensajeros, porteros), la minería, la construcción, industria manufacturera, transporte y otras ocupaciones elementales.", "Sin ocupación en estos momentos."]}, {"texto": "Su clase social de acuerdo al promedio de ingreso mensual en el hogar es:", "opciones": ["Clase Baja (Menos de B/. 771.75)", "Clase media (Entre B/. 771.75 y B/. 2058)", "Clase Alta (Mayor a B/. 2058 balboas)"]}]}, {"letra": "B", "titulo": "Preguntas sobre diversidad funcional", "preguntas": [{"texto": "¿Tiene alguna discapacidad física, auditiva, visual, intelectual, mental, de órganos y sistemas u otros, que no le permite realizar sus tareas y actividades habituales?", "opciones": ["Sí", "No"]}]}, {"letra": "C", "titulo": "Preguntas sobre antecedentes de cáncer", "preguntas": [{"texto": "¿Usted tiene o ha tenido cáncer alguna vez?", "opciones": ["Sí", "No"]}, {"texto": "¿Alguno de sus familiares tiene o ha tenido cáncer en algún momento?", "opciones": ["Sí", "No"]}]}, {"letra": "D", "titulo": "Preguntas relacionadas con aspectos ambientales", "preguntas": [{"texto": "¿Tiene usted acceso a agua potable en su hogar de manera regular?", "opciones": ["Sí", "No"]}, {"texto": "¿De dónde obtiene el agua en su hogar?", "opciones": ["Acueducto público (IDAAN)", "Acueducto Particular dentro de la vivienda.", "Pluma o toma de agua comunitaria.", "Pozos", "Agua de río, quebrada o manantial, sin tratar.", "Agua de lluvia", "Agua embotellada", "Carros cisternas"]}, {"texto": "¿Cuál es el sistema sanitario que utiliza en su hogar para la disposición y eliminación de excretas (heces y aguas negras)?", "opciones": ["Alcantarillado", "Tanque séptico", "Letrina", "Otros", "No tiene"]}, {"texto": "¿Dispone de un servicio de aseo formal para la recolección de basura en su comunidad?", "opciones": ["Sí", "No"]}, {"texto": "¿Alguna vez ha estado expuesto a plaguicidas en su trabajo, comunidad o lugar donde reside?", "opciones": ["Si", "No"]}]}, {"letra": "E", "titulo": "Preguntas relacionadas a hábitos y estilos de vida", "preguntas": [{"texto": "¿Realiza usted al menos 30 minutos de actividad física de intensidad moderada (caminar, pedalear, montar bicicleta, deportes, juegos, actividades recreativas, bailar, tareas domésticas) al día (Equivalente de 150 a 300 minutos semanales)?", "opciones": ["Sí, todos los días.", "Sí, algunos días de la semana.", "No realizo actividad física regularmente."]}, {"texto": "¿Ha fumado, masticado o aspirado algún producto derivado del tabaco, como cigarrillos, cigarrillo electrónico o vaper, tabaco de masticar durante los últimos 12 meses?", "opciones": ["Sí", "No"]}, {"texto": "¿Alguien fuma cerca de usted con frecuencia, en casa, el trabajo u otros lugares?", "opciones": ["Sí", "No"]}, {"texto": "¿Con qué frecuencia consume bebidas que contienen alcohol?", "opciones": ["Nunca", "Una o menos veces al mes.", "2 a 4 veces al mes", "2 a 3 veces por semana", "4 o más veces a la semana"]}]}], "fuente": "Fuente: ICGES, MINSA e INEC, 2019; OPS/NMH/19-001, 2019; Clasificación Nacional de Ocupaciones-2000; Ministerio de Economía y finanzas, 2010; Babor T, Higgins-Biddle J. Saunders J. y Monteiro M., 2001; MINSA, 2019; https://www.inec.gob.pa/archivos/P0705547520250124083204Comentarios%20EML%20octubre%202024.pdf", "edv_presentacion": ["Entornos de vida es una herramienta que se utiliza para mejorar la calidad de los lugares donde las personas viven, trabajan, se relacionan, envejecen…", "Es un cuestionario fácil y sencillo de usar. Consiste en 14 preguntas sobre elementos físicos, económicos y sociales del territorio a evaluar. Una vez contestadas, los resultados se trasladan a un simple diagrama en el que se muestra gráficamente la valoración sobre las áreas preguntadas.", "¿Por qué es importante el lugar donde vives?", "Los lugares donde pasamos gran parte de nuestro tiempo tienen un efecto importante sobre nuestra salud y bienestar. Conocer qué fortalezas y debilidades tiene nuestro entorno nos ayuda a pensar qué se necesita para mejorarlo. Las 14 dimensiones que incluye Entornos de vida están relacionadas con la salud y bienestar que nos proporciona nuestro entorno.", "¿Cómo se utiliza Entornos de Vida?", "La herramienta consta de 14 dimensiones. Cada dimensión tiene una pregunta principal y una serie de preguntas que te ayudarán a reflexionar sobre el tema. Una vez lo hayas valorado, deberás puntuarlo del 1 al 10 y explicar brevemente los motivos de tu puntuación.", "Cuando hayas evaluado las 14 dimensiones podrás traspasar tu puntuación al diagrama situado al final del cuestionario. De esta forma, y de un solo vistazo, verás cómo has evaluado tu entorno.", "Finalmente, podrás proponer acciones prioritarias que se pueden realizar para mejorar las áreas que peor has puntuado.", "Tú eres quien mejor conoce dónde vives,", "¿participas?", "Desplazamiento a pie o en bicicleta"], "edv_escala": "A continuación, puntúa mediante una escala del 1 a 10, donde 1 significa que no está en buenas condiciones y 10 significa que está en muy buenas condiciones. Registra tu valoración marcando con una X el número que consideres que refleja tu puntuación.", "dimensiones": [{"nombre": "Desplazamiento a pie o en bicicleta", "intro": "Caminar e ir en bicicleta son actividades que benefician nuestra salud y el medio ambiente. Poder realizar trayectos agradables y seguros nos anima a caminar o a ir en bicicleta.", "pregunta": "¿Puedes caminar y/o desplazarte en bicicleta (o en otro medio de transporte no motorizado) fácilmente y por trayectos agradables y seguros por tu barrio, corregimiento o distrito?", "reflexion": ["¿Hay zonas específicas para ir a caminar y/o montar en bicicleta (rutas señalizadas, circunvalaciones, caminos escolares, zonas peatonales, carriles bici…)?", "¿Las zonas para andar y/o montar en bicicleta tienen aceras amplias, buena señalización, rampas, sombra, asientos o banquetas, fuentes…? ¿Hay elementos que lo dificulten (postes, lámparas de alumbrado público, mobiliario urbano, pendiente excesiva, mal estado, poca separación de calzada, mucho tráfico, insuficiente seguridad vial…)?", "¿Tienen prioridad peatones o ciclistas frente a los coches u otros vehículos a motor (calles peatonales, semáforos y señalización específica)?", "¿Se puede ir caminando o en bicicleta a los colegios, universidad, tiendas, parques, o estaciones de transporte público (autobús, tren, metro…)?", "¿Tienen elementos que favorezcan la movilidad y la autonomía de todas las personas (ausencia de barreras arquitectónicas, asientos o banquetas, fuentes, baños públicos, sombra…), independientemente de la edad, el sexo género o la diversidad funcional?"]}, {"nombre": "Transporte público", "intro": "Poder acceder a un servicio de transporte público asequible, regular y bien conectado es importante para todas las personas. Un buen transporte público favorece realizar actividad física y anima a desplazarse de una forma más sostenible para el medio ambiente.", "pregunta": "¿El transporte público responde a las necesidades de todas las personas del barrio, corregimiento o distrito?", "reflexion": ["¿Hay variedad suficiente de transporte público, con horario regular y con frecuencias de paso adecuadas?", "¿Permite llegar a las instalaciones y servicios básicos (como centros educativos, de salud, sociales, administrativos, comerciales…) y los conecta entre sí? ¿Hay zonas a las que no se puede llegar en transporte público?", "¿El transporte público es seguro y accesible (por ejemplo, para las personas mayores, sillas de ruedas, carritos para bebés o carros de la compra) independientemente de la edad, el sexo, el género, la movilidad o la diversidad funcional?", "¿Hay información suficiente sobre el transporte público (horarios, precios, frecuencias, líneas, etc.)?", "Las paradas y/o estaciones de autobús, tren, metro, las estaciones de bicicletas o de otro tipo de transporte público ¿están en lugares adecuados y a una distancia a la que se puede llegar a pie desde casa, el trabajo u otras instalaciones o servicios básicos (como centros de estudios, de salud, administrativos, comerciales…)?", "Las paradas y/o estaciones de autobús, tren, metro, bicicletas u otro tipo de transporte público, ¿tienen baños públicos, zonas cubiertas, asientos, iluminación adecuada, paneles informativos o zonas de estacionamiento para vehículos a motor y bicicletas?", "¿Las paradas, estaciones y vehículos (autobuses, trenes, metro, bicicletas…) están en buenas condiciones y bien mantenidos?", "¿El transporte público tiene un coste económico asequible? ¿Hay boletos con descuento para las personas con menores recursos?"]}, {"nombre": "Tráfico y aparcamiento", "intro": "Demasiado tráfico afecta negativamente a la salud de las personas que viven, trabajan o visitan un lugar. Una buena regulación y políticas que restrinjan el tráfico de vehículos privados y ordenen las zonas de estacionamiento en la vía pública, contribuyen a minimizar este impacto.", "pregunta": "¿La regulación del tráfico y de las zonas de estacionamiento es adecuada en tu barrio, corregimiento o distrito?", "reflexion": ["¿Se han tomado medidas para disminuir los efectos negativos del tráfico (reducción de velocidad, restricción del tráfico, paneles acústicos, fomento del transporte sostenible, etc.)?", "¿Existen medidas que favorezcan la convivencia entre peatones, vehículos a motor y/o bicicletas y que mejoren la seguridad de peatones (como pasarelas en pasos a nivel, medidas para reducir la velocidad, espejos, señalización, etc.)?", "¿Existen suficientes plazas de aparcamiento o zonas de estacionamiento?", "¿Hay espacios gratuitos de estacionamiento a precios asequibles? ¿Tienen espacios reservados o de uso preferente para personas con movilidad reducida o en otras situaciones (embarazo, crianza)?", "¿Hay aparcamientos o zonas de estacionamiento públicos, seguros y bien señalizados? ¿Hay estacionamientos de transferencia (Son los que están situados en los alrededores para dejar los vehículos y tomar otro medio de transporte y así disminuir el tráfico en el barrio, corregimiento o distrito)? ¿Están conectados con el transporte público?"]}, {"nombre": "Calles y espacios públicos", "intro": "Las características del entorno construido del barrio, corregimiento o distrito, como edificios, lugares emblemáticos, calles, avenidas, plazas, calles arboladas… ayudan a crear entornos que mejoran el bienestar de sus vecinos/as y aumentan el sentimiento de pertenencia al lugar.", "pregunta": "¿Están los edificios bien cuidados y las calles y espacios públicos abiertos son agradables y fáciles para transitar por ellos?", "reflexion": ["Los edificios o espacios públicos, ¿hacen que transitar por esa zona sea una experiencia agradable?", "Los edificios, calles y espacios públicos abiertos, ¿están bien señalizados, están limpios, bien iluminados y cuidados en general?", "¿Existen elementos negativos como ruido, contaminación, suciedad o basura, grafitis, falta de iluminación, solares o edificios en ruinas?"]}, {"nombre": "Espacios naturales", "intro": "Los espacios naturales incluyen parques y bosques, campos, playas, arroyos y ríos y espacios verdes a lo largo de caminos y carreteras. Estos espacios mejoran la calidad del aire y benefician nuestra salud y bienestar.", "pregunta": "¿Puedes disfrutar en tu barrio, corregimiento o distrito de un espacio natural atractivo, seguro y de fácil acceso?", "reflexion": ["Estos espacios, ¿están dotados de elementos que los hagan atractivos y animen a la gente a ir y a permanecer en ellos (como paradas de transporte público cercanas, baños públicos, zonas de sombra, asientos, fuentes, buena iluminación, elementos de seguridad, áreas recreativas específicas, columpios…)?", "¿Tienen aspectos negativos como demasiado ruido, suciedad, poco mantenimiento o elementos que pueden ser peligrosos?", "¿Todas las personas pueden disfrutar de estos espacios (independientemente de su edad, sexo, género, grupo étnico, movilidad, diversidad funcional, nivel socioeconómico…)?"]}, {"nombre": "Juego y ocio", "intro": "Un buen entorno motiva a jugar y a disfrutar de espacios de ocio activo y esparcimiento. Contar con lugares que promuevan realizar actividades de ocio saludable, como la actividad física o las actividades culturales, mejoran la calidad de nuestras vidas y de nuestra salud.", "pregunta": "¿Se pueden realizar actividades de ocio y esparcimiento en tu barrio, corregimiento o distrito?", "reflexion": ["¿Existen lugares o instalaciones donde se puede jugar, hacer ejercicio físico o disfrutar de actividades culturales u otro tipo de (piensa en grupos específicos de personas como adolescentes, personas mayores, niños y niñas, personas con diversidad funcional…)?", "Estos lugares o instalaciones, ¿son de buena calidad y están bien mantenidos?", "¿son gratuitos o tienen un costo asequible? ¿se aprovechan al máximo?", "¿Todas las personas los pueden utilizar (independientemente de su edad, género, grupo étnico, lugar de nacimiento, movilidad, creencias religiosas, diversidad funcional, nivel socioeconómico…)?", "¿Se pueden utilizar en cualquier momento del día o la noche y del año?", "¿Se fomenta el uso de espacios para que los niños y niñas jueguen al aire libre?"]}, {"nombre": "Servicios", "intro": "Los servicios de los que disponemos en nuestro entorno pueden facilitar nuestras condiciones de vida. Estos incluyen comercios, escuelas infantiles, colegios, bibliotecas, lugares de culto, centros de salud y lugares para comer, beber y encontrarse con amistades… Poder acceder a ellos es importante para mejorar nuestra calidad de vida.", "pregunta": "¿Los servicios que tiene tu barrio, corregimiento o distrito satisfacen las necesidades de todas las personas?", "reflexion": ["¿Hay suficiente variedad de servicios para cubrir las necesidades básicas de tu barrio, corregimiento o distrito (educación, salud, compras, actividad física, ocio, cultura, relaciones sociales, etc.)?", "¿Son de calidad y están bien mantenidos?", "¿Todas las personas los pueden utilizar (independientemente de su nivel económico, edad, sexo, género, grupo étnico, movilidad, creencias religiosas, diversidad funcional y sexual)?", "¿Hay servicios dirigidos a grupos de población vulnerable?", "Los servicios disponibles, ¿favorecen la alimentación saludable, la actividad física y las relaciones sociales?"]}, {"nombre": "Trabajo y economía local", "intro": "Los beneficios de un buen empleo, como un salario adecuado, el tipo de actividad desarrollada, las relaciones sociales que favorece o la realización personal, promueven la salud y el bienestar.", "pregunta": "¿Hay una economía local activa en el barrio, corregimiento o distrito que favorezca el acceso a un buen empleo?", "reflexion": ["¿Existe una economía local activa que favorezca la creación de empleo?", "¿Hay diferentes oportunidades para que las personas adquieran habilidades para trabajar (como módulos o actividades formativas, escuelas de formación profesional, convenios con sectores económicos o empresas, prácticas…)?", "¿Se puede conseguir un buen empleo (independientemente de la edad, sexo, género, grupo étnico, movilidad, creencias religiosas, discapacidad, diversidad sexual)?", "¿Hay servicios locales (como oficinas de empleo, agencias de contratación, asociaciones u otras entidades) que ayuden a encontrar un puesto de trabajo?", "¿Hay facilidades para crear y poner en marcha nuevos negocios locales?"]}, {"nombre": "Vivienda y comunidad", "intro": "Las características de las viviendas del barrio o municipio afectan a las condiciones de vida de las personas que viven en él. Viviendas espaciosas, bien aisladas y mantenidas, seguras, accesibles y adaptadas impactan positivamente en la salud y el bienestar.", "pregunta": "¿Las viviendas de tu barrio, corregimiento o distrito satisfacen las necesidades de la población?", "reflexion": ["¿Existen viviendas espaciosas, seguras, bien aisladas (Que reducen la transferencia de calor o frío del exterior al interior de la vivienda) y mantenidas y bien comunicadas?", "¿Estas viviendas son accesibles para todas las personas (independientemente de su edad, género, sexo, movilidad, discapacidad, grupo étnico, nivel económico…) de tal forma que se puede vivir en ellas de manera segura, cómoda y autónoma?", "¿Existen diferentes formas de tener acceso a una vivienda (alquiler, compra, u otras) que satisfagan las necesidades las personas? ¿Se facilita el acceso a la vivienda (Descuentos, ayudas, programas u otras fórmulas) a algún grupo de población específico?", "¿El tamaño de las viviendas se adapta al tamaño o al tipo de las familias que las habitan?", "¿Las viviendas favorecen la convivencia de personas de diferentes edades, ingresos, movilidad, diversidad étnica, funcional, sexual…?", "¿Existen circunstancias que dificulten el acceso a la vivienda o fuercen el desplazamiento de sus vecinas/os a otros barrios, corregimiento o distrito (gentrificación o reurbanización de viviendas con mejor poder adquisitivo, alquileres turísticos, “guetificación del barrio”…)?"]}, {"nombre": "Contacto social", "intro": "Sentirnos solas o solos afecta a nuestra salud y bienestar. Un buen entorno ofrece una variedad suficiente de espacios y actividades donde relacionarse y pasar el tiempo con otras personas.", "pregunta": "¿Hay oportunidad y variedad suficiente de espacios y actividades para relacionarse con otras personas en tu barrio, corregimiento o distrito?", "reflexion": ["¿Existen espacios y actividades donde las personas tengan oportunidad de relacionarse (independientemente de su edad, sexo, género, lugar de nacimiento, grupo étnico, religión, movilidad, discapacidad, nivel económico…)?", "¿Hay actividades o programas específicos para grupos de población concretos (personas mayores, infancia, adolescencia, personas adultas…)?", "¿Existen diferentes lugares (interiores, al aire libre, construidos especialmente para ello o más informales) donde la gente pueda encontrarse y relacionarse?", "¿Esos espacios pueden ser usados en cualquier momento del día, del año, y en diferentes condiciones climáticas?", "Los espacios y actividades ¿favorecen que se integren todas las personas de la comunidad y se conozcan (independientemente de su edad, sexo, género, lugar de nacimiento, grupo étnico, religión, movilidad, diversidad funcional, nivel económico…)?"]}, {"nombre": "Identidad y pertenencia", "intro": "La apariencia de un lugar, su historia y lo que otras personas piensan de él, pueden condicionar cómo nos sentimos. Una fuerte identidad local positiva puede ayudarnos a sentirnos orgullosos/as de nuestro entorno, de nuestra comunidad y de nosotros/as mismos/as.", "pregunta": "¿Tu barrio, corregimiento o distrito tiene una identidad positiva y sientes que perteneces o que puedes pertenecer a él?", "reflexion": ["¿Las personas que viven en tu barrio, corregimiento o distrito lo valoran positivamente?", "¿Se favorece que se conozca y celebre la historia, el patrimonio cultural, la cultura y costumbres del lugar?", "¿Existen grupos locales, asociaciones y redes sociales que ayuden a las personas a sentirse involucradas en su comunidad?", "¿Se favorece la interculturalidad y la conexión entre vecinos y vecinas, independientemente de su edad, sexo, género, lugar de nacimiento, religión, grupo étnico, nivel socioeconómico, discapacidad …?"]}, {"nombre": "Seguridad", "intro": "La seguridad de un lugar afecta al bienestar de las personas y a cómo éstas pasan su tiempo en él. Los entornos bien diseñados contribuyen a crear espacios seguros y a reducir la delincuencia, el vandalismo y el mal uso de las instalaciones.", "pregunta": "¿Te sientes segura/o en tu barrio, corregimiento o distrito?", "reflexion": ["¿Se dan casos de delincuencia con frecuencia (vandalismo, robos, asaltos, agresiones…)?", "¿Existen puntos o zonas concretas con mayor riesgo de que se produzcan situaciones conflictivas o agresiones?", "¿Las calles, caminos, plazas, parques y espacios naturales son seguros, están bien iluminados y se pueden utilizar tanto de día como de noche? ¿Las personas pueden caminar solas por la noche con tranquilidad?", "¿Todos los lugares e instalaciones se pueden utilizar en cualquier momento del día o la noche y del año?", "¿Existen medidas para garantizar la seguridad de las personas que viven en el barrio (¿buen mantenimiento de las instalaciones y espacios, buena iluminación, agentes de policía, vigilancia de estaciones de transporte público…?", "¿La gente se siente segura tanto en su casa como fuera de ella?", "¿La zona es segura para todas las personas (independientemente de su edad, sexo, género, grupo étnico, movilidad, creencias religiosas, discapacidad y diversidad sexual)?"]}, {"nombre": "Cuidado y mantenimiento", "intro": "Los lugares bien cuidados y mantenidos nos hacen sentir bien, mientras que los que no están en buenas condiciones pueden producirnos el efecto contrario. Un buen mantenimiento y acondicionamiento del barrio o municipio nos ayuda a sentirnos más a gusto y a tener una opinión más favorable del entorno.", "pregunta": "¿Se cuidan adecuadamente los edificios y espacios del barrio, corregimiento o distrito, tanto públicos como privados?", "reflexion": ["¿Se encuentran las instalaciones, como parques, espacios abiertos o edificios públicos, en buen estado y bien mantenidos (se arreglan los desperfectos, hay cestos de basura suficientes, se limpian con frecuencia…)?", "¿Existe algún problema específico en la zona (como basura, malos olores, vandalismo, excrementos de perros u otros animales, relacionados con los negocios locales…)?", "¿Hay contenedores y servicios para el reciclaje y almacenamiento de desechos? ¿está bien organizada su recogida? ¿se utilizan adecuadamente?", "La administración local, asociaciones de vecinos y vecinas, propietarios/as de viviendas y residentes del barrio, ¿conocen cuáles son sus deberes y responsabilidades? ¿actúan de acuerdo a éstos?"]}, {"nombre": "Influencia y participación", "intro": "La opinión que tienen las personas sobre su entorno debería ser escuchada. Tener voz en la toma de decisiones y sentirse capaz de cambiar las cosas, ayuda a construir comunidades más fuertes y mejores entornos. Sentir que se puede influir y participar en la comunidad hace que las personas se sientan bien.", "pregunta": "¿Sientes que puedes participar en la toma de decisiones y ayudar a cambiar las cosas para mejorar tu barrio, corregimiento o distrito?", "reflexion": ["¿Existen mecanismos y canales que favorezcan la participación? ¿Hay algún órgano de participación activo?", "¿Se están realizando o se han realizado procesos en los que participas en tu barrio o municipio (de urbanismo, movilidad, presupuestos participativos…)?", "¿Pueden participar todas las personas en la toma de decisiones que les afectan (independientemente de su edad, sexo, género, grupo étnico, movilidad, creencias religiosas, discapacidad y diversidad sexual)?", "¿Existen organizaciones, plataformas, entidades o grupos que favorezcan la participación (¿asociaciones de vecinos y vecinas, ONGs, ciudadanía organizada, otras asociaciones o entidades…?", "La administración local, servicios de salud u otros servicios públicos, ¿trabajan activamente con la comunidad para entender y atender sus necesidades?", "¿Hay un buen nivel de transparencia de las acciones y decisiones políticas que afectan al barrio o municipio?", "¿La gente se siente escuchada? ¿Sabe la gente cómo hacerse escuchar?"]}], "diagrama": ["Recuerda que el 1 se encuentra en el centro y el 10 en la parte coloreada de cada dimensión.", "Cuanto mejor hayas evaluado tu barrio o municipio, mayor será la figura que aparecerá en el diagrama al unir los puntos."], "prioridades": {"problemas": "De las catorce dimensiones preguntadas, ¿cuáles son los principales problemas que has identificado? Enumera los tres problemas más importantes:", "acciones": "¿Qué acciones crees que pueden llevarse a cabo para solucionarlos? Enumera tres acciones que consideres prioritarias:"}, "gracias": "Gracias por completar la herramienta Entornos de vida."};
 const LLAVE = {"kty": "RSA", "alg": "RSA-OAEP-256", "ext": true, "key_ops": ["encrypt"], "n": "x0NF3DKhL4SeDrHSKxWLKwgvi_SSGHG8ByuQldu_lonOu8Ta1XDM1sQzldL2uMI7x37ThervtsXPKtFByY8GYkzMdZwP3k_v65_Icm6mv3C3JmVt9UKuf1iu5ZeoZycOCm3DYEs0WvhyZFMc1wutWXan5fKQQU1qxzvbnUJ8bx63uCvG7IV8eFnUD8D8A0ChP877o7LLo3g9c8zEUY7cboCxJe_PKqk7_ZURarE7cOV1xBVU1ay4MwIuRF2xsBo9SS31ZLjvOdpKur1EiTyscyFVqxZllVnfGfZd6DhnCv9-p7nmTUm-zvvzz0nG0-tZBCqgawcaJPoBDAghgtEGOLH6297XehvXoOnZ34RIMcEXu0mju_jD89kRkEtKYPIHHi2MbXxG9K2J6LD-g_5eiRHdUeidRqYfjGJXyi5rCGzCAdXkGyLgY3sWa1dmGk8G52hjnOMPDB0uWvmVktH8R720r3lmdvoBof8macDTprYv6CKBM--5kzyahKVZO5zj", "e": "AQAB"}; // llave pública del receptor: lo que sale del equipo solo se abre con su llave privada
-const APP_VERSION = "0.3.0-prototipo";
+const APP_VERSION = "0.4.0-prototipo";
 
 // ---------------------------------------------------------------------------
 // Utilidades
@@ -191,9 +202,50 @@ const CASILLA_AUDIO = {
   no: "No acepto que la entrevista se grabe en audio.",
   declaracion: "Que la grabación de audio es opcional y que puede rechazarla sin dejar de participar en el estudio.",
 };
+// Consentimiento informado del participante, versión aprobada y sellada por el Comité de Bioética de la
+// Investigación del Hospital Nacional (6-ago-2026), transcrito palabra por palabra del memorando CBI-HN/008-2026.
+// La sección de grabación (CASILLA_AUDIO) se inserta donde la indica la adenda N.° 1: antes de
+// «Consentimiento para Participar en este Estudio de Investigación».
+const CONSENTIMIENTO = {
+  version: "Consentimiento v2.0 sellado el 6-ago-2026 + sección de grabación de la adenda N.° 1 (pendiente de aprobación)",
+  titulo: "Consentimiento informado del participante",
+  secciones: [
+    { p: ["<b>Título del Protocolo:</b> Análisis de determinantes de salud con enfoque territorial, en población de 18 años o más. República de Panamá. Años 2026-2027",
+      "<b>Investigador Principal:</b> Dra. Iranela Miranda. Odontóloga con Maestría en Salud Pública y Gestión Sanitaria y Doctora en Ciencias de la Salud y el Comportamiento Humano. <b>Subinvestigadores:</b> Dr. Gresky Gutiérrez, Dra. María Mercedes Castrejón, Dra. Luz Romero, Dr. Jaime Sevillano, Licda. Iset Trujillo, Dr. Manuel Nazas, Dr. Juan Claudio Luria, Dr. Heraclides Gómez, Licda. Muriel Rangel, Licda. Ariadna Candanedo, Dra. Tamara Villafañez, Dra. Olga Quiroz, Dr. Alexis Castillo y Licda. Shanira Pineda.",
+      "<b>Lugar del Estudio:</b> Este estudio forma parte de los proyectos de investigación del Centro de Investigación, Innovación y Gestión del Conocimiento de la Caja de Seguro Social y será realizado en comunidades de las provincias de Panamá, Veraguas, Herrera, los Santos y Chiriquí. <b>Teléfonos: Centro-</b> 513-9058; Investigadora Principal- 6235-5709.",
+      "Les estamos invitando a participar en un estudio de investigación. Los estudios de investigación pueden aportar información útil para ayudar a mejorar la salud de la población e incluyen solo a las personas que deciden formar parte del mismo. Este documento se llama consentimiento informado. Por favor, lea cuidadosamente esta información y tome su tiempo para tomar su decisión con respecto a su participación. Siéntase libre de pedir a la persona encargada del estudio, que discuta este documento de consentimiento con usted. Puede solicitarle que le explique cualquier palabra o información que usted no entienda claramente. La naturaleza del estudio, objetivos, beneficios, y otra información importante sobre la investigación, se describen a continuación en este documento.",
+      "Este estudio ha sido aprobado por el Comité de Bioética de la Investigación del Hospital Nacional de Panamá, ubicado en ciudad de Panamá, avenida Cuba, entre calle 38 y 39, piso 10. Esta investigación se llevará a cabo en comunidades pertenecientes a las provincias de Panamá, Veraguas, Herrera, los Santos y Chiriquí, del año 2026 a 2027."] },
+    { t: "Objetivos del Estudio", p: ["<b>Objetivo General</b><br>Analizar los determinantes de la salud y territorios, basado en una herramienta participativa, en población 18 años o más. Provincias con Incidencia de Cáncer superior al promedio nacional registrado en el año 2021. 2026-2027.", "<b>Objetivos Específicos</b>"],
+      v: ["<b>Distinguir</b> los determinantes de la salud y características de los territorios de las comunidades en estudio.",
+        "<b>Comparar</b> los determinantes de la salud y características de los territorios de las comunidades en estudio.",
+        "<b>Identificar asociaciones</b> entre los determinantes de la salud y características de los territorios de las comunidades en estudio.",
+        "<b>Indicar patrones diferenciales</b> de fortalezas y debilidades entre comunidades y estratos sociodemográficos."] },
+    { t: "Procedimientos del Estudio", p: ["Si usted decide formar parte de este estudio, se le solicitará lo siguiente:"],
+      v: ["Se le pedirá responder a una entrevista que será realizada por personal del estudio que está debidamente capacitado. La entrevista se divide en catorce (14) temas principales relacionados a su entorno o comunidad en donde vive. Cada tema incluye una breve explicación y preguntas sencillas para que califique la situación en base a sus experiencias en la comunidad. También se le harán preguntas sobre aspectos sociales, demográficos, de estilos de vida y antecedentes familiares de cáncer. La entrevista se realizará en su residencia y tomará aproximadamente cuarenta y cinco (45) minutos.",
+        "El entrevistador le leerá las preguntas de cada tema, anotará sus respuestas y puntuación. Puede pedir explicaciones adicionales si así lo desea.",
+        "Sus respuestas serán totalmente anónimas y se guardarán de forma confidencial por un periodo cinco (5) años. Luego de este periodo se destruirán."] },
+    { t: "Total de Participantes", p: ["La muestra del estudio será de 1050 participantes que habitan en las provincias de Panamá, Herrera, los Santos, Veraguas y Chiriquí."] },
+    { t: "Beneficios", p: ["Por participar usted no tendrá ningún beneficio directo; sin embargo, será usted de gran ayuda para dar a conocer las características del territorio y determinantes de la salud de donde vive, que posteriormente pueden ser utilizados para elaborar estrategias que ayuden a prevenir el cáncer en Panamá."] },
+    { t: "Riesgos", p: ["Este estudio se clasifica en la categoría de riesgo mínimo. Esto significa que los riesgos asociados en este estudio son los mismos que usted enfrenta diariamente. No existen riesgos adicionales para aquellos que participan en este estudio."] },
+    { t: "Compensación", p: ["Por su tiempo y colaboración le ofreceremos un pequeño refrigerio durante la entrevista. No se le entregarán ningún pago ni incentivo económico por participar en el estudio."] },
+    { t: "Privacidad y Confidencialidad",
+      v: ["Esta encuesta es anónima y su nombre no aparecerá en la misma. Se mantendrán sus respuestas de forma confidencial.",
+        "Solo los investigadores del estudio, podrán realizar las preguntas y anotar las respuestas de su entrevista.",
+        "Todos los datos recogidos serán objeto de investigación y se almacenarán en el Centro de Investigación, Innovación y Gestión del Conocimiento de la Caja de Seguro Social, en un lugar seguro.",
+        "En las futuras comunicaciones sobre el estudio no se incluirá ninguna información que pueda revelar su identidad. En el momento que usted solicite información relacionada con el estudio, la investigadora principal se la podrá proporcionar."] },
+    { t: "Participación Voluntaria /Retiro", p: ["Su participación en este estudio es completamente voluntaria. Usted no debe sentir ningún tipo de presión para formar parte de este estudio. Su decisión de participar o no en este Estudio no afectará sus relaciones actuales o futuras con el equipo que es parte del estudio o de forma general con la Caja de Seguro Social. Si usted decide participar en este estudio y luego cambia de opinión, podrá retirarse en cualquier momento o dejar de responder cualquier pregunta de la encuesta sin enfrentar ningún tipo de penalización por parte del equipo de investigación."] },
+    { t: "Respuesta a sus preguntas, preocupaciones o quejas", p: ["Si durante el desarrollo de esta encuesta o posterior a ella usted tiene alguna duda sobre sus derechos como participante, puede contactarse con la investigadora principal del Estudio, la Dra. Iranela Miranda, al teléfono fijo 513-9058 o al celular 6235-5709 o a los correos electrónicos iranelamiranda1976@gmail.com o iramiranda@css.gob.pa. Si usted desea discutir alguna duda con alguien más que no forme parte del equipo de investigación, puede comunicarse con el Comité de Bioética de la Investigación del Hospital Nacional. Teléfono 307-2356 o 207-8393 o al correo electrónico: comitedebioetica@hospitalnacional.com"] },
+  ],
+  participar: { t: "Consentimiento para Participar en este Estudio de Investigación", p: "Si desea participar en este Estudio; por favor firme este formulario, si la siguiente afirmación es verdadera: \"Libremente doy mi consentimiento para participar en este Estudio\". Entiendo que al firmar este formulario estoy de acuerdo con participar en la investigación, además de haber recibido una copia de este formulario." },
+  declaracion: {
+    t: "Declaración de la Persona que obtiene el Consentimiento",
+    intro: "He explicado cuidadosamente a la persona que toma parte en el estudio lo que él/ella puede esperar de su participación. Por medio de la presente, certifico que cuando esta persona firmó el formulario, según mi conocimiento, ha entendido:",
+    casillas: ["De qué trata el Estudio.", "Cuál es el procedimiento para aplicarle la entrevista y el tiempo requerido para ello.", "Que no hay otro beneficio más que ayudar a conocer sobre el tema de estudio.", "Que es un Estudio de riesgo mínimo."],
+    cierre: "Puedo confirmar que el participante del estudio habla, lee y/o entiende el idioma español y que además está recibiendo una copia del formulario de consentimiento informado en el idioma correspondiente. Además, el/la participante pudo leer y entender este documento o; si no pudo, al menos, esta persona fue capaz de escuchar y entender el formulario cuando éste le fue leído junto a un testigo; y, por consiguiente, puede considerarse competente para dar su consentimiento informado, siendo este legalmente válido.",
+  },
+};
 const PASOS = [
   { tipo: "consentimiento", rotulo: "Consentimiento informado" },
-  { tipo: "grabacion", rotulo: "Autorización de grabación" },
   ...INST.parte1.map((s, i) => ({ tipo: "seccion", i, rotulo: `${s.letra}. ${s.titulo.replace(/^Preguntas (sobre|relacionadas (con|a)) /, "")}` })),
   { tipo: "presentacion", rotulo: "Presentación de Entornos de Vida" },
   ...INST.dimensiones.map((d, i) => ({ tipo: "dimension", i, rotulo: `${i + 1}. ${d.nombre}` })),
@@ -211,8 +263,9 @@ let BD = null;
 const Llave = { k: null };
 function abrirBD() {
   return new Promise((ok, mal) => {
-    const rq = indexedDB.open("entornos_de_vida", 1);
-    rq.onupgradeneeded = () => { const d = rq.result; ["meta", "entrevistas", "audios"].forEach(n => d.createObjectStore(n)); };
+    // v2 agrega "consentimientos": nombre y firmas, aparte de las respuestas
+    const rq = indexedDB.open("entornos_de_vida", 2);
+    rq.onupgradeneeded = () => { const d = rq.result; ["meta", "entrevistas", "audios", "consentimientos"].forEach(n => { if (!d.objectStoreNames.contains(n)) d.createObjectStore(n); }); };
     rq.onsuccess = () => ok(BD = rq.result);
     rq.onerror = () => mal(rq.error);
   });
@@ -305,7 +358,6 @@ function faltantes(e) {
 function pasoCompleto(e, p) {
   const P = PASOS[p];
   if (P.tipo === "consentimiento") return e.consent === true;
-  if (P.tipo === "grabacion") return e.consentAudio === true || e.consentAudio === false;
   if (P.tipo === "seccion") return PREG.filter(q => q.s === P.i).every(q => e.r[q.clave] != null);
   if (P.tipo === "dimension") return !!e.edv[P.i + 1];
   if (P.tipo === "presentacion") return e.vistos.includes(p);
@@ -440,7 +492,7 @@ let VISTA = "cargando", ACT = null, PASO = 0;
 async function ir(v, e = null, paso = 0) {
   await detenerGrabacion();
   if (v !== "entrevista" || e !== ACT) cerrarMicrofono();
-  if (v === "entrevista" && e && !autorizado(e) && paso >= PRIMER_PASO) paso = e.consent === true ? pasoDe("grabacion") : pasoDe("consentimiento");
+  if (v === "entrevista" && e && !autorizado(e) && paso >= PRIMER_PASO) paso = pasoDe("consentimiento");
   VISTA = v; ACT = e; PASO = paso; CODIGO = { txt: "", ids: [] };
   pintar(); window.scrollTo(0, 0);
   grabarPasoActual();
@@ -455,12 +507,13 @@ function pintar() {
   if (VISTA === "entrevista") {
     $("#progBar").style.width = `${Math.round(100 * (PASO + 1) / PASOS.length)}%`;
     nav.classList.remove("oculto");
-    const e = ACT, bloqueado = (PASOS[PASO].tipo === "consentimiento" && e.consent !== true) || (PASOS[PASO].tipo === "grabacion" && !autorizado(e));
+    const e = ACT, bloqueado = PASOS[PASO].tipo === "consentimiento" && !autorizado(e);
     navFila.innerHTML = `<button class="btn" data-acc="ant" ${PASO === 0 ? "disabled" : ""}>Anterior</button>
       <button class="btn" data-acc="indice" ${autorizado(e) ? "" : "disabled"}>Paso ${PASO + 1} de ${PASOS.length}</button><span class="espacio"></span>
-      ${PASO < PASOS.length - 1 ? `<button class="btn pri" data-acc="sig" ${bloqueado || e.consent === false ? "disabled" : ""}>${PASO === pasoDe("grabacion") ? "Iniciar la encuesta" : "Siguiente"}</button>` : ""}`;
+      ${PASO < PASOS.length - 1 ? `<button class="btn pri" data-acc="sig" ${bloqueado || e.consent === false ? "disabled" : ""}>${PASO === pasoDe("consentimiento") ? "Iniciar la encuesta" : "Siguiente"}</button>` : ""}`;
   }
   pintarGrab();
+  initFirmas();
 }
 
 const VISTAS = {
@@ -572,6 +625,7 @@ const VISTAS = {
     const sinEnviar = ENT.filter(porEnviar);
     const nuevas = ENT.filter(e => !e.exportada || e.actualizada > e.exportada);
     const conAudio = ENT.filter(e => e.audios.length);
+    const consPend = ENT.filter(e => e.consent === true && !e.demo && !e.consExportado);
     const bytes = ENT.reduce((s, e) => s + e.audios.reduce((t, a) => t + (a.bytes || 0), 0), 0);
     return `<h1>Enviar lo capturado</h1>
       <p class="tenue">Todo sale cifrado con la llave pública del estudio: solo el equipo que guarda la llave privada lo puede abrir. Ni este iPad puede leer lo que envía.</p>
@@ -589,11 +643,17 @@ const VISTAS = {
         <label class="campo" style="display:flex;gap:10px;align-items:center"><input type="checkbox" id="xTodas" style="width:22px;height:22px"> <span style="margin:0;font-weight:500">Incluir también lo ya exportado</span></label>
         <div id="xError"></div>
         <button class="btn pri" data-acc="exportar">Exportar paquete cifrado</button>
+      </div>
+      <div class="tarjeta">
+        <h2>3. Consentimientos firmados</h2>
+        <p style="margin-top:0">Un archivo <code>.edvc</code>, aparte, con cada consentimiento firmado (documento imprimible con las firmas) y el libro de control de codificación (código y nombre). Es lo único que identifica a los participantes: va solo a la custodia de la investigadora principal, nunca junto con las respuestas. ${consPend.length} consentimiento${consPend.length === 1 ? "" : "s"} sin exportar.</p>
+        <div id="cError"></div>
+        <button class="btn pri" data-acc="exportar-consent" ${consPend.length ? "" : "disabled"}>Exportar consentimientos cifrados</button>
       </div>`;
   },
 
   ajustes() {
-    const exp = ENT.filter(e => e.exportada && e.actualizada <= e.exportada).length;
+    const exp = ENT.filter(e => e.exportada && e.actualizada <= e.exportada && (e.consent !== true || e.demo || e.consExportado)).length;
     return `<h1>Ajustes</h1>
       <div class="tarjeta"><h2>Después de entregar</h2>
         <p class="tenue" style="margin-top:0">Una vez que el CIIGC confirme que recibió el paquete, se borra del equipo lo ya exportado. ${exp} entrevista${exp === 1 ? "" : "s"} exportada${exp === 1 ? "" : "s"} y sin cambios.</p>
@@ -609,7 +669,78 @@ const VISTAS = {
 let RESUMEN_TXT = "", SOLO_REALES = false, PERSISTE = false;
 const porEnviar = e => estado(e) !== "pendiente" && (!e.enviado || e.actualizada > e.enviado);
 let FORM = null;
-const reqOk = e => !!(e.req && e.req.edad && e.req.residencia && e.req.firma);
+// Borrador del consentimiento mientras se lee y se firma: vive solo en memoria hasta que se registra.
+const BORR = new Map();
+function borrador(e) {
+  if (!BORR.has(e.id)) BORR.set(e.id, { eleg: { edad: false, residencia: false }, audio: null, iniciales: "", nombre: "", testigo: false, tNombre: "", tParentesco: "",
+    decl: [false, false, false, false, false], eNombre: META.encuestador, copia: false, firmas: {} });
+  return BORR.get(e.id);
+}
+function faltanConsent(c) {
+  const f = [];
+  if (!c.eleg.edad || !c.eleg.residencia) f.push("confirmar la elegibilidad");
+  if (c.audio === null) f.push("la decisión sobre la grabación");
+  if (!c.iniciales.trim()) f.push("las iniciales");
+  if (!c.firmas.participante) f.push("la firma del participante");
+  if (!c.nombre.trim()) f.push("el nombre del participante");
+  if (c.testigo && (!c.firmas.testigo || !c.tNombre.trim() || !c.tParentesco.trim())) f.push("los datos y la firma del testigo");
+  if (c.decl.some(x => !x)) f.push("las cinco casillas de la declaración");
+  if (!c.firmas.encuestador || !c.eNombre.trim()) f.push("la firma y el nombre de quien obtiene el consentimiento");
+  return f;
+}
+// Recuadro de firma con el dedo o el lápiz; la firma se guarda como imagen PNG
+function padFirma(quien, c) {
+  return `<div class="firma ${c.firmas[quien] ? "llena" : ""}"><canvas data-firma="${quien}"></canvas>
+    <div class="firma-pie"><span class="tenue">${c.firmas[quien] ? "Firmado" : "Firme aquí"}</span><button class="btn chico" data-acc="c-borrar-firma" data-k="${quien}">Borrar</button></div></div>`;
+}
+function initFirmas() {
+  if (VISTA !== "entrevista" || !ACT || ACT.consent != null) return;
+  const c = borrador(ACT);
+  document.querySelectorAll("canvas[data-firma]").forEach(cv => {
+    const quien = cv.dataset.firma, dpr = window.devicePixelRatio || 1, w = cv.clientWidth, h = cv.clientHeight;
+    cv.width = w * dpr; cv.height = h * dpr;
+    const g = cv.getContext("2d"); g.scale(dpr, dpr); g.lineWidth = 2.2; g.lineCap = "round"; g.lineJoin = "round"; g.strokeStyle = "#0d2a47";
+    if (c.firmas[quien]) { const im = new Image(); im.onload = () => g.drawImage(im, 0, 0, w, h); im.src = c.firmas[quien]; }
+    let dib = false, ult = null;
+    const pos = ev => { const r = cv.getBoundingClientRect(); return [ev.clientX - r.left, ev.clientY - r.top]; };
+    cv.addEventListener("pointerdown", ev => { dib = true; ult = pos(ev); try { cv.setPointerCapture(ev.pointerId); } catch (e) {} ev.preventDefault(); });
+    cv.addEventListener("pointermove", ev => { if (!dib) return; const p = pos(ev); g.beginPath(); g.moveTo(...ult); g.lineTo(...p); g.stroke(); ult = p; ev.preventDefault(); });
+    const fin = () => { if (!dib) return; dib = false; c.firmas[quien] = cv.toDataURL("image/png"); const pie = cv.parentElement.querySelector(".firma-pie .tenue"); if (pie) pie.textContent = "Firmado"; cv.parentElement.classList.add("llena"); actualizarFaltan(); };
+    cv.addEventListener("pointerup", fin); cv.addEventListener("pointercancel", fin);
+  });
+}
+// Refresca solo el aviso y el botón de firmar, sin redibujar la página (no se pierden el foco ni el trazo)
+function actualizarFaltan() {
+  const c = borrador(ACT), f = faltanConsent(c), b = document.querySelector('[data-acc="c-firmar"]'); if (!b) return;
+  b.disabled = f.length > 0;
+  const tarjeta = b.closest(".tarjeta"); let av = tarjeta.querySelector(".aviso");
+  if (f.length) { if (!av) { av = document.createElement("div"); av.className = "aviso"; tarjeta.insertBefore(av, tarjeta.querySelector(".btn-fila")); } av.textContent = "Para firmar falta: " + f.join(", ") + "."; }
+  else if (av) av.remove();
+}
+// Documento firmado, legible e imprimible, para el expediente
+function consentHTML(rec) {
+  const C = CONSENTIMIENTO, A = CASILLA_AUDIO;
+  const img = (src, alt) => src ? `<img src="${src}" alt="${alt}" style="height:90px;max-width:100%;border-bottom:1px solid #333">` : `<div style="height:90px;border-bottom:1px solid #333;color:#888">(sin firma)</div>`;
+  const marca = on => on ? "☒" : "☐";
+  return `<!doctype html><html lang="es"><head><meta charset="utf-8"><title>Consentimiento ${esc(rec.codigo)}</title>
+<style>body{font:14px/1.5 Arial,sans-serif;color:#111;max-width:780px;margin:24px auto;padding:0 16px}h1{font-size:17px;text-align:center;text-transform:uppercase}h3{font-size:14px;margin:14px 0 4px}.rec{border:1px solid #333;padding:8px 12px;margin:12px 0}.f{display:grid;grid-template-columns:1fr 1fr;gap:16px;margin:10px 0}.pie{font-size:12px;color:#555;border-top:1px solid #999;margin-top:20px;padding-top:6px}</style></head><body>
+<p style="text-align:right;font-size:12px">Código de participante: <b>${esc(rec.codigo)}</b></p>
+<h1>${esc(C.titulo)}</h1>
+${C.secciones.map(s => `${s.t ? `<h3>${esc(s.t)}</h3>` : ""}${(s.p || []).map(p => `<p>${p}</p>`).join("")}${s.v ? `<ul>${s.v.map(v => `<li>${v}</li>`).join("")}</ul>` : ""}`).join("")}
+<div class="rec"><h3>${esc(A.titulo)}</h3>${A.parrafos.map(p => `<p>${esc(p)}</p>`).join("")}<p><b>Marque una sola opción:</b></p>
+<p>${marca(rec.grabacion.acepta === true)} ${esc(A.si)}<br>${marca(rec.grabacion.acepta === false)} ${esc(A.no)}</p><p>Iniciales del participante: <b>${esc(rec.grabacion.iniciales)}</b></p></div>
+<h3>${esc(C.participar.t)}</h3><p>${esc(C.participar.p)}</p>
+<div class="f"><div>${img(rec.participante.firma, "Firma del participante")}<div>Firma del Participante del Estudio</div></div><div><div style="height:90px;border-bottom:1px solid #333;display:flex;align-items:flex-end"><b>${esc(rec.participante.nombre)}</b></div>Nombre del Participante del Estudio</div></div>
+<p>Fecha: <b>${esc(rec.fecha)}</b> &nbsp; Hora: <b>${esc(rec.hora)}</b></p>
+${rec.testigo ? `<div class="f"><div>${img(rec.testigo.firma, "Firma del testigo")}<div>Firma del Testigo</div></div><div><div style="height:90px;border-bottom:1px solid #333;display:flex;align-items:flex-end"><b>${esc(rec.testigo.nombre)}</b></div>Nombre del Testigo</div></div><p>Parentesco: <b>${esc(rec.testigo.parentesco)}</b> &nbsp; Fecha: <b>${esc(rec.fecha)}</b></p>` : `<p>Testigo: no requerido (el participante leyó el documento).</p>`}
+<h3>${esc(C.declaracion.t)}</h3><p>${esc(C.declaracion.intro)}</p>
+<p>${[...C.declaracion.casillas, A.declaracion].map((t, k) => `${marca(rec.declaracion.casillas[k])} ${esc(t)}`).join("<br>")}</p>
+<p>${esc(C.declaracion.cierre)}</p>
+<div class="f"><div>${img(rec.declaracion.firma, "Firma de quien obtiene el consentimiento")}<div>Firma de la Persona Autorizada que Obtiene el Consentimiento Informado</div></div><div><div style="height:90px;border-bottom:1px solid #333;display:flex;align-items:flex-end"><b>${esc(rec.declaracion.nombre)}</b></div>Nombre Legible de la Persona Autorizada que obtiene el Consentimiento Informado</div></div>
+<p>Fecha: <b>${esc(rec.fecha)}</b> &nbsp; Hora: <b>${esc(rec.hora)}</b> &nbsp; Copia impresa entregada: <b>${rec.copia ? "sí" : "no"}</b></p>
+<p class="pie">${esc(C.version)}. Firmado en la aplicación Entornos de Vida ${esc(rec.aplicacion)} el ${esc(rec.sello)}.</p>
+</body></html>`;
+}
 function formNuevo() {
   const ult = ENT.filter(e => !e.demo).map(e => +e.num || 0);
   FORM = { tipo: "RD", provincia: "Chiriquí", comu: "01", comuTxt: "", num: String((ult.length ? Math.max(...ult) : 0) + 1), fecha: hoyISO() };
@@ -623,48 +754,61 @@ function codigoForm() {
 const VISTAS_PASO = {
   consentimiento(e) {
     if (e.consent === false) return `<h1>Consentimiento informado</h1>
-      <div class="aviso mal"><b>El participante no aceptó participar.</b> No se le aplica la encuesta ni se guarda ninguna respuesta. Queda contado solo como persona que no aceptó.</div>
-      <div class="btn-fila"><button class="btn" data-acc="ir-inicio">Volver al inicio</button><button class="btn" data-acc="consent-deshacer">Fue un error: volver a preguntar</button></div>`;
+      <div class="aviso mal"><b>El participante no aceptó participar.</b> No se le aplica la encuesta ni se guarda ningún dato suyo. Queda contado solo como persona que no aceptó.</div>
+      <div class="btn-fila"><button class="btn" data-acc="ir-inicio">Volver al inicio</button><button class="btn" data-acc="consent-deshacer">Fue un error: volver al consentimiento</button></div>`;
+    if (e.consent === true) return `<h1>Consentimiento informado</h1>
+      <div class="aviso ok"><b>Consentimiento firmado</b> el ${fechaLarga(e.consentT)} a las ${new Date(e.consentT).toLocaleTimeString("es-PA", { hour: "2-digit", minute: "2-digit" }).replace(/\.$/, "")}. ${e.consentAudio ? "Autorizó la grabación." : "No autorizó la grabación."}</div>
+      ${e.consentAudio ? `<div class="aviso ${Grab.stream ? "ok" : ""}">${Grab.stream ? "<b>Micrófono listo.</b> La grabación empieza sola en la Parte I y se guarda un audio por paso. El indicador rojo de arriba muestra cuándo se graba; con «Pausar» se detiene si el participante lo pide." : "<b>Falta el permiso del micrófono.</b> <button class=\"btn chico\" data-acc=\"probar-mic\">Activar el micrófono</button>"}</div>` : ""}
+      <div class="btn-fila"><button class="btn pri" data-acc="sig">Iniciar la encuesta</button><button class="btn" data-acc="ver-consentimiento">Ver el documento firmado</button><button class="btn" data-acc="ir-inicio">Dejarla para después (queda enrolado)</button>
+      ${respondidas(e) === 0 && !e.audios.length ? `<button class="btn peligro" data-acc="anular-consent">Anular: se firmó por error</button>` : ""}</div>`;
+    const c = borrador(e), C = CONSENTIMIENTO, A = CASILLA_AUDIO;
+    const caja = (on, acc, k, txt, extra = "") => `<button class="op ${on ? "sel" : ""}" data-acc="${acc}" ${k != null ? `data-k="${k}"` : ""} ${extra}><span class="punto"></span><span>${txt}</span></button>`;
+    const faltan = faltanConsent(c);
     return `<h1>Consentimiento informado</h1>
       <div class="tarjeta">
-        <p style="margin-top:0">Antes de cualquier pregunta, lea al participante el consentimiento informado del estudio (Anexo 6, versión aprobada), responda todas sus dudas y, si acepta, pídale que lo firme en papel.</p>
-        <h3>Requisitos</h3>
-        <div class="opciones">
-          ${[["edad", "Tiene 18 años o más."], ["residencia", "Reside en la comunidad hace al menos 6 meses."], ["firma", "Firmó el consentimiento informado en papel, y el encuestador firmó la declaración de quien lo obtiene."]]
-            .map(([k, t]) => `<button class="op ${e.req && e.req[k] ? "sel" : ""}" data-acc="req" data-k="${k}"><span class="punto"></span><span>${t}</span></button>`).join("")}
+        <h3 style="margin-top:0">Antes de leer: elegibilidad</h3>
+        <div class="opciones">${caja(c.eleg.edad, "c-eleg", "edad", "Tiene 18 años o más.")}${caja(c.eleg.residencia, "c-eleg", "residencia", "Reside en la comunidad hace al menos 6 meses.")}</div>
+      </div>
+      <div class="tarjeta documento">
+        <p class="tenue" style="margin-top:0;font-size:14px">${esc(C.version)}. Léalo con el participante o entréguele el iPad para que lo lea.</p>
+        <h2 style="text-align:center;text-transform:uppercase;letter-spacing:.5px">${esc(C.titulo)}</h2>
+        ${C.secciones.map(s => `${s.t ? `<h3 class="doc-t">${esc(s.t)}</h3>` : ""}${(s.p || []).map(p => `<p>${p}</p>`).join("")}${s.v ? `<ul>${s.v.map(v => `<li>${v}</li>`).join("")}</ul>` : ""}`).join("")}
+        <div class="recuadro">
+          <h3 class="doc-t">${esc(A.titulo)} <span class="chip demo">Adenda N.° 1</span></h3>
+          ${A.parrafos.map(p => `<p>${esc(p)}</p>`).join("")}
+          <p><b>Marque una sola opción:</b></p>
+          <div class="opciones">${caja(c.audio === true, "c-audio", "1", esc(A.si))}${caja(c.audio === false, "c-audio", "0", esc(A.no))}</div>
+          <label class="campo"><span>Iniciales del participante</span><input type="text" data-cons="iniciales" value="${esc(c.iniciales)}" maxlength="6" autocapitalize="characters" style="max-width:180px"></label>
         </div>
+        <h3 class="doc-t">${esc(C.participar.t)}</h3>
+        <p>${esc(C.participar.p)}</p>
+        <div class="rejilla">
+          <div><span class="rotulo-firma">Firma del Participante del Estudio</span>${padFirma("participante", c)}</div>
+          <label class="campo" style="margin:0"><span>Nombre del Participante del Estudio</span><input type="text" data-cons="nombre" value="${esc(c.nombre)}" autocomplete="off"></label>
+        </div>
+        <p class="tenue" style="font-size:15px">Fecha y hora: se registran solas al firmar.</p>
+        ${caja(c.testigo, "c-testigo", null, "El participante no puede leer: el documento se le leyó junto a un testigo.")}
+        ${c.testigo ? `<div class="rejilla" style="margin-top:10px">
+          <div><span class="rotulo-firma">Firma del Testigo</span>${padFirma("testigo", c)}</div>
+          <div><label class="campo" style="margin-top:0"><span>Nombre del Testigo</span><input type="text" data-cons="tNombre" value="${esc(c.tNombre)}" autocomplete="off"></label>
+          <label class="campo"><span>Parentesco</span><input type="text" data-cons="tParentesco" value="${esc(c.tParentesco)}" autocomplete="off"></label></div></div>` : ""}
+        <h3 class="doc-t">${esc(C.declaracion.t)}</h3>
+        <p>${esc(C.declaracion.intro)}</p>
+        <div class="opciones">${[...C.declaracion.casillas, A.declaracion].map((t, k) => caja(c.decl[k], "c-decl", k, esc(t) + (k === 4 ? ' <span class="chip demo">Adenda N.° 1</span>' : ""))).join("")}</div>
+        <p>${esc(C.declaracion.cierre)}</p>
+        <div class="rejilla">
+          <div><span class="rotulo-firma">Firma de la Persona Autorizada que Obtiene el Consentimiento Informado</span>${padFirma("encuestador", c)}</div>
+          <label class="campo" style="margin:0"><span>Nombre Legible de la Persona Autorizada que obtiene el Consentimiento Informado</span><input type="text" data-cons="eNombre" value="${esc(c.eNombre)}"></label>
+        </div>
+        ${caja(c.copia, "c-copia", null, "Se entregó al participante una copia impresa de este formulario.")}
       </div>
       <div class="tarjeta">
         <h2>Decisión del participante</h2>
-        <div class="opciones">
-          <button class="op grande ${e.consent === true ? "sel" : ""}" data-acc="consent" data-v="1" ${reqOk(e) ? "" : "disabled"}><span class="punto"></span><span>Acepta participar en el estudio</span></button>
-          <button class="op grande" data-acc="consent" data-v="0"><span class="punto"></span><span>No acepta participar</span></button>
-        </div>
-        ${reqOk(e) ? "" : `<p class="tenue" style="font-size:15px;margin-bottom:0">Para marcar que acepta, primero confirme los tres requisitos.</p>`}
+        ${faltan.length ? `<div class="aviso">Para firmar falta: ${faltan.join(", ")}.</div>` : ""}
+        <div class="btn-fila"><button class="btn pri" data-acc="c-firmar" ${faltan.length ? "disabled" : ""}>Acepta y firma: registrar el consentimiento</button>
+        <button class="btn peligro" data-acc="c-noacepta">No acepta participar</button></div>
+        <p class="tenue" style="font-size:14.5px;margin-bottom:0">El nombre y las firmas se guardan cifrados y aparte de las respuestas: nunca viajan en el código de texto y solo salen en el paquete de consentimientos, que hace las veces del libro de control de codificación.</p>
       </div>`;
-  },
-  grabacion(e) {
-    if (e.consent !== true) return `<div class="aviso">Primero el consentimiento informado.</div>`;
-    const decidido = e.consentAudio === true || e.consentAudio === false;
-    return `<h1>Autorización de grabación</h1>
-      <p class="tenue">Entregue el iPad al participante o léale el texto. Es él quien marca su decisión.</p>
-      <div class="tarjeta casilla-texto">
-        <h2>${esc(CASILLA_AUDIO.titulo)}</h2>
-        ${CASILLA_AUDIO.parrafos.map(p => `<p>${esc(p)}</p>`).join("")}
-        <p><b>Marque una sola opción:</b></p>
-        <div class="opciones">
-          <button class="op grande ${e.consentAudio === true ? "sel" : ""}" data-acc="audio" data-v="1" ${e.declAudio ? "" : "disabled"}><span class="punto"></span><span>${esc(CASILLA_AUDIO.si)}</span></button>
-          <button class="op grande ${e.consentAudio === false ? "sel" : ""}" data-acc="audio" data-v="0" ${e.declAudio ? "" : "disabled"}><span class="punto"></span><span>${esc(CASILLA_AUDIO.no)}</span></button>
-        </div>
-      </div>
-      <div class="tarjeta">
-        <h3 style="margin-top:0">Declaración de quien obtiene el consentimiento</h3>
-        <button class="op ${e.declAudio ? "sel" : ""}" data-acc="decl-audio"><span class="punto"></span><span>Expliqué al participante: ${esc(CASILLA_AUDIO.declaracion.charAt(0).toLowerCase() + CASILLA_AUDIO.declaracion.slice(1))}</span></button>
-        ${e.declAudio ? "" : `<p class="tenue" style="font-size:15px;margin-bottom:0">Marque la declaración para habilitar la decisión del participante.</p>`}
-      </div>
-      ${e.consentAudio === true ? `<div class="aviso ${Grab.stream ? "ok" : ""}">${Grab.stream ? "<b>Micrófono listo.</b> La grabación empieza sola al pasar a la Parte I y se guarda un audio por cada paso. El indicador rojo de arriba muestra cuándo se graba; con «Pausar» se detiene si el participante lo pide." : "<b>Falta el permiso del micrófono.</b> <button class=\"btn chico\" data-acc=\"probar-mic\">Activar el micrófono</button>"}</div>` : ""}
-      ${e.consentAudio === false ? `<div class="aviso">La entrevista se hace igual, sin grabar. El participante sigue en el estudio.</div>` : ""}
-      ${decidido ? `<div class="btn-fila"><button class="btn pri" data-acc="sig">Iniciar la encuesta</button><button class="btn" data-acc="ir-inicio">Dejarla para después (queda enrolado)</button></div>` : ""}`;
   },
   seccion(e, P) {
     const s = INST.parte1[P.i];
@@ -854,8 +998,13 @@ async function codigoTexto(lista) {
   const plano = new Uint8Array(c.b.length + 1); plano[0] = c.gz; plano.set(c.b, 1);
   return "EDV1." + b64url(await cifrarParaReceptor(plano));
 }
-async function cifrarPaquete(blob) {
-  return new Blob([te.encode("EDVZ"), await cifrarParaReceptor(new Uint8Array(await blob.arrayBuffer()))], { type: "application/octet-stream" });
+// EDVZ: respuestas y audios · EDVC: consentimientos firmados (identifican a la persona, van aparte)
+async function cifrarPaquete(blob, magia = "EDVZ") {
+  return new Blob([te.encode(magia), await cifrarParaReceptor(new Uint8Array(await blob.arrayBuffer()))], { type: "application/octet-stream" });
+}
+async function borrarEntrevista(x) {
+  for (const au of x.audios) await bdDel("audios", au.id);
+  await bdDel("consentimientos", x.id); await bdDel("entrevistas", x.id);
 }
 async function compartirTexto(texto) {
   if (navigator.share) { try { await navigator.share({ text: texto }); return true; } catch (e) { return false; } }
@@ -875,7 +1024,7 @@ function entrevistaVacia(datos) {
     cerrada: false, retirado: false, motivoRetiro: "", creada: new Date().toISOString(), actualizada: new Date().toISOString(), encuestador: META.encuestador }, datos);
 }
 async function quitarEjemplos() {
-  for (const x of ENT.filter(z => z.demo)) { for (const au of x.audios) await bdDel("audios", au.id); await bdDel("entrevistas", x.id); }
+  for (const x of ENT.filter(z => z.demo)) await borrarEntrevista(x);
   ENT = ENT.filter(z => !z.demo);
 }
 async function cargarEjemplos() {
@@ -904,6 +1053,7 @@ async function cargarEjemplos() {
 document.addEventListener("input", ev => {
   const t = ev.target;
   if (VISTA === "nueva") { leerForm(); $("#nCodigo").textContent = codigoForm(); return; }
+  if (VISTA === "entrevista" && t.dataset.cons && ACT) { borrador(ACT)[t.dataset.cons] = t.value; actualizarFaltan(); return; }
   if (VISTA !== "entrevista" || !t.dataset.campo) return;
   const e = ACT, c = t.dataset.campo;
   if (c === "razon") e.razones[t.dataset.n] = t.value;
@@ -955,24 +1105,46 @@ document.addEventListener("click", async ev => {
       ENT.unshift(n); await guardarYa(n);
       ir("entrevista", n, 0); break;
     }
-    // Consentimiento informado y autorización de grabación: los decide el participante, en ese orden
-    case "req": e.req = Object.assign({}, e.req, { [b.dataset.k]: !(e.req && e.req[b.dataset.k]) }); if (!reqOk(e) && e.consent === true && respondidas(e) === 0) { e.consent = null; e.consentAudio = null; } guardar(e); pintar(); break;
-    case "consent": {
-      if (b.dataset.v === "1") { e.consent = true; e.consentT = new Date().toISOString(); guardar(e); ir("entrevista", e, pasoDe("grabacion")); break; }
-      if (respondidas(e) > 0 && !(await confirmar("Este participante ya tiene respuestas. ¿Registrar que no acepta? Se borrarán sus respuestas y audios.", "Registrar", "peligro"))) return;
-      await detenerGrabacion(); for (const au of e.audios) await bdDel("audios", au.id);
-      Object.assign(e, { consent: false, consentAudio: null, consentT: new Date().toISOString(), r: {}, edv: {}, razones: {}, problemas: ["", "", ""], acciones: ["", "", ""], audios: [], inicio: null });
-      await guardarYa(e); pintar(); break;
+    // Consentimiento informado (con la sección de grabación): se lee y se firma en pantalla
+    case "c-eleg": { const c = borrador(e); c.eleg[b.dataset.k] = !c.eleg[b.dataset.k]; pintar(); break; }
+    case "c-audio": borrador(e).audio = b.dataset.k === "1"; pintar(); break;
+    case "c-testigo": { const c = borrador(e); c.testigo = !c.testigo; if (!c.testigo) delete c.firmas.testigo; pintar(); break; }
+    case "c-decl": { const c = borrador(e); c.decl[+b.dataset.k] = !c.decl[+b.dataset.k]; pintar(); break; }
+    case "c-copia": { const c = borrador(e); c.copia = !c.copia; pintar(); break; }
+    case "c-borrar-firma": delete borrador(e).firmas[b.dataset.k]; pintar(); break;
+    case "c-firmar": {
+      const c = borrador(e); if (faltanConsent(c).length) return;
+      const ahora = new Date();
+      const rec = { codigo: e.codigo, version: CONSENTIMIENTO.version, aplicacion: APP_VERSION, sello: ahora.toISOString(),
+        fecha: `${String(ahora.getDate()).padStart(2, "0")}/${String(ahora.getMonth() + 1).padStart(2, "0")}/${ahora.getFullYear()}`,hora: ahora.toLocaleTimeString("es-PA", { hour: "2-digit", minute: "2-digit" }),
+        elegibilidad: { ...c.eleg }, participante: { nombre: c.nombre.trim(), firma: c.firmas.participante },
+        testigo: c.testigo ? { nombre: c.tNombre.trim(), parentesco: c.tParentesco.trim(), firma: c.firmas.testigo } : null,
+        grabacion: { acepta: c.audio, iniciales: c.iniciales.trim().toUpperCase() },
+        declaracion: { casillas: [...c.decl], nombre: c.eNombre.trim(), firma: c.firmas.encuestador }, copia: c.copia, encuestador: META.encuestador };
+      const cif = await cifrarObj(rec); await bdPut("consentimientos", e.id, cif);
+      Object.assign(e, { consent: true, consentT: rec.sello, consentAudio: c.audio, testigo: !!c.testigo, copiaEntregada: c.copia });
+      await guardarYa(e); BORR.delete(e.id);
+      if (c.audio) await abrirMicrofono(); // el permiso del micrófono se pide aquí, con el participante presente
+      window.scrollTo(0, 0); pintar(); break;
+    }
+    case "c-noacepta": {
+      if (!(await confirmar("¿Registrar que la persona no acepta participar? No se guarda su nombre ni ningún dato suyo.", "Registrar", "peligro"))) return;
+      BORR.delete(e.id); Object.assign(e, { consent: false, consentAudio: null, consentT: new Date().toISOString() }); await guardarYa(e); window.scrollTo(0, 0); pintar(); break;
     }
     case "consent-deshacer": e.consent = null; e.consentT = null; await guardarYa(e); pintar(); break;
-    case "decl-audio": e.declAudio = !e.declAudio; if (!e.declAudio && respondidas(e) === 0) e.consentAudio = null; guardar(e); pintar(); break;
-    case "audio": {
-      const si = b.dataset.v === "1";
-      if (!si && e.audios.length && !(await confirmar(`Hay ${e.audios.length} audio${e.audios.length === 1 ? "" : "s"} grabado${e.audios.length === 1 ? "" : "s"}. ¿Borrarlos y seguir sin grabar?`, "Borrar y seguir", "peligro"))) return;
-      if (!si) { await detenerGrabacion(); cerrarMicrofono(); for (const au of e.audios) await bdDel("audios", au.id); e.audios = []; }
-      e.consentAudio = si; e.consentAudioT = new Date().toISOString(); guardar(e);
-      if (si) await abrirMicrofono(); // el permiso del micrófono se pide aquí, con el participante presente
-      pintar(); break;
+    case "anular-consent": {
+      if (!(await confirmar("¿Anular el consentimiento registrado? Se borran el nombre y las firmas, y hay que volver a firmarlo.", "Anular", "peligro"))) return;
+      await detenerGrabacion(); cerrarMicrofono(); await bdDel("consentimientos", e.id);
+      Object.assign(e, { consent: null, consentT: null, consentAudio: null }); await guardarYa(e); pintar(); break;
+    }
+    case "ver-consentimiento": {
+      const c = await bdGet("consentimientos", e.id); if (!c) return toast(e.demo ? "Los ejemplos no traen documento firmado." : "No se encontró el documento.");
+      const rec = await descifrarObj(c);
+      const d = document.createElement("div"); d.className = "dialogo";
+      d.innerHTML = `<div class="tarjeta" style="max-width:860px;height:90vh;display:flex;flex-direction:column;gap:10px"><iframe style="flex:1;border:1px solid var(--linea);border-radius:10px;background:#fff;width:100%" title="Consentimiento firmado"></iframe><div class="btn-fila"><button class="btn" data-r="0">Cerrar</button></div></div>`;
+      document.body.appendChild(d); d.querySelector("iframe").srcdoc = consentHTML(rec);
+      d.addEventListener("click", x => { if (x.target.closest("[data-r]")) d.remove(); });
+      break;
     }
     case "probar-mic": await abrirMicrofono(); pintar(); break;
     case "pausar": e.audioPausado = true; guardar(e); await detenerGrabacion(); toast("Grabación en pausa. Lo grabado hasta ahora queda guardado."); break;
@@ -1027,16 +1199,36 @@ document.addEventListener("click", async ev => {
       if (ok) { lista.forEach(x => { x.exportada = sello; }); for (const x of lista) await guardarYa(x); toast(`Paquete con ${lista.length} entrevista${lista.length === 1 ? "" : "s"}.`); }
       pintar(); break;
     }
+    case "exportar-consent": {
+      const lista = ENT.filter(x => x.consent === true && !x.demo && !x.consExportado);
+      b.disabled = true; b.textContent = "Armando el paquete…";
+      const arch = [], filas = [["codigo", "nombre_participante", "fecha", "hora", "testigo", "parentesco_testigo", "acepta_grabacion", "iniciales", "obtuvo_consentimiento", "copia_entregada"].join(";")];
+      const q = v => { const s = v == null ? "" : String(v); return /[";\n\r]/.test(s) ? `"${s.replace(/"/g, '""')}"` : s; };
+      for (const x of lista) {
+        const c = await bdGet("consentimientos", x.id); if (!c) continue;
+        const rec = await descifrarObj(c);
+        arch.push({ nombre: `consentimientos/${x.codigo}.html`, datos: consentHTML(rec) });
+        filas.push([rec.codigo, rec.participante.nombre, rec.fecha, rec.hora, rec.testigo ? rec.testigo.nombre : "", rec.testigo ? rec.testigo.parentesco : "", rec.grabacion.acepta ? "sí" : "no", rec.grabacion.iniciales, rec.declaracion.nombre, rec.copia ? "sí" : "no"].map(q).join(";"));
+      }
+      arch.unshift({ nombre: "libro_control_codificacion.csv", datos: "﻿" + filas.join("\r\n") },
+        { nombre: "LEAME.txt", datos: `Consentimientos firmados de Entornos de Vida.\r\nEncuestador: ${META.encuestador}. Exportado: ${new Date().toLocaleString("es-PA")}.\r\nIdentifican a los participantes: custodia de la investigadora principal, separados de las respuestas y de los audios.\r\n` });
+      const sello = new Date().toISOString();
+      const blob = await cifrarPaquete(zip(arch), "EDVC");
+      if (await entregarArchivo(blob, `EdV_consentimientos_${hoyISO()}_${sello.slice(11, 16).replace(":", "")}.edvc`)) {
+        for (const x of lista) { x.consExportado = sello; await guardarYa(x); } toast(`${lista.length} consentimiento${lista.length === 1 ? "" : "s"} exportado${lista.length === 1 ? "" : "s"}.`);
+      }
+      pintar(); break;
+    }
     case "borrar-exportadas": {
-      const lista = ENT.filter(x => x.exportada && x.actualizada <= x.exportada);
-      if (!(await confirmar(`¿Borrar ${lista.length} entrevista${lista.length === 1 ? "" : "s"} ya entregada${lista.length === 1 ? "" : "s"} al CIIGC, con sus audios?`, "Borrar", "peligro"))) return;
-      for (const x of lista) { for (const au of x.audios) await bdDel("audios", au.id); await bdDel("entrevistas", x.id); }
+      const lista = ENT.filter(x => x.exportada && x.actualizada <= x.exportada && (x.consent !== true || x.demo || x.consExportado));
+      if (!(await confirmar(`¿Borrar ${lista.length} entrevista${lista.length === 1 ? "" : "s"} ya entregada${lista.length === 1 ? "" : "s"} al CIIGC, con sus audios y su consentimiento?`, "Borrar", "peligro"))) return;
+      for (const x of lista) await borrarEntrevista(x);
       ENT = ENT.filter(x => !lista.includes(x)); pintar(); break;
     }
     case "vaciar": {
       const t = await dialogo(`<p style="margin-top:0">Se borra todo lo capturado en este equipo y la clave. Escriba <b>VACIAR</b> para confirmar.</p><label class="campo"><span>Confirmación</span><input type="text" autocapitalize="characters"></label><div class="btn-fila"><button class="btn peligro" data-r="1">Vaciar</button><button class="btn" data-r="0">Cancelar</button></div>`);
       if (t !== "VACIAR") return;
-      await Promise.all(["meta", "entrevistas", "audios"].map(bdClear)); META = null; Llave.k = null; ENT = []; ir("llave"); break;
+      await Promise.all(["meta", "entrevistas", "audios", "consentimientos"].map(bdClear)); META = null; Llave.k = null; ENT = []; ir("llave"); break;
     }
   }
 });
