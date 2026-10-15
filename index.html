@@ -1,0 +1,921 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Entornos de Vida</title>
+<meta name="description" content="Instrumento de recolección del estudio de determinantes de salud con enfoque territorial (CSS, CIIGC), sin conexión y con grabación opcional.">
+<meta name="theme-color" content="#1f4e79">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-title" content="Entornos de Vida">
+<meta name="apple-mobile-web-app-status-bar-style" content="default">
+<link rel="manifest" href="manifest.webmanifest">
+<link rel="apple-touch-icon" href="icono-180.png">
+<link rel="icon" href="icono-192.png">
+<style>
+:root{
+  --azul:#1f4e79; --azul-2:#2c6aa3; --azul-suave:#e6eef6;
+  --fondo:#f4f6f9; --sup:#ffffff; --texto:#1b2633; --tenue:#5a6879; --linea:#d6dee8;
+  --ok:#1f7a4d; --ok-suave:#e3f3ea; --alerta:#a55a00; --alerta-suave:#fdf1e2; --mal:#b3261e; --mal-suave:#fbe9e7;
+  --grab:#c62828; --sombra:0 1px 2px rgba(16,32,52,.06),0 4px 14px rgba(16,32,52,.06);
+  --r:14px;
+}
+@media (prefers-color-scheme: dark){
+  :root:not([data-theme="light"]){
+    --azul:#8fb8e3; --azul-2:#a9c9ec; --azul-suave:#1d2c3d;
+    --fondo:#0f1620; --sup:#172230; --texto:#e5ebf2; --tenue:#9aa8b8; --linea:#2a3a4d;
+    --ok:#6fcf9b; --ok-suave:#143024; --alerta:#f0b45c; --alerta-suave:#33260f; --mal:#ff8a80; --mal-suave:#3a1a18;
+    --grab:#ff6b6b; --sombra:none;
+  }
+}
+:root[data-theme="dark"]{
+  --azul:#8fb8e3; --azul-2:#a9c9ec; --azul-suave:#1d2c3d;
+  --fondo:#0f1620; --sup:#172230; --texto:#e5ebf2; --tenue:#9aa8b8; --linea:#2a3a4d;
+  --ok:#6fcf9b; --ok-suave:#143024; --alerta:#f0b45c; --alerta-suave:#33260f; --mal:#ff8a80; --mal-suave:#3a1a18;
+  --grab:#ff6b6b; --sombra:none;
+}
+*{box-sizing:border-box}
+html{-webkit-text-size-adjust:100%}
+body{margin:0;background:var(--fondo);color:var(--texto);font:17px/1.5 -apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,"Helvetica Neue",Arial,sans-serif;
+  padding-bottom:calc(96px + env(safe-area-inset-bottom))}
+button,input,select,textarea{font:inherit;color:inherit}
+button{cursor:pointer}
+a{color:var(--azul)}
+.cinta{background:var(--alerta-suave);color:var(--alerta);font-size:13.5px;padding:6px 16px;text-align:center;border-bottom:1px solid var(--linea)}
+header.barra{position:sticky;top:0;z-index:5;background:var(--sup);border-bottom:1px solid var(--linea);padding:10px 16px calc(10px);padding-top:calc(10px + env(safe-area-inset-top))}
+.barra-fila{display:flex;align-items:center;gap:12px;max-width:920px;margin:0 auto}
+.marca{font-weight:700;color:var(--azul);letter-spacing:.2px}
+.marca small{display:block;font-weight:500;color:var(--tenue);font-size:12.5px;letter-spacing:0}
+.espacio{flex:1}
+.prog{height:4px;background:var(--linea);border-radius:4px;overflow:hidden;max-width:920px;margin:10px auto 0}
+.prog i{display:block;height:100%;background:var(--azul);width:0;transition:width .25s}
+main{max-width:920px;margin:0 auto;padding:18px 16px}
+h1{font-size:24px;line-height:1.25;margin:4px 0 6px}
+h2{font-size:20px;line-height:1.3;margin:0 0 10px}
+h3{font-size:16px;margin:18px 0 8px;color:var(--tenue);text-transform:uppercase;letter-spacing:.6px;font-weight:650}
+.tenue{color:var(--tenue)}
+.tarjeta{background:var(--sup);border:1px solid var(--linea);border-radius:var(--r);padding:18px;box-shadow:var(--sombra);margin-bottom:14px}
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:8px;min-height:48px;padding:10px 18px;border-radius:12px;border:1px solid var(--linea);background:var(--sup);font-weight:600}
+.btn.pri{background:var(--azul);border-color:var(--azul);color:#fff}
+:root[data-theme="dark"] .btn.pri{color:#0f1620}
+@media (prefers-color-scheme: dark){:root:not([data-theme="light"]) .btn.pri{color:#0f1620}}
+.btn.peligro{color:var(--mal);border-color:var(--mal)}
+.btn.chico{min-height:40px;padding:6px 12px;font-size:15px}
+.btn:disabled{opacity:.45;cursor:not-allowed}
+.btn-fila{display:flex;flex-wrap:wrap;gap:10px}
+label.campo{display:block;margin:12px 0}
+label.campo>span{display:block;font-weight:600;margin-bottom:6px}
+input[type=text],input[type=password],input[type=number],input[type=date],select,textarea{width:100%;min-height:48px;padding:10px 12px;border:1px solid var(--linea);border-radius:10px;background:var(--fondo)}
+textarea{min-height:120px;resize:vertical;line-height:1.45}
+input:focus,select:focus,textarea:focus,button:focus-visible{outline:3px solid color-mix(in srgb,var(--azul) 35%,transparent);outline-offset:1px}
+.rejilla{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:12px}
+.opciones{display:grid;gap:8px}
+.op{display:flex;gap:12px;align-items:flex-start;padding:12px 14px;border:1px solid var(--linea);border-radius:12px;background:var(--sup);text-align:left;width:100%;min-height:52px}
+.op .punto{flex:0 0 22px;height:22px;border-radius:50%;border:2px solid var(--tenue);margin-top:1px;position:relative}
+.op.sel{border-color:var(--azul);background:var(--azul-suave)}
+.op.sel .punto{border-color:var(--azul)}
+.op.sel .punto::after{content:"";position:absolute;inset:4px;border-radius:50%;background:var(--azul)}
+.op .glosa{color:var(--tenue);font-size:15px}
+.pregunta{margin:0 0 22px}
+.pregunta>p{font-weight:650;margin:0 0 10px}
+.pregunta .num{color:var(--azul);margin-right:6px}
+.escala{display:grid;grid-template-columns:repeat(10,1fr);gap:6px;margin:10px 0 4px}
+.escala button{min-height:56px;border-radius:10px;border:1px solid var(--linea);background:var(--sup);font-size:20px;font-weight:700}
+.escala button.sel{background:var(--azul);border-color:var(--azul);color:#fff}
+.escala-pie{display:flex;justify-content:space-between;font-size:13.5px;color:var(--tenue)}
+@media (max-width:560px){.escala{grid-template-columns:repeat(5,1fr)}}
+.principal{font-size:21px;font-weight:700;line-height:1.35;margin:8px 0 6px;color:var(--azul)}
+details.reflex{border:1px solid var(--linea);border-radius:12px;padding:0 14px;margin:14px 0;background:var(--fondo)}
+details.reflex summary{min-height:48px;display:flex;align-items:center;font-weight:600;cursor:pointer}
+details.reflex ul{margin:0 0 12px;padding-left:20px}
+details.reflex li{margin:6px 0}
+.chip{display:inline-flex;align-items:center;gap:6px;padding:3px 10px;border-radius:999px;font-size:13px;font-weight:650;border:1px solid transparent;white-space:nowrap}
+.chip.enrolado{background:var(--azul-suave);color:var(--azul)}
+.chip.activo{background:var(--alerta-suave);color:var(--alerta)}
+.chip.completado{background:var(--ok-suave);color:var(--ok)}
+.chip.retirado{background:var(--mal-suave);color:var(--mal)}
+.chip.demo{border-color:var(--linea);color:var(--tenue)}
+.lista{display:grid;gap:8px}
+.fila-ent{display:flex;align-items:center;gap:12px;padding:12px 14px;border:1px solid var(--linea);border-radius:12px;background:var(--sup);width:100%;text-align:left}
+.fila-ent b{font-variant-numeric:tabular-nums}
+.fila-ent .tenue{font-size:14.5px}
+footer.nav{position:fixed;left:0;right:0;bottom:0;background:var(--sup);border-top:1px solid var(--linea);padding:10px 16px calc(10px + env(safe-area-inset-bottom));z-index:6}
+footer.nav .barra-fila{gap:10px}
+.grab{border:1px dashed var(--linea);border-radius:12px;padding:12px;margin-top:10px;background:var(--fondo)}
+.grab .btn.rec{border-color:var(--grab);color:var(--grab)}
+.grab .btn.rec.on{background:var(--grab);color:#fff}
+.latido{width:10px;height:10px;border-radius:50%;background:#fff;animation:lat 1s infinite}
+@keyframes lat{50%{opacity:.25}}
+.clip{display:flex;align-items:center;gap:10px;padding:6px 0;border-top:1px solid var(--linea);font-size:15px}
+.clip:first-of-type{border-top:0}
+.aviso{padding:12px 14px;border-radius:12px;background:var(--alerta-suave);color:var(--alerta);margin:10px 0}
+.aviso.mal{background:var(--mal-suave);color:var(--mal)}
+.aviso.ok{background:var(--ok-suave);color:var(--ok)}
+.indice{display:grid;grid-template-columns:repeat(auto-fill,minmax(200px,1fr));gap:6px}
+.indice button{display:flex;gap:8px;align-items:center;text-align:left;padding:10px 12px;border:1px solid var(--linea);border-radius:10px;background:var(--sup);min-height:44px;font-size:15px}
+.indice button.actual{border-color:var(--azul);background:var(--azul-suave)}
+.indice .marca-ok{color:var(--ok);font-weight:800;width:16px}
+.cifras{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:10px}
+.cifra{border:1px solid var(--linea);border-radius:12px;padding:12px 14px;background:var(--sup)}
+.cifra b{display:block;font-size:30px;line-height:1.1;font-variant-numeric:tabular-nums}
+.cifra span{color:var(--tenue);font-size:14px}
+textarea.codigo{min-height:150px;font:13px/1.4 ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;word-break:break-all;-webkit-user-select:text;user-select:text}
+pre.copia{white-space:pre-wrap;background:var(--fondo);border:1px solid var(--linea);border-radius:12px;padding:14px;font:15px/1.5 ui-monospace,SFMono-Regular,Menlo,Consolas,monospace}
+.radar{width:100%;max-width:640px;display:block;margin:0 auto}
+.dialogo{position:fixed;inset:0;background:rgba(10,18,28,.45);display:flex;align-items:center;justify-content:center;padding:16px;z-index:20}
+.dialogo .tarjeta{max-width:520px;width:100%;margin:0}
+.toast{position:fixed;left:50%;transform:translateX(-50%);bottom:calc(96px + env(safe-area-inset-bottom));background:var(--texto);color:var(--fondo);padding:10px 16px;border-radius:10px;font-size:15px;z-index:30;max-width:90vw}
+.oculto,[hidden]{display:none!important}
+table.datos{width:100%;border-collapse:collapse;font-size:15px}
+table.datos th,table.datos td{border-bottom:1px solid var(--linea);padding:8px 6px;text-align:left;vertical-align:top}
+table.datos td.n{text-align:right;font-variant-numeric:tabular-nums}
+</style>
+</head>
+<body>
+<div class="cinta" id="cinta">Prototipo para revisión del equipo investigador. Úselo solo con datos de prueba: la grabación y el paso a tableta están pendientes de adenda ante el Comité.</div>
+<header class="barra">
+  <div class="barra-fila">
+    <div class="marca">Entornos de Vida<small id="subtitulo">Determinantes de salud con enfoque territorial · CSS · CIIGC</small></div>
+    <div class="espacio"></div>
+    <span id="estadoRed" class="chip enrolado">Sin conexión</span>
+    <button class="btn chico" id="btnInicio" hidden>Inicio</button>
+  </div>
+  <div class="prog" id="prog" hidden><i id="progBar"></i></div>
+</header>
+<main id="app"><p class="tenue">Cargando…</p></main>
+<footer class="nav oculto" id="nav"><div class="barra-fila" id="navFila"></div></footer>
+<textarea id="portapapeles" aria-hidden="true" style="position:fixed;left:-9999px;top:0;opacity:0"></textarea>
+
+<script>
+"use strict";
+const INST = {"version": "V2.0 17/7/2026", "titulo": "Análisis de determinantes de salud con enfoque territorial, en población de 18 años o más. República de Panamá. Años 2026-2027", "investigadores": "Investigadores: Dra. Iranela Miranda, Dr.Gresky Gutiérrez,Dra. María Mercedes Castrejón, Dra. Luz Romero, Dr.Jaime Sevillano, Dr. Manuel Nazas, Dr. Juan Carlos Luria, Mgter Iset Trujillo, Dr. Heraclides Gómez, Dra. Tamara Villafañez, Licda. Muriel Rangel y Licda. Ariadna Candanedo, Dra. Olga Quirós, Dr. Alexis Castillo y Licda. Shanira Pineda.", "parte1_instruccion": "Parte I. Responda cada pregunta marcando la respuesta seleccionada.", "parte1": [{"letra": "A", "titulo": "Preguntas sobre aspectos sociodemográficos", "preguntas": [{"texto": "El sexo al que pertenece es:", "opciones": ["Hombre", "Mujer"]}, {"texto": "Indique a qué grupo de edad pertenece:", "opciones": ["18 a 24 años", "25 a 34 años", "35 a 44 años", "45 a 54 años", "55 a 64 años", "65 años o más"]}, {"texto": "Coloque el Nivel Educativo al que pertenece:", "opciones": ["Sin estudios formales", "Primaria", "Secundaria", "Técnico", "Licenciatura", "Postgrado o especialización", "Doctorado"]}, {"texto": "Indique su Nacionalidad:", "opciones": ["Panameña", "Extranjero/a"]}, {"texto": "Marque la situación actual en cuanto a su ocupación:", "opciones": ["Empleado: del gobierno, de empresa privada, de una cooperativa, de servicio doméstico o de una organización sin fines de lucro.", "Trabajador por cuenta propia: que ha desarrollado su propio negocio o empresa o ejerce por su cuenta propia su profesión. No tiene a su cargo otros empleados.", "Patrono o Dueño: persona que ha explotado su propia empresa, solo o asociado, ejerce por su cuenta una profesión, pero tiene a su cargo uno o más empleados que reciben una remuneración.", "Trabajador Familiar: ejerce una profesión no remunerada, en una empresa o negocio explotado por un miembro de su familia.", "Miembro de una Cooperativa de Producción: participa de una modalidad asociativa de empresa que se dedica a producir algún artículo o bien."]}, {"texto": "Coloque el grupo ocupacional al que pertenece:", "opciones": ["Directores y gerentes de los sectores públicos, privados y de organizaciones de interés social.", "Profesionales, científicos y otros intelectuales.", "Técnicos y profesionales de nivel medio.", "Empleados de oficina.", "Trabajadores de los servicios y vendedores de comercios y mercados.", "Agricultores, trabajadores agropecuarios, forestales, de la pesca y caza.", "Artesanos, trabajadores de la minería, la construcción, la industria manufacturera, la mecánica y ocupaciones afines.", "Operadores de instalaciones fijas y máquinas (Manejo de máquinas e instalaciones industriales de gran tamaño); montadores, ensambladores, conductores y operadores de maquinarias móviles.", "Trabajadores no calificados de los servicios (Vendedores ambulantes, personal de limpieza, conserjería, mensajeros, porteros), la minería, la construcción, industria manufacturera, transporte y otras ocupaciones elementales.", "Sin ocupación en estos momentos."]}, {"texto": "Su clase social de acuerdo al promedio de ingreso mensual en el hogar es:", "opciones": ["Clase Baja (Menos de B/. 771.75)", "Clase media (Entre B/. 771.75 y B/. 2058)", "Clase Alta (Mayor a B/. 2058 balboas)"]}]}, {"letra": "B", "titulo": "Preguntas sobre diversidad funcional", "preguntas": [{"texto": "¿Tiene alguna discapacidad física, auditiva, visual, intelectual, mental, de órganos y sistemas u otros, que no le permite realizar sus tareas y actividades habituales?", "opciones": ["Sí", "No"]}]}, {"letra": "C", "titulo": "Preguntas sobre antecedentes de cáncer", "preguntas": [{"texto": "¿Usted tiene o ha tenido cáncer alguna vez?", "opciones": ["Sí", "No"]}, {"texto": "¿Alguno de sus familiares tiene o ha tenido cáncer en algún momento?", "opciones": ["Sí", "No"]}]}, {"letra": "D", "titulo": "Preguntas relacionadas con aspectos ambientales", "preguntas": [{"texto": "¿Tiene usted acceso a agua potable en su hogar de manera regular?", "opciones": ["Sí", "No"]}, {"texto": "¿De dónde obtiene el agua en su hogar?", "opciones": ["Acueducto público (IDAAN)", "Acueducto Particular dentro de la vivienda.", "Pluma o toma de agua comunitaria.", "Pozos", "Agua de río, quebrada o manantial, sin tratar.", "Agua de lluvia", "Agua embotellada", "Carros cisternas"]}, {"texto": "¿Cuál es el sistema sanitario que utiliza en su hogar para la disposición y eliminación de excretas (heces y aguas negras)?", "opciones": ["Alcantarillado", "Tanque séptico", "Letrina", "Otros", "No tiene"]}, {"texto": "¿Dispone de un servicio de aseo formal para la recolección de basura en su comunidad?", "opciones": ["Sí", "No"]}, {"texto": "¿Alguna vez ha estado expuesto a plaguicidas en su trabajo, comunidad o lugar donde reside?", "opciones": ["Si", "No"]}]}, {"letra": "E", "titulo": "Preguntas relacionadas a hábitos y estilos de vida", "preguntas": [{"texto": "¿Realiza usted al menos 30 minutos de actividad física de intensidad moderada (caminar, pedalear, montar bicicleta, deportes, juegos, actividades recreativas, bailar, tareas domésticas) al día (Equivalente de 150 a 300 minutos semanales)?", "opciones": ["Sí, todos los días.", "Sí, algunos días de la semana.", "No realizo actividad física regularmente."]}, {"texto": "¿Ha fumado, masticado o aspirado algún producto derivado del tabaco, como cigarrillos, cigarrillo electrónico o vaper, tabaco de masticar durante los últimos 12 meses?", "opciones": ["Sí", "No"]}, {"texto": "¿Alguien fuma cerca de usted con frecuencia, en casa, el trabajo u otros lugares?", "opciones": ["Sí", "No"]}, {"texto": "¿Con qué frecuencia consume bebidas que contienen alcohol?", "opciones": ["Nunca", "Una o menos veces al mes.", "2 a 4 veces al mes", "2 a 3 veces por semana", "4 o más veces a la semana"]}]}], "fuente": "Fuente: ICGES, MINSA e INEC, 2019; OPS/NMH/19-001, 2019; Clasificación Nacional de Ocupaciones-2000; Ministerio de Economía y finanzas, 2010; Babor T, Higgins-Biddle J. Saunders J. y Monteiro M., 2001; MINSA, 2019; https://www.inec.gob.pa/archivos/P0705547520250124083204Comentarios%20EML%20octubre%202024.pdf", "edv_presentacion": ["Entornos de vida es una herramienta que se utiliza para mejorar la calidad de los lugares donde las personas viven, trabajan, se relacionan, envejecen…", "Es un cuestionario fácil y sencillo de usar. Consiste en 14 preguntas sobre elementos físicos, económicos y sociales del territorio a evaluar. Una vez contestadas, los resultados se trasladan a un simple diagrama en el que se muestra gráficamente la valoración sobre las áreas preguntadas.", "¿Por qué es importante el lugar donde vives?", "Los lugares donde pasamos gran parte de nuestro tiempo tienen un efecto importante sobre nuestra salud y bienestar. Conocer qué fortalezas y debilidades tiene nuestro entorno nos ayuda a pensar qué se necesita para mejorarlo. Las 14 dimensiones que incluye Entornos de vida están relacionadas con la salud y bienestar que nos proporciona nuestro entorno.", "¿Cómo se utiliza Entornos de Vida?", "La herramienta consta de 14 dimensiones. Cada dimensión tiene una pregunta principal y una serie de preguntas que te ayudarán a reflexionar sobre el tema. Una vez lo hayas valorado, deberás puntuarlo del 1 al 10 y explicar brevemente los motivos de tu puntuación.", "Cuando hayas evaluado las 14 dimensiones podrás traspasar tu puntuación al diagrama situado al final del cuestionario. De esta forma, y de un solo vistazo, verás cómo has evaluado tu entorno.", "Finalmente, podrás proponer acciones prioritarias que se pueden realizar para mejorar las áreas que peor has puntuado.", "Tú eres quien mejor conoce dónde vives,", "¿participas?", "Desplazamiento a pie o en bicicleta"], "edv_escala": "A continuación, puntúa mediante una escala del 1 a 10, donde 1 significa que no está en buenas condiciones y 10 significa que está en muy buenas condiciones. Registra tu valoración marcando con una X el número que consideres que refleja tu puntuación.", "dimensiones": [{"nombre": "Desplazamiento a pie o en bicicleta", "intro": "Caminar e ir en bicicleta son actividades que benefician nuestra salud y el medio ambiente. Poder realizar trayectos agradables y seguros nos anima a caminar o a ir en bicicleta.", "pregunta": "¿Puedes caminar y/o desplazarte en bicicleta (o en otro medio de transporte no motorizado) fácilmente y por trayectos agradables y seguros por tu barrio, corregimiento o distrito?", "reflexion": ["¿Hay zonas específicas para ir a caminar y/o montar en bicicleta (rutas señalizadas, circunvalaciones, caminos escolares, zonas peatonales, carriles bici…)?", "¿Las zonas para andar y/o montar en bicicleta tienen aceras amplias, buena señalización, rampas, sombra, asientos o banquetas, fuentes…? ¿Hay elementos que lo dificulten (postes, lámparas de alumbrado público, mobiliario urbano, pendiente excesiva, mal estado, poca separación de calzada, mucho tráfico, insuficiente seguridad vial…)?", "¿Tienen prioridad peatones o ciclistas frente a los coches u otros vehículos a motor (calles peatonales, semáforos y señalización específica)?", "¿Se puede ir caminando o en bicicleta a los colegios, universidad, tiendas, parques, o estaciones de transporte público (autobús, tren, metro…)?", "¿Tienen elementos que favorezcan la movilidad y la autonomía de todas las personas (ausencia de barreras arquitectónicas, asientos o banquetas, fuentes, baños públicos, sombra…), independientemente de la edad, el sexo género o la diversidad funcional?"]}, {"nombre": "Transporte público", "intro": "Poder acceder a un servicio de transporte público asequible, regular y bien conectado es importante para todas las personas. Un buen transporte público favorece realizar actividad física y anima a desplazarse de una forma más sostenible para el medio ambiente.", "pregunta": "¿El transporte público responde a las necesidades de todas las personas del barrio, corregimiento o distrito?", "reflexion": ["¿Hay variedad suficiente de transporte público, con horario regular y con frecuencias de paso adecuadas?", "¿Permite llegar a las instalaciones y servicios básicos (como centros educativos, de salud, sociales, administrativos, comerciales…) y los conecta entre sí? ¿Hay zonas a las que no se puede llegar en transporte público?", "¿El transporte público es seguro y accesible (por ejemplo, para las personas mayores, sillas de ruedas, carritos para bebés o carros de la compra) independientemente de la edad, el sexo, el género, la movilidad o la diversidad funcional?", "¿Hay información suficiente sobre el transporte público (horarios, precios, frecuencias, líneas, etc.)?", "Las paradas y/o estaciones de autobús, tren, metro, las estaciones de bicicletas o de otro tipo de transporte público ¿están en lugares adecuados y a una distancia a la que se puede llegar a pie desde casa, el trabajo u otras instalaciones o servicios básicos (como centros de estudios, de salud, administrativos, comerciales…)?", "Las paradas y/o estaciones de autobús, tren, metro, bicicletas u otro tipo de transporte público, ¿tienen baños públicos, zonas cubiertas, asientos, iluminación adecuada, paneles informativos o zonas de estacionamiento para vehículos a motor y bicicletas?", "¿Las paradas, estaciones y vehículos (autobuses, trenes, metro, bicicletas…) están en buenas condiciones y bien mantenidos?", "¿El transporte público tiene un coste económico asequible? ¿Hay boletos con descuento para las personas con menores recursos?"]}, {"nombre": "Tráfico y aparcamiento", "intro": "Demasiado tráfico afecta negativamente a la salud de las personas que viven, trabajan o visitan un lugar. Una buena regulación y políticas que restrinjan el tráfico de vehículos privados y ordenen las zonas de estacionamiento en la vía pública, contribuyen a minimizar este impacto.", "pregunta": "¿La regulación del tráfico y de las zonas de estacionamiento es adecuada en tu barrio, corregimiento o distrito?", "reflexion": ["¿Se han tomado medidas para disminuir los efectos negativos del tráfico (reducción de velocidad, restricción del tráfico, paneles acústicos, fomento del transporte sostenible, etc.)?", "¿Existen medidas que favorezcan la convivencia entre peatones, vehículos a motor y/o bicicletas y que mejoren la seguridad de peatones (como pasarelas en pasos a nivel, medidas para reducir la velocidad, espejos, señalización, etc.)?", "¿Existen suficientes plazas de aparcamiento o zonas de estacionamiento?", "¿Hay espacios gratuitos de estacionamiento a precios asequibles? ¿Tienen espacios reservados o de uso preferente para personas con movilidad reducida o en otras situaciones (embarazo, crianza)?", "¿Hay aparcamientos o zonas de estacionamiento públicos, seguros y bien señalizados? ¿Hay estacionamientos de transferencia (Son los que están situados en los alrededores para dejar los vehículos y tomar otro medio de transporte y así disminuir el tráfico en el barrio, corregimiento o distrito)? ¿Están conectados con el transporte público?"]}, {"nombre": "Calles y espacios públicos", "intro": "Las características del entorno construido del barrio, corregimiento o distrito, como edificios, lugares emblemáticos, calles, avenidas, plazas, calles arboladas… ayudan a crear entornos que mejoran el bienestar de sus vecinos/as y aumentan el sentimiento de pertenencia al lugar.", "pregunta": "¿Están los edificios bien cuidados y las calles y espacios públicos abiertos son agradables y fáciles para transitar por ellos?", "reflexion": ["Los edificios o espacios públicos, ¿hacen que transitar por esa zona sea una experiencia agradable?", "Los edificios, calles y espacios públicos abiertos, ¿están bien señalizados, están limpios, bien iluminados y cuidados en general?", "¿Existen elementos negativos como ruido, contaminación, suciedad o basura, grafitis, falta de iluminación, solares o edificios en ruinas?"]}, {"nombre": "Espacios naturales", "intro": "Los espacios naturales incluyen parques y bosques, campos, playas, arroyos y ríos y espacios verdes a lo largo de caminos y carreteras. Estos espacios mejoran la calidad del aire y benefician nuestra salud y bienestar.", "pregunta": "¿Puedes disfrutar en tu barrio, corregimiento o distrito de un espacio natural atractivo, seguro y de fácil acceso?", "reflexion": ["Estos espacios, ¿están dotados de elementos que los hagan atractivos y animen a la gente a ir y a permanecer en ellos (como paradas de transporte público cercanas, baños públicos, zonas de sombra, asientos, fuentes, buena iluminación, elementos de seguridad, áreas recreativas específicas, columpios…)?", "¿Tienen aspectos negativos como demasiado ruido, suciedad, poco mantenimiento o elementos que pueden ser peligrosos?", "¿Todas las personas pueden disfrutar de estos espacios (independientemente de su edad, sexo, género, grupo étnico, movilidad, diversidad funcional, nivel socioeconómico…)?"]}, {"nombre": "Juego y ocio", "intro": "Un buen entorno motiva a jugar y a disfrutar de espacios de ocio activo y esparcimiento. Contar con lugares que promuevan realizar actividades de ocio saludable, como la actividad física o las actividades culturales, mejoran la calidad de nuestras vidas y de nuestra salud.", "pregunta": "¿Se pueden realizar actividades de ocio y esparcimiento en tu barrio, corregimiento o distrito?", "reflexion": ["¿Existen lugares o instalaciones donde se puede jugar, hacer ejercicio físico o disfrutar de actividades culturales u otro tipo de (piensa en grupos específicos de personas como adolescentes, personas mayores, niños y niñas, personas con diversidad funcional…)?", "Estos lugares o instalaciones, ¿son de buena calidad y están bien mantenidos?", "¿son gratuitos o tienen un costo asequible? ¿se aprovechan al máximo?", "¿Todas las personas los pueden utilizar (independientemente de su edad, género, grupo étnico, lugar de nacimiento, movilidad, creencias religiosas, diversidad funcional, nivel socioeconómico…)?", "¿Se pueden utilizar en cualquier momento del día o la noche y del año?", "¿Se fomenta el uso de espacios para que los niños y niñas jueguen al aire libre?"]}, {"nombre": "Servicios", "intro": "Los servicios de los que disponemos en nuestro entorno pueden facilitar nuestras condiciones de vida. Estos incluyen comercios, escuelas infantiles, colegios, bibliotecas, lugares de culto, centros de salud y lugares para comer, beber y encontrarse con amistades… Poder acceder a ellos es importante para mejorar nuestra calidad de vida.", "pregunta": "¿Los servicios que tiene tu barrio, corregimiento o distrito satisfacen las necesidades de todas las personas?", "reflexion": ["¿Hay suficiente variedad de servicios para cubrir las necesidades básicas de tu barrio, corregimiento o distrito (educación, salud, compras, actividad física, ocio, cultura, relaciones sociales, etc.)?", "¿Son de calidad y están bien mantenidos?", "¿Todas las personas los pueden utilizar (independientemente de su nivel económico, edad, sexo, género, grupo étnico, movilidad, creencias religiosas, diversidad funcional y sexual)?", "¿Hay servicios dirigidos a grupos de población vulnerable?", "Los servicios disponibles, ¿favorecen la alimentación saludable, la actividad física y las relaciones sociales?"]}, {"nombre": "Trabajo y economía local", "intro": "Los beneficios de un buen empleo, como un salario adecuado, el tipo de actividad desarrollada, las relaciones sociales que favorece o la realización personal, promueven la salud y el bienestar.", "pregunta": "¿Hay una economía local activa en el barrio, corregimiento o distrito que favorezca el acceso a un buen empleo?", "reflexion": ["¿Existe una economía local activa que favorezca la creación de empleo?", "¿Hay diferentes oportunidades para que las personas adquieran habilidades para trabajar (como módulos o actividades formativas, escuelas de formación profesional, convenios con sectores económicos o empresas, prácticas…)?", "¿Se puede conseguir un buen empleo (independientemente de la edad, sexo, género, grupo étnico, movilidad, creencias religiosas, discapacidad, diversidad sexual)?", "¿Hay servicios locales (como oficinas de empleo, agencias de contratación, asociaciones u otras entidades) que ayuden a encontrar un puesto de trabajo?", "¿Hay facilidades para crear y poner en marcha nuevos negocios locales?"]}, {"nombre": "Vivienda y comunidad", "intro": "Las características de las viviendas del barrio o municipio afectan a las condiciones de vida de las personas que viven en él. Viviendas espaciosas, bien aisladas y mantenidas, seguras, accesibles y adaptadas impactan positivamente en la salud y el bienestar.", "pregunta": "¿Las viviendas de tu barrio, corregimiento o distrito satisfacen las necesidades de la población?", "reflexion": ["¿Existen viviendas espaciosas, seguras, bien aisladas (Que reducen la transferencia de calor o frío del exterior al interior de la vivienda) y mantenidas y bien comunicadas?", "¿Estas viviendas son accesibles para todas las personas (independientemente de su edad, género, sexo, movilidad, discapacidad, grupo étnico, nivel económico…) de tal forma que se puede vivir en ellas de manera segura, cómoda y autónoma?", "¿Existen diferentes formas de tener acceso a una vivienda (alquiler, compra, u otras) que satisfagan las necesidades las personas? ¿Se facilita el acceso a la vivienda (Descuentos, ayudas, programas u otras fórmulas) a algún grupo de población específico?", "¿El tamaño de las viviendas se adapta al tamaño o al tipo de las familias que las habitan?", "¿Las viviendas favorecen la convivencia de personas de diferentes edades, ingresos, movilidad, diversidad étnica, funcional, sexual…?", "¿Existen circunstancias que dificulten el acceso a la vivienda o fuercen el desplazamiento de sus vecinas/os a otros barrios, corregimiento o distrito (gentrificación o reurbanización de viviendas con mejor poder adquisitivo, alquileres turísticos, “guetificación del barrio”…)?"]}, {"nombre": "Contacto social", "intro": "Sentirnos solas o solos afecta a nuestra salud y bienestar. Un buen entorno ofrece una variedad suficiente de espacios y actividades donde relacionarse y pasar el tiempo con otras personas.", "pregunta": "¿Hay oportunidad y variedad suficiente de espacios y actividades para relacionarse con otras personas en tu barrio, corregimiento o distrito?", "reflexion": ["¿Existen espacios y actividades donde las personas tengan oportunidad de relacionarse (independientemente de su edad, sexo, género, lugar de nacimiento, grupo étnico, religión, movilidad, discapacidad, nivel económico…)?", "¿Hay actividades o programas específicos para grupos de población concretos (personas mayores, infancia, adolescencia, personas adultas…)?", "¿Existen diferentes lugares (interiores, al aire libre, construidos especialmente para ello o más informales) donde la gente pueda encontrarse y relacionarse?", "¿Esos espacios pueden ser usados en cualquier momento del día, del año, y en diferentes condiciones climáticas?", "Los espacios y actividades ¿favorecen que se integren todas las personas de la comunidad y se conozcan (independientemente de su edad, sexo, género, lugar de nacimiento, grupo étnico, religión, movilidad, diversidad funcional, nivel económico…)?"]}, {"nombre": "Identidad y pertenencia", "intro": "La apariencia de un lugar, su historia y lo que otras personas piensan de él, pueden condicionar cómo nos sentimos. Una fuerte identidad local positiva puede ayudarnos a sentirnos orgullosos/as de nuestro entorno, de nuestra comunidad y de nosotros/as mismos/as.", "pregunta": "¿Tu barrio, corregimiento o distrito tiene una identidad positiva y sientes que perteneces o que puedes pertenecer a él?", "reflexion": ["¿Las personas que viven en tu barrio, corregimiento o distrito lo valoran positivamente?", "¿Se favorece que se conozca y celebre la historia, el patrimonio cultural, la cultura y costumbres del lugar?", "¿Existen grupos locales, asociaciones y redes sociales que ayuden a las personas a sentirse involucradas en su comunidad?", "¿Se favorece la interculturalidad y la conexión entre vecinos y vecinas, independientemente de su edad, sexo, género, lugar de nacimiento, religión, grupo étnico, nivel socioeconómico, discapacidad …?"]}, {"nombre": "Seguridad", "intro": "La seguridad de un lugar afecta al bienestar de las personas y a cómo éstas pasan su tiempo en él. Los entornos bien diseñados contribuyen a crear espacios seguros y a reducir la delincuencia, el vandalismo y el mal uso de las instalaciones.", "pregunta": "¿Te sientes segura/o en tu barrio, corregimiento o distrito?", "reflexion": ["¿Se dan casos de delincuencia con frecuencia (vandalismo, robos, asaltos, agresiones…)?", "¿Existen puntos o zonas concretas con mayor riesgo de que se produzcan situaciones conflictivas o agresiones?", "¿Las calles, caminos, plazas, parques y espacios naturales son seguros, están bien iluminados y se pueden utilizar tanto de día como de noche? ¿Las personas pueden caminar solas por la noche con tranquilidad?", "¿Todos los lugares e instalaciones se pueden utilizar en cualquier momento del día o la noche y del año?", "¿Existen medidas para garantizar la seguridad de las personas que viven en el barrio (¿buen mantenimiento de las instalaciones y espacios, buena iluminación, agentes de policía, vigilancia de estaciones de transporte público…?", "¿La gente se siente segura tanto en su casa como fuera de ella?", "¿La zona es segura para todas las personas (independientemente de su edad, sexo, género, grupo étnico, movilidad, creencias religiosas, discapacidad y diversidad sexual)?"]}, {"nombre": "Cuidado y mantenimiento", "intro": "Los lugares bien cuidados y mantenidos nos hacen sentir bien, mientras que los que no están en buenas condiciones pueden producirnos el efecto contrario. Un buen mantenimiento y acondicionamiento del barrio o municipio nos ayuda a sentirnos más a gusto y a tener una opinión más favorable del entorno.", "pregunta": "¿Se cuidan adecuadamente los edificios y espacios del barrio, corregimiento o distrito, tanto públicos como privados?", "reflexion": ["¿Se encuentran las instalaciones, como parques, espacios abiertos o edificios públicos, en buen estado y bien mantenidos (se arreglan los desperfectos, hay cestos de basura suficientes, se limpian con frecuencia…)?", "¿Existe algún problema específico en la zona (como basura, malos olores, vandalismo, excrementos de perros u otros animales, relacionados con los negocios locales…)?", "¿Hay contenedores y servicios para el reciclaje y almacenamiento de desechos? ¿está bien organizada su recogida? ¿se utilizan adecuadamente?", "La administración local, asociaciones de vecinos y vecinas, propietarios/as de viviendas y residentes del barrio, ¿conocen cuáles son sus deberes y responsabilidades? ¿actúan de acuerdo a éstos?"]}, {"nombre": "Influencia y participación", "intro": "La opinión que tienen las personas sobre su entorno debería ser escuchada. Tener voz en la toma de decisiones y sentirse capaz de cambiar las cosas, ayuda a construir comunidades más fuertes y mejores entornos. Sentir que se puede influir y participar en la comunidad hace que las personas se sientan bien.", "pregunta": "¿Sientes que puedes participar en la toma de decisiones y ayudar a cambiar las cosas para mejorar tu barrio, corregimiento o distrito?", "reflexion": ["¿Existen mecanismos y canales que favorezcan la participación? ¿Hay algún órgano de participación activo?", "¿Se están realizando o se han realizado procesos en los que participas en tu barrio o municipio (de urbanismo, movilidad, presupuestos participativos…)?", "¿Pueden participar todas las personas en la toma de decisiones que les afectan (independientemente de su edad, sexo, género, grupo étnico, movilidad, creencias religiosas, discapacidad y diversidad sexual)?", "¿Existen organizaciones, plataformas, entidades o grupos que favorezcan la participación (¿asociaciones de vecinos y vecinas, ONGs, ciudadanía organizada, otras asociaciones o entidades…?", "La administración local, servicios de salud u otros servicios públicos, ¿trabajan activamente con la comunidad para entender y atender sus necesidades?", "¿Hay un buen nivel de transparencia de las acciones y decisiones políticas que afectan al barrio o municipio?", "¿La gente se siente escuchada? ¿Sabe la gente cómo hacerse escuchar?"]}], "diagrama": ["Recuerda que el 1 se encuentra en el centro y el 10 en la parte coloreada de cada dimensión.", "Cuanto mejor hayas evaluado tu barrio o municipio, mayor será la figura que aparecerá en el diagrama al unir los puntos."], "prioridades": {"problemas": "De las catorce dimensiones preguntadas, ¿cuáles son los principales problemas que has identificado? Enumera los tres problemas más importantes:", "acciones": "¿Qué acciones crees que pueden llevarse a cabo para solucionarlos? Enumera tres acciones que consideres prioritarias:"}, "gracias": "Gracias por completar la herramienta Entornos de vida."};
+const LLAVE = {"kty": "RSA", "alg": "RSA-OAEP-256", "ext": true, "key_ops": ["encrypt"], "n": "x0NF3DKhL4SeDrHSKxWLKwgvi_SSGHG8ByuQldu_lonOu8Ta1XDM1sQzldL2uMI7x37ThervtsXPKtFByY8GYkzMdZwP3k_v65_Icm6mv3C3JmVt9UKuf1iu5ZeoZycOCm3DYEs0WvhyZFMc1wutWXan5fKQQU1qxzvbnUJ8bx63uCvG7IV8eFnUD8D8A0ChP877o7LLo3g9c8zEUY7cboCxJe_PKqk7_ZURarE7cOV1xBVU1ay4MwIuRF2xsBo9SS31ZLjvOdpKur1EiTyscyFVqxZllVnfGfZd6DhnCv9-p7nmTUm-zvvzz0nG0-tZBCqgawcaJPoBDAghgtEGOLH6297XehvXoOnZ34RIMcEXu0mju_jD89kRkEtKYPIHHi2MbXxG9K2J6LD-g_5eiRHdUeidRqYfjGJXyi5rCGzCAdXkGyLgY3sWa1dmGk8G52hjnOMPDB0uWvmVktH8R720r3lmdvoBof8macDTprYv6CKBM--5kzyahKVZO5zj", "e": "AQAB"}; // llave pública del receptor: lo que sale del equipo solo se abre con su llave privada
+const APP_VERSION = "0.2.0-prototipo";
+
+// ---------------------------------------------------------------------------
+// Utilidades
+// ---------------------------------------------------------------------------
+const $ = s => document.querySelector(s);
+const te = new TextEncoder(), td = new TextDecoder();
+const esc = s => String(s == null ? "" : s).replace(/[&<>"']/g, c => ({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
+const uid = () => [...crypto.getRandomValues(new Uint8Array(10))].map(b => b.toString(16).padStart(2, "0")).join("");
+const hoyISO = () => { const d = new Date(); return new Date(d.getTime() - d.getTimezoneOffset() * 60000).toISOString().slice(0, 10); };
+const fechaLarga = iso => { if (!iso) return ""; const [a, m, d] = iso.slice(0, 10).split("-"); return `${+d} ${["ene","feb","mar","abr","may","jun","jul","ago","sep","oct","nov","dic"][+m - 1]} ${a}`; };
+const mmss = s => `${Math.floor(s / 60)}:${String(Math.round(s % 60)).padStart(2, "0")}`;
+function toast(t) { const d = document.createElement("div"); d.className = "toast"; d.textContent = t; document.body.appendChild(d); setTimeout(() => d.remove(), 2600); }
+
+// Pasos del instrumento: 5 secciones de la Parte I, presentación, 14 dimensiones, diagrama, prioridades, cierre.
+const PREG = []; // lista plana de la Parte I: {clave:"A1", s, q, texto, opciones}
+INST.parte1.forEach((s, si) => s.preguntas.forEach((q, qi) => PREG.push({ clave: s.letra + (qi + 1), s: si, q: qi, texto: q.texto, opciones: q.opciones })));
+const PASOS = [
+  ...INST.parte1.map((s, i) => ({ tipo: "seccion", i, rotulo: `${s.letra}. ${s.titulo.replace(/^Preguntas (sobre|relacionadas (con|a)) /, "")}` })),
+  { tipo: "presentacion", rotulo: "Presentación de Entornos de Vida" },
+  ...INST.dimensiones.map((d, i) => ({ tipo: "dimension", i, rotulo: `${i + 1}. ${d.nombre}` })),
+  { tipo: "diagrama", rotulo: "Diagrama" },
+  { tipo: "prioridades", rotulo: "Problemas y acciones" },
+  { tipo: "cierre", rotulo: "Cierre de la entrevista" },
+];
+const COMUNIDADES = { "Chiriquí": [["01", "Alanje"], ["02", "David Centro"], ["03", "Boquete"]] };
+const PROVINCIAS = { "Los Santos": "LSA", "Herrera": "HER", "Chiriquí": "CHI", "Panamá": "PAN", "Veraguas": "VER" };
+
+// ---------------------------------------------------------------------------
+// Almacén local (IndexedDB) y cifrado con la clave del encuestador
+// ---------------------------------------------------------------------------
+let BD = null;
+const Llave = { k: null };
+function abrirBD() {
+  return new Promise((ok, mal) => {
+    const rq = indexedDB.open("entornos_de_vida", 1);
+    rq.onupgradeneeded = () => { const d = rq.result; ["meta", "entrevistas", "audios"].forEach(n => d.createObjectStore(n)); };
+    rq.onsuccess = () => ok(BD = rq.result);
+    rq.onerror = () => mal(rq.error);
+  });
+}
+function tx(almacen, modo, fn) {
+  return new Promise((ok, mal) => {
+    const t = BD.transaction(almacen, modo); const q = fn(t.objectStore(almacen)); let r;
+    if (q) q.onsuccess = () => { r = q.result; };
+    t.oncomplete = () => ok(r); t.onerror = () => mal(t.error); t.onabort = () => mal(t.error);
+  });
+}
+const bdGet = (a, k) => tx(a, "readonly", s => s.get(k));
+const bdPut = (a, k, v) => tx(a, "readwrite", s => s.put(v, k));
+const bdDel = (a, k) => tx(a, "readwrite", s => s.delete(k));
+const bdAll = a => tx(a, "readonly", s => s.getAll());
+const bdClear = a => tx(a, "readwrite", s => s.clear());
+
+async function derivar(clave, salt) {
+  const base = await crypto.subtle.importKey("raw", te.encode(clave), "PBKDF2", false, ["deriveKey"]);
+  return crypto.subtle.deriveKey({ name: "PBKDF2", salt, iterations: 210000, hash: "SHA-256" }, base, { name: "AES-GCM", length: 256 }, false, ["encrypt", "decrypt"]);
+}
+async function cifrar(bytes, k = Llave.k) { const iv = crypto.getRandomValues(new Uint8Array(12)); return { iv, ct: await crypto.subtle.encrypt({ name: "AES-GCM", iv }, k, bytes) }; }
+async function descifrar(c, k = Llave.k) { return crypto.subtle.decrypt({ name: "AES-GCM", iv: c.iv }, k, c.ct); }
+const cifrarObj = o => cifrar(te.encode(JSON.stringify(o)));
+const descifrarObj = async c => JSON.parse(td.decode(await descifrar(c)));
+
+// Entrevistas en memoria (descifradas mientras la sesión está abierta)
+let ENT = [];
+let META = null; // {encuestador, salt, prueba}
+async function cargarEntrevistas() {
+  const filas = await bdAll("entrevistas");
+  ENT = [];
+  for (const f of filas) { try { ENT.push(await descifrarObj(f)); } catch (e) { console.warn("No se pudo abrir un registro", e); } }
+  ENT.sort((a, b) => (b.actualizada || "").localeCompare(a.actualizada || ""));
+}
+const pendientes = new Map();
+function guardar(e) {
+  e.actualizada = new Date().toISOString();
+  clearTimeout(pendientes.get(e.id));
+  pendientes.set(e.id, setTimeout(() => guardarYa(e), 250));
+}
+async function guardarYa(e) {
+  clearTimeout(pendientes.get(e.id)); pendientes.delete(e.id);
+  const c = await cifrarObj(e); c.id = e.id; await bdPut("entrevistas", e.id, c);
+}
+async function guardarTodo() { for (const e of ENT) if (pendientes.has(e.id)) await guardarYa(e); }
+document.addEventListener("visibilitychange", () => { if (document.visibilityState === "hidden") { guardarTodo(); detenerGrabacion(); } });
+
+// ---------------------------------------------------------------------------
+// Estado de cada participante, con las categorías del reporte al Comité
+// ---------------------------------------------------------------------------
+function respondidas(e) {
+  let n = 0;
+  PREG.forEach(p => { if (e.r[p.clave] != null) n++; });
+  INST.dimensiones.forEach((d, i) => { if (e.edv[i + 1]) n++; });
+  return n;
+}
+const TOTAL_OBLIG = PREG.length + 14;
+function estado(e) {
+  if (e.retirado) return "retirado";
+  if (e.cerrada) return "completado";
+  if (respondidas(e) > 0 || Object.values(e.razones).some(Boolean) || e.problemas.some(Boolean) || e.acciones.some(Boolean)) return "activo";
+  return "enrolado";
+}
+const ESTADO_TXT = { enrolado: "Enrolado", activo: "Activo", completado: "Completado", retirado: "Retirado" };
+const chipEstado = e => `<span class="chip ${estado(e)}">${ESTADO_TXT[estado(e)]}</span>${e.demo ? ' <span class="chip demo">Ejemplo</span>' : ""}`;
+function faltantes(e) {
+  const f = [];
+  PREG.forEach(p => { if (e.r[p.clave] == null) f.push({ paso: p.s, txt: `${p.clave}. ${p.texto}` }); });
+  INST.dimensiones.forEach((d, i) => { if (!e.edv[i + 1]) f.push({ paso: 6 + i, txt: `Dimensión ${i + 1}: ${d.nombre} (puntuación)` }); });
+  return f;
+}
+function pasoCompleto(e, p) {
+  const P = PASOS[p];
+  if (P.tipo === "seccion") return PREG.filter(q => q.s === P.i).every(q => e.r[q.clave] != null);
+  if (P.tipo === "dimension") return !!e.edv[P.i + 1];
+  if (P.tipo === "presentacion") return e.vistos.includes(p);
+  if (P.tipo === "diagrama") return e.vistos.includes(p);
+  if (P.tipo === "prioridades") return e.problemas.some(Boolean) || e.acciones.some(Boolean);
+  if (P.tipo === "cierre") return !!e.cerrada;
+  return false;
+}
+
+// ---------------------------------------------------------------------------
+// Grabación de audio (solo si el participante la autorizó)
+// ---------------------------------------------------------------------------
+const Grab = { rec: null, stream: null, partes: [], item: null, ent: null, t0: 0, timer: null };
+function tipoAudio() {
+  if (!window.MediaRecorder) return null;
+  for (const t of ["audio/mp4", "audio/webm;codecs=opus", "audio/webm", "audio/ogg;codecs=opus"]) if (MediaRecorder.isTypeSupported && MediaRecorder.isTypeSupported(t)) return t;
+  return "";
+}
+async function iniciarGrabacion(e, item) {
+  if (Grab.rec) await detenerGrabacion();
+  if (!navigator.mediaDevices || !navigator.mediaDevices.getUserMedia || tipoAudio() === null) { toast("Este equipo no permite grabar desde la página."); return; }
+  try {
+    Grab.stream = await navigator.mediaDevices.getUserMedia({ audio: { echoCancellation: true, noiseSuppression: true } });
+  } catch (err) { toast("No se dio permiso al micrófono."); return; }
+  const mime = tipoAudio();
+  Grab.rec = new MediaRecorder(Grab.stream, mime ? { mimeType: mime } : undefined);
+  Grab.partes = []; Grab.item = item; Grab.ent = e; Grab.t0 = Date.now();
+  Grab.rec.ondataavailable = ev => { if (ev.data && ev.data.size) Grab.partes.push(ev.data); };
+  Grab.rec.start(1000);
+  Grab.timer = setInterval(pintarGrab, 500);
+  pintarGrab();
+}
+function detenerGrabacion() {
+  return new Promise(ok => {
+    if (!Grab.rec) return ok();
+    const rec = Grab.rec, e = Grab.ent, item = Grab.item, dur = (Date.now() - Grab.t0) / 1000;
+    rec.onstop = async () => {
+      clearInterval(Grab.timer);
+      Grab.stream.getTracks().forEach(t => t.stop());
+      const mime = rec.mimeType || (Grab.partes[0] && Grab.partes[0].type) || "audio/mp4";
+      const blob = new Blob(Grab.partes, { type: mime });
+      Object.assign(Grab, { rec: null, stream: null, partes: [], item: null, ent: null });
+      if (blob.size > 0) {
+        const id = uid();
+        const c = await cifrar(await blob.arrayBuffer());
+        await bdPut("audios", id, c);
+        e.audios.push({ id, item, mime: mime.split(";")[0], dur: Math.round(dur), t: new Date().toISOString(), bytes: blob.size });
+        guardar(e);
+      }
+      pintar(); ok();
+    };
+    rec.stop();
+  });
+}
+function pintarGrab() {
+  document.querySelectorAll("[data-grab-estado]").forEach(el => {
+    const activo = Grab.rec && el.dataset.grabEstado === Grab.item;
+    el.textContent = activo ? `Grabando ${mmss((Date.now() - Grab.t0) / 1000)}` : "";
+  });
+}
+async function reproducir(e, id) {
+  const a = e.audios.find(x => x.id === id); const c = await bdGet("audios", id);
+  if (!a || !c) return toast("No se encontró el audio.");
+  const url = URL.createObjectURL(new Blob([await descifrar(c)], { type: a.mime }));
+  const el = new Audio(url); el.onended = () => URL.revokeObjectURL(url); el.play().catch(() => toast("No se pudo reproducir."));
+}
+function bloqueGrabacion(e, item, rotulo) {
+  if (!e.consentAudio) return `<p class="tenue" style="font-size:15px;margin:8px 0 0">El participante no autorizó la grabación: solo se escriben las razones.</p>`;
+  const clips = e.audios.filter(a => a.item === item);
+  const enCurso = Grab.rec && Grab.item === item;
+  return `<div class="grab">
+    <div class="btn-fila" style="align-items:center">
+      <button class="btn rec ${enCurso ? "on" : ""}" data-acc="${enCurso ? "parar" : "grabar"}" data-item="${item}">${enCurso ? '<span class="latido"></span> Detener' : "Grabar " + esc(rotulo)}</button>
+      <span class="tenue" data-grab-estado="${item}"></span>
+    </div>
+    ${clips.length ? `<div style="margin-top:8px">${clips.map((a, k) => `<div class="clip"><span>Audio ${k + 1} · ${mmss(a.dur)}</span><span class="espacio"></span><button class="btn chico" data-acc="oir" data-id="${a.id}">Escuchar</button><button class="btn chico peligro" data-acc="borrar-audio" data-id="${a.id}">Borrar</button></div>`).join("")}</div>` : ""}
+  </div>`;
+}
+
+// ---------------------------------------------------------------------------
+// Diagrama de tela de araña (1 en el centro, 10 en el borde)
+// ---------------------------------------------------------------------------
+function radarSVG(edv, opts = {}) {
+  const W = 640, H = 600, cx = W / 2, cy = H / 2 + 6, R = 200, n = 14;
+  const col = opts.suelto ? { eje: "#c9d3de", txt: "#1b2633", fig: "#1f4e79", relleno: "rgba(31,78,121,.22)", fondo: "#ffffff" } :
+    { eje: "var(--linea)", txt: "var(--texto)", fig: "var(--azul)", relleno: "color-mix(in srgb, var(--azul) 22%, transparent)", fondo: "transparent" };
+  const pt = (i, v) => { const a = -Math.PI / 2 + 2 * Math.PI * i / n; const r = R * (v - 1) / 9; return [cx + r * Math.cos(a), cy + r * Math.sin(a)]; };
+  let s = `<svg class="radar" viewBox="0 0 ${W} ${H}" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Diagrama de tela de araña de las 14 dimensiones"><rect width="${W}" height="${H}" fill="${col.fondo}"/>`;
+  for (let v = 2; v <= 10; v++) s += `<polygon points="${[...Array(n)].map((_, i) => pt(i, v).join(",")).join(" ")}" fill="none" stroke="${col.eje}" stroke-width="${v === 10 ? 1.5 : 0.8}"/>`;
+  for (let i = 0; i < n; i++) {
+    const [x, y] = pt(i, 10); s += `<line x1="${cx}" y1="${cy}" x2="${x}" y2="${y}" stroke="${col.eje}" stroke-width="0.8"/>`;
+    const a = -Math.PI / 2 + 2 * Math.PI * i / n, lx = cx + (R + 22) * Math.cos(a), ly = cy + (R + 22) * Math.sin(a);
+    const anc = Math.abs(Math.cos(a)) < 0.2 ? "middle" : (Math.cos(a) > 0 ? "start" : "end");
+    const pal = INST.dimensiones[i].nombre.split(" "), lineas = [];
+    pal.forEach(w => { if (lineas.length && (lineas[lineas.length - 1] + " " + w).length <= 16) lineas[lineas.length - 1] += " " + w; else lineas.push(w); });
+    const dy0 = Math.sin(a) < -0.5 ? -(lineas.length - 1) * 15 : (Math.sin(a) > 0.5 ? 6 : -(lineas.length - 1) * 7.5 + 4);
+    s += `<text x="${lx}" y="${ly + dy0}" text-anchor="${anc}" font-size="13" fill="${col.txt}" font-family="-apple-system,Segoe UI,Arial,sans-serif">${lineas.map((l, k) => `<tspan x="${lx}" dy="${k ? 15 : 0}">${esc(l)}</tspan>`).join("")}</text>`;
+  }
+  const vals = [...Array(n)].map((_, i) => edv[i + 1] || 0);
+  if (vals.some(Boolean)) {
+    s += `<polygon points="${vals.map((v, i) => pt(i, v || 1).join(",")).join(" ")}" fill="${col.relleno}" stroke="${col.fig}" stroke-width="2.5" stroke-linejoin="round"/>`;
+    vals.forEach((v, i) => { if (v) { const [x, y] = pt(i, v); s += `<circle cx="${x}" cy="${y}" r="4.5" fill="${col.fig}"/>`; } });
+  }
+  return s + "</svg>";
+}
+
+// ---------------------------------------------------------------------------
+// Vistas
+// ---------------------------------------------------------------------------
+let VISTA = "cargando", ACT = null, PASO = 0;
+function ir(v, e = null, paso = 0) { VISTA = v; ACT = e; PASO = paso; CODIGO = { txt: "", ids: [] }; pintar(); window.scrollTo(0, 0); }
+
+function pintar() {
+  const app = $("#app"), nav = $("#nav"), navFila = $("#navFila");
+  $("#btnInicio").hidden = !["entrevista", "nueva", "resumen", "exportar", "ajustes"].includes(VISTA);
+  $("#prog").hidden = VISTA !== "entrevista";
+  nav.classList.add("oculto"); navFila.innerHTML = "";
+  const v = VISTAS[VISTA]; app.innerHTML = v ? v() : "";
+  if (VISTA === "entrevista") {
+    $("#progBar").style.width = `${Math.round(100 * (PASO + 1) / PASOS.length)}%`;
+    nav.classList.remove("oculto");
+    navFila.innerHTML = `<button class="btn" data-acc="ant" ${PASO === 0 ? "disabled" : ""}>Anterior</button>
+      <button class="btn" data-acc="indice">Paso ${PASO + 1} de ${PASOS.length}</button><span class="espacio"></span>
+      ${PASO < PASOS.length - 1 ? `<button class="btn pri" data-acc="sig">Siguiente</button>` : ""}`;
+  }
+  pintarGrab();
+}
+
+const VISTAS = {
+  llave() {
+    const nueva = !META;
+    return `<div class="tarjeta" style="max-width:560px;margin:24px auto">
+      <h1>${nueva ? "Preparar este equipo" : "Abrir el instrumento"}</h1>
+      <p class="tenue">${nueva ? "Lo que se capture en este equipo queda guardado y cifrado con su clave. Si la olvida, lo capturado no se puede recuperar: anótela donde la guarda el equipo de campo." : `Encuestador: <b>${esc(META.encuestador)}</b>`}</p>
+      ${nueva ? `<label class="campo"><span>Nombre del encuestador</span><input type="text" id="fEnc" autocomplete="name"></label>` : ""}
+      <label class="campo"><span>Clave de acceso${nueva ? " (al menos 6 caracteres)" : ""}</span><input type="password" id="fClave" autocomplete="${nueva ? "new-password" : "current-password"}"></label>
+      ${nueva ? `<label class="campo"><span>Repita la clave</span><input type="password" id="fClave2" autocomplete="new-password"></label>` : ""}
+      <div id="fError"></div>
+      <div class="btn-fila" style="margin-top:14px"><button class="btn pri" data-acc="${nueva ? "crear-llave" : "abrir"}">${nueva ? "Preparar equipo" : "Abrir"}</button></div>
+    </div>`;
+  },
+
+  inicio() {
+    const c = { enrolado: 0, activo: 0, completado: 0, retirado: 0 };
+    ENT.forEach(e => c[estado(e)]++);
+    return `<h1>Entrevistas en este equipo</h1>
+      <p class="tenue">Encuestador: <b>${esc(META.encuestador)}</b> · ${ENT.length} registro${ENT.length === 1 ? "" : "s"} · instrumento ${esc(INST.version)}</p>
+      <div class="btn-fila" style="margin:14px 0 18px">
+        <button class="btn pri" data-acc="nueva">Nueva entrevista</button>
+        <button class="btn" data-acc="ver-resumen">Resumen para el Comité</button>
+        <button class="btn" data-acc="ver-exportar">Exportar</button>
+        <button class="btn" data-acc="ver-ajustes">Ajustes</button>
+      </div>
+      <div class="cifras" style="margin-bottom:16px">
+        ${["enrolado", "activo", "completado", "retirado"].map(k => `<div class="cifra"><b>${c[k]}</b><span>${ESTADO_TXT[k]}s</span></div>`).join("")}
+      </div>
+      ${ENT.length ? `<div class="lista">${ENT.map(e => `<button class="fila-ent" data-acc="abrir-ent" data-id="${e.id}">
+          <div style="flex:1;min-width:0"><b>${esc(e.codigo)}</b><div class="tenue">${esc(e.comunidad)}, ${esc(e.provincia)} · ${fechaLarga(e.fecha)} · ${respondidas(e)} de ${TOTAL_OBLIG} ítems${e.audios.length ? ` · ${e.audios.length} audio${e.audios.length === 1 ? "" : "s"}` : ""}${e.exportada ? " · exportada" : ""}</div></div>
+          ${chipEstado(e)}</button>`).join("")}</div>`
+        : `<div class="tarjeta"><p style="margin:0">Todavía no hay entrevistas. Para mostrar cómo funciona, puede <button class="btn chico" data-acc="ejemplos">cargar cuatro entrevistas de ejemplo</button>.</p></div>`}`;
+  },
+
+  nueva() {
+    const f = FORM;
+    const comus = COMUNIDADES[f.provincia] || [];
+    return `<h1>Nueva entrevista</h1>
+      <div class="tarjeta">
+        <h2>Identificación</h2>
+        <div class="rejilla">
+          <label class="campo"><span>Fase</span><select id="nTipo">
+            <option value="RD" ${f.tipo === "RD" ? "selected" : ""}>Recolección de datos (RD)</option>
+            <option value="PC" ${f.tipo === "PC" ? "selected" : ""}>Prueba de campo (PC)</option></select></label>
+          <label class="campo"><span>Provincia</span><select id="nProv">${Object.keys(PROVINCIAS).map(p => `<option ${p === f.provincia ? "selected" : ""}>${p}</option>`).join("")}</select></label>
+          <label class="campo"><span>Comunidad</span>${f.tipo === "RD" && comus.length
+            ? `<select id="nComu">${comus.map(([k, n]) => `<option value="${k}" ${f.comu === k ? "selected" : ""}>${k} · ${n}</option>`).join("")}</select>`
+            : `<input type="text" id="nComuTxt" value="${esc(f.comuTxt)}" placeholder="Nombre de la comunidad">`}</label>
+          <label class="campo"><span>N.° de participante</span><input type="number" id="nNum" min="1" max="999" inputmode="numeric" value="${esc(f.num)}"></label>
+          <label class="campo"><span>Fecha de aplicación</span><input type="date" id="nFecha" value="${esc(f.fecha)}"></label>
+        </div>
+        <p>Código de participante: <b id="nCodigo">${esc(codigoForm())}</b></p>
+      </div>
+      <div class="tarjeta">
+        <h2>Consentimiento informado</h2>
+        <button class="op ${f.consent ? "sel" : ""}" data-acc="n-consent"><span class="punto"></span><span>El participante tiene 18 años o más, reside en la comunidad hace al menos 6 meses y <b>firmó el consentimiento informado en papel</b>.</span></button>
+        <h3>Grabación de la entrevista</h3>
+        <p class="tenue" style="margin-top:0">Casilla propuesta para la adenda: es opcional y quien no la autorice participa igual.</p>
+        <div class="opciones">
+          <button class="op ${f.audio === true ? "sel" : ""}" data-acc="n-audio" data-v="1"><span class="punto"></span><span>Autoriza que se graben sus respuestas a las razones y a las prioridades.</span></button>
+          <button class="op ${f.audio === false ? "sel" : ""}" data-acc="n-audio" data-v="0"><span class="punto"></span><span>No autoriza la grabación.</span></button>
+        </div>
+      </div>
+      <div id="nError"></div>
+      <div class="btn-fila"><button class="btn pri" data-acc="crear-ent">Registrar e iniciar</button><button class="btn" data-acc="crear-ent-espera">Registrar como enrolado</button></div>`;
+  },
+
+  entrevista() {
+    const e = ACT, P = PASOS[PASO];
+    if (!e.vistos.includes(PASO) && (P.tipo === "presentacion" || P.tipo === "diagrama")) { e.vistos.push(PASO); guardar(e); }
+    const cab = `<p class="tenue" style="margin:0 0 6px">${esc(e.codigo)} · ${esc(e.comunidad)} · ${chipEstado(e)}${e.consentAudio ? ' <span class="chip demo">Graba</span>' : ""}</p>`;
+    if (e.retirado) return cab + `<div class="aviso mal"><b>Participante retirado.</b> ${esc(e.motivoRetiro || "")}</div><div class="btn-fila"><button class="btn" data-acc="reactivar">Deshacer el retiro</button></div>` + VISTAS_PASO[P.tipo](e, P);
+    return cab + VISTAS_PASO[P.tipo](e, P);
+  },
+
+  resumen() {
+    const c = { enrolado: 0, activo: 0, completado: 0, retirado: 0 };
+    const reales = ENT.filter(e => !e.demo);
+    const base = SOLO_REALES ? reales : ENT;
+    base.forEach(e => c[estado(e)]++);
+    const aplicadas = base.filter(e => ["activo", "completado"].includes(estado(e)) && e.r.A2 != null);
+    const grupos = INST.parte1[0].preguntas[1].opciones;
+    let rango = "Sin encuestas aplicadas.";
+    if (aplicadas.length) {
+      const mn = Math.min(...aplicadas.map(e => e.r.A2)), mx = Math.max(...aplicadas.map(e => e.r.A2));
+      const ini = grupos[mn].match(/^\d+/)[0], fin = /o más/.test(grupos[mx]) ? `${grupos[mx].match(/^\d+/)[0]} años o más` : `${grupos[mx].match(/(\d+) años/)[1]} años`;
+      rango = `De ${ini} a ${fin} (por grupo de edad: el instrumento no registra la edad exacta).`;
+    }
+    const quejas = base.filter(e => e.queja && e.queja.hubo);
+    const porComu = {};
+    base.forEach(e => { const k = `${e.comunidad} (${e.provincia})`; (porComu[k] = porComu[k] || { enrolado: 0, activo: 0, completado: 0, retirado: 0 })[estado(e)]++; });
+    const texto = [
+      `Reporte de seguimiento, ${fechaLarga(hoyISO())}. Equipo de ${META.encuestador}.`,
+      `Sujetos enrolados o reclutados (consentimiento firmado, sin iniciar la encuesta): ${c.enrolado}`,
+      `Sujetos retirados del estudio: ${c.retirado}${c.retirado ? ". Motivos: " + base.filter(e => e.retirado).map(e => `${e.codigo}, ${e.motivoRetiro || "sin motivo anotado"}`).join("; ") : ""}`,
+      `Sujetos activos (encuesta iniciada, pendiente de completar): ${c.activo}`,
+      `Sujetos completados: ${c.completado}`,
+      `Rango de edad de los participantes a los que se les ha aplicado la encuesta: ${rango}`,
+      `Quejas recibidas: ${quejas.length ? quejas.length + ". " + quejas.map(e => `${e.codigo}: ${e.queja.texto}`).join("; ") : "ninguna"}`,
+    ].join("\n");
+    RESUMEN_TXT = texto;
+    return `<h1>Resumen para el Comité de Bioética</h1>
+      <p class="tenue">Las categorías son las que pidió la investigadora principal para el reporte trimestral. Se calculan solas con lo capturado en este equipo.</p>
+      ${ENT.some(e => e.demo) ? `<div class="aviso">Hay entrevistas de ejemplo en el equipo. <button class="btn chico" data-acc="solo-reales">${SOLO_REALES ? "Incluir los ejemplos" : "Contar solo las reales"}</button></div>` : ""}
+      <div class="cifras" style="margin:12px 0 16px">${["enrolado", "activo", "completado", "retirado"].map(k => `<div class="cifra"><b>${c[k]}</b><span>${ESTADO_TXT[k]}s</span></div>`).join("")}</div>
+      <div class="tarjeta"><h2>Texto para el reporte</h2><pre class="copia" id="resTxt">${esc(texto)}</pre>
+        <div class="btn-fila"><button class="btn pri" data-acc="copiar-resumen">Copiar</button></div>
+        <p class="tenue" style="font-size:14.5px;margin-bottom:0">La relación riesgo/beneficio y las razones de demora no salen del equipo: las redacta el investigador.</p></div>
+      ${Object.keys(porComu).length ? `<div class="tarjeta"><h2>Por comunidad</h2><table class="datos"><thead><tr><th>Comunidad</th><th>Enrolados</th><th>Activos</th><th>Completados</th><th>Retirados</th></tr></thead><tbody>
+        ${Object.entries(porComu).map(([k, v]) => `<tr><td>${esc(k)}</td><td class="n">${v.enrolado}</td><td class="n">${v.activo}</td><td class="n">${v.completado}</td><td class="n">${v.retirado}</td></tr>`).join("")}</tbody></table></div>` : ""}`;
+  },
+
+  exportar() {
+    const sinEnviar = ENT.filter(porEnviar);
+    const nuevas = ENT.filter(e => !e.exportada || e.actualizada > e.exportada);
+    const conAudio = ENT.filter(e => e.audios.length);
+    const bytes = ENT.reduce((s, e) => s + e.audios.reduce((t, a) => t + (a.bytes || 0), 0), 0);
+    return `<h1>Enviar lo capturado</h1>
+      <p class="tenue">Todo sale cifrado con la llave pública del estudio: solo el equipo que guarda la llave privada lo puede abrir. Ni este iPad puede leer lo que envía.</p>
+      <div class="tarjeta">
+        <h2>1. Código de texto por WhatsApp o correo</h2>
+        <p style="margin-top:0">Lleva las respuestas, las razones, las prioridades y el registro del encuestador. <b>No lleva los audios.</b> ${sinEnviar.length} entrevista${sinEnviar.length === 1 ? "" : "s"} sin enviar.</p>
+        ${CODIGO.ids.length ? `<label class="campo"><span>Código de ${CODIGO.ids.length} entrevista${CODIGO.ids.length === 1 ? "" : "s"} · ${CODIGO.txt.length.toLocaleString("es-PA")} caracteres</span><textarea class="codigo" readonly>${esc(CODIGO.txt)}</textarea></label>
+          ${CODIGO.txt.length > 60000 ? `<div class="aviso">El código pasa de 60 000 caracteres y WhatsApp podría partirlo: envíelo por correo o en dos partes, una entrevista a la vez.</div>` : ""}
+          <div class="btn-fila"><button class="btn pri" data-acc="compartir-codigo">Compartir</button><button class="btn" data-acc="copiar-codigo">Copiar</button></div>`
+        : `<div class="btn-fila"><button class="btn pri" data-acc="generar-codigo" ${sinEnviar.length ? "" : "disabled"}>Generar el código de lo no enviado</button><button class="btn" data-acc="generar-codigo-todo" ${ENT.length ? "" : "disabled"}>Generar con todo</button></div>`}
+      </div>
+      <div class="tarjeta">
+        <h2>2. Paquete con los audios</h2>
+        <p style="margin-top:0">Un archivo <code>.edv</code> con todo lo anterior, los diagramas y las grabaciones. ${conAudio.length} entrevista${conAudio.length === 1 ? "" : "s"} con audio, ${(bytes / 1048576).toFixed(1)} MB; ${nuevas.length} nueva${nuevas.length === 1 ? "" : "s"} o cambiada${nuevas.length === 1 ? "" : "s"} desde el último paquete. Se entrega por AirDrop, cable o correo institucional.</p>
+        <label class="campo" style="display:flex;gap:10px;align-items:center"><input type="checkbox" id="xTodas" style="width:22px;height:22px"> <span style="margin:0;font-weight:500">Incluir también lo ya exportado</span></label>
+        <div id="xError"></div>
+        <button class="btn pri" data-acc="exportar">Exportar paquete cifrado</button>
+      </div>`;
+  },
+
+  ajustes() {
+    const exp = ENT.filter(e => e.exportada && e.actualizada <= e.exportada).length;
+    return `<h1>Ajustes</h1>
+      <div class="tarjeta"><h2>Después de entregar</h2>
+        <p class="tenue" style="margin-top:0">Una vez que el CIIGC confirme que recibió el paquete, se borra del equipo lo ya exportado. ${exp} entrevista${exp === 1 ? "" : "s"} exportada${exp === 1 ? "" : "s"} y sin cambios.</p>
+        <button class="btn peligro" data-acc="borrar-exportadas" ${exp ? "" : "disabled"}>Borrar lo ya exportado</button></div>
+      <div class="tarjeta"><h2>Entrevistas de ejemplo</h2>
+        <div class="btn-fila"><button class="btn" data-acc="ejemplos">Cargar ejemplos</button><button class="btn" data-acc="borrar-ejemplos" ${ENT.some(e => e.demo) ? "" : "disabled"}>Quitar ejemplos</button></div></div>
+      <div class="tarjeta"><h2>Vaciar este equipo</h2>
+        <p class="tenue" style="margin-top:0">Borra entrevistas, audios y la clave. Úselo al devolver el iPad.</p>
+        <button class="btn peligro" data-acc="vaciar">Vaciar el equipo</button></div>
+      <p class="tenue" style="font-size:14px">Versión ${esc(APP_VERSION)} · instrumento ${esc(INST.version)} · almacenamiento ${PERSISTE ? "protegido contra limpieza automática" : "sin protección contra limpieza automática: instale la página en la pantalla de inicio"}.</p>`;
+  },
+};
+let RESUMEN_TXT = "", SOLO_REALES = false, PERSISTE = false;
+const porEnviar = e => estado(e) !== "enrolado" && (!e.enviado || e.actualizada > e.enviado);
+let FORM = null;
+function formNuevo() {
+  const ult = ENT.filter(e => !e.demo).map(e => +e.num || 0);
+  FORM = { tipo: "RD", provincia: "Chiriquí", comu: "01", comuTxt: "", num: String((ult.length ? Math.max(...ult) : 0) + 1), fecha: hoyISO(), consent: false, audio: null };
+}
+function codigoForm() {
+  const f = FORM, prov = PROVINCIAS[f.provincia];
+  const comu = f.tipo === "RD" && COMUNIDADES[f.provincia] ? f.comu : (f.comuTxt || "COMUNIDAD").normalize("NFD").replace(/[̀-ͯ]/g, "").toUpperCase().replace(/[^A-Z0-9]+/g, "").slice(0, 10);
+  return `CIIGC-${f.tipo}-${prov}-${comu}-${String(f.num || "").padStart(2, "0")}`;
+}
+
+const VISTAS_PASO = {
+  seccion(e, P) {
+    const s = INST.parte1[P.i];
+    return `<h1>Parte I. ${s.letra}. ${esc(s.titulo)}</h1>
+      <p class="tenue">${esc(INST.parte1_instruccion.replace(/^Parte I\. /, ""))}</p>
+      <div class="tarjeta">${PREG.filter(q => q.s === P.i).map(q => `<div class="pregunta"><p><span class="num">${q.clave}</span>${esc(q.texto)}</p>
+        <div class="opciones">${q.opciones.map((o, k) => { const m = o.match(/^([^:]{3,60}):\s(.+)$/); return `<button class="op ${e.r[q.clave] === k ? "sel" : ""}" data-acc="resp" data-clave="${q.clave}" data-k="${k}"><span class="punto"></span><span>${m ? `<b>${esc(m[1])}:</b> <span class="glosa">${esc(m[2])}</span>` : esc(o)}</span></button>`; }).join("")}</div></div>`).join("")}</div>
+      ${P.i === INST.parte1.length - 1 ? `<p class="tenue" style="font-size:13.5px">${esc(INST.fuente)}</p>` : ""}`;
+  },
+  presentacion() {
+    const p = INST.edv_presentacion;
+    return `<h1>Entornos de Vida</h1><p class="tenue">¿Cómo respira tu ciudad? Proceso participativo para evaluar la calidad de los espacios donde vivimos.</p>
+      <div class="tarjeta">${p.map(t => /\?$/.test(t) || /^Tú eres|^¿participas/.test(t) ? `<p><b>${esc(t)}</b></p>` : `<p>${esc(t)}</p>`).join("")}</div>`;
+  },
+  dimension(e, P) {
+    const d = INST.dimensiones[P.i], n = P.i + 1, v = e.edv[n];
+    return `<h1>${n}. ${esc(d.nombre)}</h1>
+      <div class="tarjeta">
+        <p>${esc(d.intro)}</p>
+        <p class="tenue" style="margin-bottom:0">Ahora, piensa en el barrio, pueblo o ciudad que estás valorando, y contesta:</p>
+        <p class="principal">${esc(d.pregunta)}</p>
+        <details class="reflex" ${v ? "" : "open"}><summary>Antes de realizar tu valoración, reflexiona sobre las siguientes cuestiones</summary>
+          <ul>${d.reflexion.map(r => `<li>${esc(r)}</li>`).join("")}</ul></details>
+        <p class="tenue" style="font-size:15px;margin-bottom:0">${esc(INST.edv_escala)}</p>
+        <div class="escala" role="radiogroup" aria-label="Puntuación de 1 a 10">${[...Array(10)].map((_, k) => `<button role="radio" aria-checked="${v === k + 1}" class="${v === k + 1 ? "sel" : ""}" data-acc="punt" data-n="${n}" data-v="${k + 1}">${k + 1}</button>`).join("")}</div>
+        <div class="escala-pie"><span>1 · no está en buenas condiciones</span><span>10 · en muy buenas condiciones</span></div>
+      </div>
+      <div class="tarjeta">
+        <label class="campo" style="margin-top:0"><span>Utiliza el siguiente espacio para anotar las razones de tu valoración:</span>
+        <textarea data-campo="razon" data-n="${n}">${esc(e.razones[n] || "")}</textarea></label>
+        ${bloqueGrabacion(e, "D" + String(n).padStart(2, "0"), "las razones")}
+      </div>`;
+  },
+  diagrama(e) {
+    const faltan = INST.dimensiones.filter((d, i) => !e.edv[i + 1]).length;
+    const orden = INST.dimensiones.map((d, i) => ({ n: i + 1, nombre: d.nombre, v: e.edv[i + 1] })).filter(x => x.v).sort((a, b) => a.v - b.v);
+    return `<h1>Diagrama</h1>
+      <div class="tarjeta">${radarSVG(e.edv)}
+        <p class="tenue" style="text-align:center;font-size:15px">${esc(INST.diagrama.join(" "))}</p>
+        ${faltan ? `<div class="aviso">Faltan ${faltan} dimensiones por puntuar.</div>` : ""}</div>
+      ${orden.length ? `<div class="tarjeta"><div class="rejilla">
+        <div><h3 style="margin-top:0">Peor evaluadas</h3>${orden.slice(0, 3).map(x => `<p style="margin:4px 0">${x.v} · ${esc(x.nombre)}</p>`).join("")}</div>
+        <div><h3 style="margin-top:0">Mejor evaluadas</h3>${orden.slice(-3).reverse().map(x => `<p style="margin:4px 0">${x.v} · ${esc(x.nombre)}</p>`).join("")}</div></div></div>` : ""}`;
+  },
+  prioridades(e) {
+    const lista = (campo, arr) => arr.map((t, k) => `<label class="campo"><span>${k + 1})</span><textarea style="min-height:72px" data-campo="${campo}" data-k="${k}">${esc(t)}</textarea></label>`).join("");
+    return `<h1>Problemas y acciones prioritarias</h1>
+      <div class="tarjeta"><p class="principal" style="font-size:18px">${esc(INST.prioridades.problemas)}</p>${lista("problema", e.problemas)}${bloqueGrabacion(e, "P1", "los problemas")}</div>
+      <div class="tarjeta"><p class="principal" style="font-size:18px">${esc(INST.prioridades.acciones)}</p>${lista("accion", e.acciones)}${bloqueGrabacion(e, "P2", "las acciones")}</div>`;
+  },
+  cierre(e) {
+    const f = faltantes(e);
+    return `<h1>Cierre de la entrevista</h1>
+      ${e.cerrada ? `<div class="aviso ok"><b>${esc(INST.gracias)}</b> Entrevista completada el ${fechaLarga(e.fin)}.</div>` : ""}
+      ${f.length && !e.cerrada ? `<div class="tarjeta"><h2>Falta por responder (${f.length})</h2><div class="lista">${f.map(x => `<button class="fila-ent" data-acc="ir-paso" data-p="${x.paso}"><span style="flex:1">${esc(x.txt)}</span><span class="tenue">Ir</span></button>`).join("")}</div></div>` : ""}
+      <div class="tarjeta">
+        <h2>Registro del encuestador</h2>
+        <p class="tenue" style="margin-top:0">No forma parte del instrumento: alimenta el reporte al Comité.</p>
+        <button class="op ${e.queja.hubo ? "sel" : ""}" data-acc="queja"><span class="punto"></span><span>El participante expresó una queja sobre el estudio o la entrevista.</span></button>
+        ${e.queja.hubo ? `<label class="campo"><span>Describa la queja</span><textarea data-campo="queja">${esc(e.queja.texto)}</textarea></label>` : ""}
+        <label class="campo"><span>Observaciones de la aplicación</span><textarea style="min-height:80px" data-campo="notas">${esc(e.notas)}</textarea></label>
+      </div>
+      ${e.cerrada || e.retirado ? `<div class="tarjeta"><h2>Enviar esta entrevista</h2>
+        ${CODIGO.ids.length === 1 && CODIGO.ids[0] === e.id ? `<label class="campo"><span>Código cifrado · ${CODIGO.txt.length.toLocaleString("es-PA")} caracteres</span><textarea class="codigo" readonly>${esc(CODIGO.txt)}</textarea></label>
+          <div class="btn-fila"><button class="btn pri" data-acc="compartir-codigo">Compartir por WhatsApp o correo</button><button class="btn" data-acc="copiar-codigo">Copiar</button></div>`
+        : `<p class="tenue" style="margin-top:0">${e.enviado && e.actualizada <= e.enviado ? `Enviada el ${fechaLarga(e.enviado)}. ` : ""}El código lleva las respuestas, no los audios.</p><button class="btn pri" data-acc="codigo-una">Generar el código para enviar</button>`}</div>` : ""}
+      <div class="btn-fila">
+        ${e.cerrada ? `<button class="btn" data-acc="reabrir">Reabrir para corregir</button>` : `<button class="btn pri" data-acc="cerrar" ${f.length || e.retirado ? "disabled" : ""}>Finalizar entrevista</button>`}
+        ${e.retirado ? "" : `<button class="btn peligro" data-acc="retirar">Retirar participante</button>`}
+        <button class="btn" data-acc="ir-inicio">Volver al inicio</button>
+      </div>`;
+  },
+};
+
+// ---------------------------------------------------------------------------
+// Diálogos
+// ---------------------------------------------------------------------------
+function dialogo(html) {
+  return new Promise(ok => {
+    const d = document.createElement("div"); d.className = "dialogo"; d.innerHTML = `<div class="tarjeta">${html}</div>`;
+    document.body.appendChild(d);
+    d.addEventListener("click", ev => { const b = ev.target.closest("[data-r]"); if (!b) return; const inp = d.querySelector("input,textarea"); const r = b.dataset.r === "1" ? (inp ? inp.value : true) : null; d.remove(); ok(r); });
+    const i = d.querySelector("input,textarea"); if (i) i.focus();
+  });
+}
+const confirmar = (t, si = "Sí", clase = "pri") => dialogo(`<p style="margin-top:0">${t}</p><div class="btn-fila"><button class="btn ${clase}" data-r="1">${si}</button><button class="btn" data-r="0">Cancelar</button></div>`);
+const pedirTexto = (t, et) => dialogo(`<p style="margin-top:0">${t}</p><label class="campo"><span>${et}</span><textarea style="min-height:90px"></textarea></label><div class="btn-fila"><button class="btn pri" data-r="1">Aceptar</button><button class="btn" data-r="0">Cancelar</button></div>`);
+
+// ---------------------------------------------------------------------------
+// Copiar al portapapeles: execCommand primero (funciona dentro del gesto), la API moderna de respaldo
+// ---------------------------------------------------------------------------
+function copiar(texto) {
+  const ta = $("#portapapeles"); ta.value = texto; ta.removeAttribute("aria-hidden"); ta.focus(); ta.select(); ta.setSelectionRange(0, texto.length);
+  let ok = false; try { ok = document.execCommand("copy"); } catch (e) {}
+  ta.blur(); ta.setAttribute("aria-hidden", "true");
+  if (ok) return toast("Copiado.");
+  if (navigator.clipboard) navigator.clipboard.writeText(texto).then(() => toast("Copiado."), () => toast("No se pudo copiar: seleccione el texto a mano."));
+  else toast("No se pudo copiar: seleccione el texto a mano.");
+}
+
+// ---------------------------------------------------------------------------
+// Exportación: ZIP sin compresión (los audios ya vienen comprimidos), cifrado opcional
+// ---------------------------------------------------------------------------
+const CRC = (() => { const t = new Uint32Array(256); for (let n = 0; n < 256; n++) { let c = n; for (let k = 0; k < 8; k++) c = c & 1 ? 0xEDB88320 ^ (c >>> 1) : c >>> 1; t[n] = c >>> 0; } return t; })();
+function crc32(b) { let c = 0xFFFFFFFF; for (let i = 0; i < b.length; i++) c = CRC[(c ^ b[i]) & 0xFF] ^ (c >>> 8); return (c ^ 0xFFFFFFFF) >>> 0; }
+function zip(archivos) {
+  const partes = [], central = []; let off = 0;
+  const d = new Date(), hora = (d.getHours() << 11) | (d.getMinutes() << 5) | (d.getSeconds() >> 1), dia = ((d.getFullYear() - 1980) << 9) | ((d.getMonth() + 1) << 5) | d.getDate();
+  for (const a of archivos) {
+    const nom = te.encode(a.nombre), dat = a.datos instanceof Uint8Array ? a.datos : te.encode(a.datos), c = crc32(dat);
+    const h = new DataView(new ArrayBuffer(30));
+    [[0, 0x04034b50, 4], [4, 20, 2], [6, 0x0800, 2], [8, 0, 2], [10, hora, 2], [12, dia, 2], [14, c, 4], [18, dat.length, 4], [22, dat.length, 4], [26, nom.length, 2], [28, 0, 2]].forEach(([o, v, n]) => n === 4 ? h.setUint32(o, v, true) : h.setUint16(o, v, true));
+    partes.push(new Uint8Array(h.buffer), nom, dat);
+    const ce = new DataView(new ArrayBuffer(46));
+    [[0, 0x02014b50, 4], [4, 20, 2], [6, 20, 2], [8, 0x0800, 2], [10, 0, 2], [12, hora, 2], [14, dia, 2], [16, c, 4], [20, dat.length, 4], [24, dat.length, 4], [28, nom.length, 2], [30, 0, 2], [32, 0, 2], [34, 0, 2], [36, 0, 2], [38, 0, 4], [42, off, 4]].forEach(([o, v, n]) => n === 4 ? ce.setUint32(o, v, true) : ce.setUint16(o, v, true));
+    central.push(new Uint8Array(ce.buffer), nom);
+    off += 30 + nom.length + dat.length;
+  }
+  const tam = central.reduce((s, p) => s + p.length, 0);
+  const fin = new DataView(new ArrayBuffer(22));
+  [[0, 0x06054b50, 4], [4, 0, 2], [6, 0, 2], [8, archivos.length, 2], [10, archivos.length, 2], [12, tam, 4], [16, off, 4], [20, 0, 2]].forEach(([o, v, n]) => n === 4 ? fin.setUint32(o, v, true) : fin.setUint16(o, v, true));
+  return new Blob([...partes, ...central, new Uint8Array(fin.buffer)], { type: "application/zip" });
+}
+function csv(lista) {
+  const col = ["codigo", "fase", "provincia", "comunidad", "fecha", "encuestador", "estado", "motivo_retiro", "consentimiento", "autoriza_grabacion",
+    ...PREG.map(p => p.clave), ...INST.dimensiones.map((d, i) => `EdV${String(i + 1).padStart(2, "0")}`), ...INST.dimensiones.map((d, i) => `razones${String(i + 1).padStart(2, "0")}`),
+    "problema1", "problema2", "problema3", "accion1", "accion2", "accion3", "queja", "queja_texto", "observaciones", "audios", "inicio", "fin", "ejemplo"];
+  const q = v => { const s = v == null ? "" : String(v); return /[";\n\r]/.test(s) ? `"${s.replace(/"/g, '""')}"` : s; };
+  const filas = lista.map(e => [e.codigo, e.tipo, e.provincia, e.comunidad, e.fecha, e.encuestador, estado(e), e.motivoRetiro, e.consent ? "sí" : "no", e.consentAudio ? "sí" : "no",
+    ...PREG.map(p => e.r[p.clave] != null ? p.opciones[e.r[p.clave]] : ""), ...INST.dimensiones.map((d, i) => e.edv[i + 1] || ""), ...INST.dimensiones.map((d, i) => e.razones[i + 1] || ""),
+    ...e.problemas, ...e.acciones, e.queja.hubo ? "sí" : "no", e.queja.texto, e.notas, e.audios.length, e.inicio || "", e.fin || "", e.demo ? "sí" : "no"].map(q).join(";"));
+  return "﻿" + [col.join(";"), ...filas].join("\r\n");
+}
+async function armarPaquete(lista) {
+  const ext = m => m.includes("mp4") ? "m4a" : m.includes("ogg") ? "ogg" : "webm";
+  const arch = [
+    { nombre: "LEAME.txt", datos: `Paquete de Entornos de Vida\r\nEstudio: ${INST.titulo}\r\nInstrumento ${INST.version}. Aplicación ${APP_VERSION}.\r\nEncuestador: ${META.encuestador}\r\nExportado: ${new Date().toLocaleString("es-PA")}\r\nEntrevistas: ${lista.length}\r\n\r\nrespuestas.csv: una fila por participante, separador punto y coma, abre en Excel.\r\nrespuestas.json: el registro completo, con el número de opción de cada pregunta.\r\ndiagramas/: el diagrama de cada participante en SVG.\r\naudios/: código_ítem_n. D01 a D14 son las razones de cada dimensión; P1 problemas, P2 acciones.\r\n\r\nLos audios contienen la voz del participante: son datos identificables. Custodia y destrucción según la adenda aprobada.\r\n` },
+    { nombre: "respuestas.csv", datos: csv(lista) },
+    { nombre: "respuestas.json", datos: JSON.stringify({ instrumento: INST.version, aplicacion: APP_VERSION, encuestador: META.encuestador, exportado: new Date().toISOString(), entrevistas: lista }, null, 1) },
+  ];
+  for (const e of lista) {
+    arch.push({ nombre: `diagramas/${e.codigo}.svg`, datos: radarSVG(e.edv, { suelto: true }) });
+    const cuenta = {};
+    for (const a of e.audios) {
+      const c = await bdGet("audios", a.id); if (!c) continue;
+      cuenta[a.item] = (cuenta[a.item] || 0) + 1;
+      arch.push({ nombre: `audios/${e.codigo}_${a.item}_${cuenta[a.item]}.${ext(a.mime)}`, datos: new Uint8Array(await descifrar(c)) });
+    }
+  }
+  return zip(arch);
+}
+async function entregarArchivo(blob, nombre) {
+  const f = new File([blob], nombre, { type: blob.type || "application/octet-stream" });
+  if (navigator.canShare && navigator.canShare({ files: [f] })) {
+    try { await navigator.share({ files: [f], title: nombre }); return true; } catch (e) { if (e.name === "AbortError") return false; }
+  }
+  const url = URL.createObjectURL(blob), a = document.createElement("a"); a.href = url; a.download = nombre; document.body.appendChild(a); a.click(); a.remove();
+  setTimeout(() => URL.revokeObjectURL(url), 30000); return true;
+}
+// Cifrado para el receptor (mismo esquema que el motor de exámenes): una llave AES al azar cifra el
+// contenido y la llave pública RSA-OAEP envuelve esa llave. El equipo de campo no puede abrir lo que envía.
+async function cifrarParaReceptor(bytes) {
+  const pub = await crypto.subtle.importKey("jwk", LLAVE, { name: "RSA-OAEP", hash: "SHA-256" }, false, ["encrypt"]);
+  const aes = await crypto.subtle.generateKey({ name: "AES-GCM", length: 256 }, true, ["encrypt"]);
+  const envuelta = new Uint8Array(await crypto.subtle.encrypt({ name: "RSA-OAEP" }, pub, new Uint8Array(await crypto.subtle.exportKey("raw", aes))));
+  const iv = crypto.getRandomValues(new Uint8Array(12));
+  const ct = new Uint8Array(await crypto.subtle.encrypt({ name: "AES-GCM", iv }, aes, bytes));
+  const todo = new Uint8Array(envuelta.length + 12 + ct.length);
+  todo.set(envuelta, 0); todo.set(iv, envuelta.length); todo.set(ct, envuelta.length + 12);
+  return todo;
+}
+function b64url(u) { let s = ""; for (let i = 0; i < u.length; i += 0x8000) s += String.fromCharCode.apply(null, u.subarray(i, i + 0x8000)); return btoa(s).replace(/\+/g, "-").replace(/\//g, "_").replace(/=+$/, ""); }
+async function comprimir(bytes) {
+  if (typeof CompressionStream === "undefined") return { b: bytes, gz: 0 };
+  const s = new Blob([bytes]).stream().pipeThrough(new CompressionStream("gzip"));
+  return { b: new Uint8Array(await new Response(s).arrayBuffer()), gz: 1 };
+}
+// Lo que viaja de cada entrevista: todo menos el estado de pantalla y los identificadores internos de audio
+const carga = e => { const c = JSON.parse(JSON.stringify(e)); delete c.vistos; c.audios = c.audios.map(a => ({ item: a.item, dur: a.dur, t: a.t, mime: a.mime })); return c; };
+async function codigoTexto(lista) {
+  const cuerpo = { tipo: "EDV", instrumento: INST.version, aplicacion: APP_VERSION, encuestador: META.encuestador, enviado: new Date().toISOString(), entrevistas: lista.map(carga) };
+  const c = await comprimir(te.encode(JSON.stringify(cuerpo)));
+  const plano = new Uint8Array(c.b.length + 1); plano[0] = c.gz; plano.set(c.b, 1);
+  return "EDV1." + b64url(await cifrarParaReceptor(plano));
+}
+async function cifrarPaquete(blob) {
+  return new Blob([te.encode("EDVZ"), await cifrarParaReceptor(new Uint8Array(await blob.arrayBuffer()))], { type: "application/octet-stream" });
+}
+async function compartirTexto(texto) {
+  if (navigator.share) { try { await navigator.share({ text: texto }); return true; } catch (e) { return false; } }
+  copiar(texto); return true;
+}
+let CODIGO = { txt: "", ids: [] };
+async function prepararCodigo(lista) { CODIGO = { txt: await codigoTexto(lista), ids: lista.map(x => x.id), sello: new Date().toISOString() }; }
+async function marcarEnviado() {
+  for (const id of CODIGO.ids) { const x = ENT.find(z => z.id === id); if (x) { x.enviado = CODIGO.sello; await guardarYa(x); } }
+}
+
+// ---------------------------------------------------------------------------
+// Entrevistas de ejemplo (ficticias) para mostrar el flujo
+// ---------------------------------------------------------------------------
+function entrevistaVacia(datos) {
+  return Object.assign({ id: uid(), r: {}, edv: {}, razones: {}, problemas: ["", "", ""], acciones: ["", "", ""], queja: { hubo: false, texto: "" }, notas: "", audios: [], vistos: [],
+    cerrada: false, retirado: false, motivoRetiro: "", creada: new Date().toISOString(), actualizada: new Date().toISOString(), encuestador: META.encuestador }, datos);
+}
+async function cargarEjemplos() {
+  const base = { tipo: "PC", provincia: "Chiriquí", comunidad: "Ejemplo", fecha: hoyISO(), consent: true, demo: true };
+  const mk = (n, extra) => entrevistaVacia(Object.assign({}, base, { num: String(900 + n), codigo: `DEMO-PC-CHI-EJEMPLO-${900 + n}` }, extra));
+  const llena = { r: Object.fromEntries(PREG.map(p => [p.clave, Math.min(p.opciones.length - 1, (p.clave.charCodeAt(0) + +p.clave.slice(1)) % p.opciones.length)])),
+    edv: { 1: 4, 2: 3, 3: 5, 4: 6, 5: 8, 6: 5, 7: 6, 8: 4, 9: 7, 10: 7, 11: 8, 12: 5, 13: 4, 14: 3 },
+    razones: { 2: "Ejemplo ficticio: el bus pasa cada hora y deja de pasar a las 6 de la tarde.", 14: "Ejemplo ficticio: no conoce la junta comunal ni cómo participar." },
+    problemas: ["Transporte público escaso", "Poca participación comunitaria", "Aceras en mal estado"], acciones: ["Pedir rutas nocturnas", "Reunión con la junta comunal", "Jornada de mejora de aceras"] };
+  const ej = [
+    mk(1, {}),
+    mk(2, { r: { A1: 1, A2: 0, A3: 2 }, consentAudio: false, inicio: new Date().toISOString() }),
+    mk(3, Object.assign({}, JSON.parse(JSON.stringify(llena)), { consentAudio: true, cerrada: true, inicio: new Date(Date.now() - 46 * 60000).toISOString(), fin: new Date().toISOString(), vistos: [5, 20] })),
+    mk(4, { r: { A1: 0, A2: 5 }, retirado: true, motivoRetiro: "Ejemplo ficticio: tuvo que salir y prefirió no continuar.", consentAudio: false }),
+  ];
+  ej[1].r.A2 = 1;
+  for (const e of ej) { ENT.unshift(e); await guardarYa(e); }
+  toast("Se cargaron cuatro entrevistas de ejemplo.");
+}
+
+// ---------------------------------------------------------------------------
+// Eventos
+// ---------------------------------------------------------------------------
+document.addEventListener("input", ev => {
+  const t = ev.target;
+  if (VISTA === "nueva") { leerForm(); $("#nCodigo").textContent = codigoForm(); return; }
+  if (VISTA !== "entrevista" || !t.dataset.campo) return;
+  const e = ACT, c = t.dataset.campo;
+  if (c === "razon") e.razones[t.dataset.n] = t.value;
+  if (c === "problema") e.problemas[t.dataset.k] = t.value;
+  if (c === "accion") e.acciones[t.dataset.k] = t.value;
+  if (c === "queja") e.queja.texto = t.value;
+  if (c === "notas") e.notas = t.value;
+  marcarInicio(e); guardar(e);
+});
+document.addEventListener("change", ev => { if (VISTA === "nueva" && ["nTipo", "nProv"].includes(ev.target.id)) { leerForm(); pintar(); } });
+function leerForm() {
+  const v = id => { const el = document.getElementById(id); return el ? el.value : null; };
+  if (v("nTipo") != null) FORM.tipo = v("nTipo");
+  if (v("nProv") != null) FORM.provincia = v("nProv");
+  if (v("nComu") != null) FORM.comu = v("nComu");
+  if (v("nComuTxt") != null) FORM.comuTxt = v("nComuTxt");
+  if (v("nNum") != null) FORM.num = v("nNum");
+  if (v("nFecha") != null) FORM.fecha = v("nFecha");
+}
+function marcarInicio(e) { if (!e.inicio) e.inicio = new Date().toISOString(); }
+
+document.addEventListener("click", async ev => {
+  const b = ev.target.closest("[data-acc]"); if (!b || b.disabled) return;
+  const a = b.dataset.acc, e = ACT;
+  switch (a) {
+    case "crear-llave": {
+      const enc = $("#fEnc").value.trim(), c1 = $("#fClave").value, c2 = $("#fClave2").value;
+      const err = !enc ? "Escriba el nombre del encuestador." : c1.length < 6 ? "La clave debe tener al menos 6 caracteres." : c1 !== c2 ? "Las dos claves no coinciden." : "";
+      if (err) { $("#fError").innerHTML = `<div class="aviso mal">${err}</div>`; return; }
+      b.disabled = true; b.textContent = "Preparando…";
+      const salt = crypto.getRandomValues(new Uint8Array(16)); Llave.k = await derivar(c1, salt);
+      META = { encuestador: enc, salt, prueba: await cifrarObj("entornos-de-vida") };
+      await bdPut("meta", "llave", META); await cargarEntrevistas(); ir("inicio"); break;
+    }
+    case "abrir": {
+      b.disabled = true; b.textContent = "Abriendo…";
+      try { Llave.k = await derivar($("#fClave").value, META.salt); await descifrarObj(META.prueba); }
+      catch (err) { Llave.k = null; $("#fError").innerHTML = `<div class="aviso mal">Clave incorrecta.</div>`; b.disabled = false; b.textContent = "Abrir"; return; }
+      await cargarEntrevistas(); ir("inicio"); break;
+    }
+    case "nueva": formNuevo(); ir("nueva"); break;
+    case "n-consent": leerForm(); FORM.consent = !FORM.consent; pintar(); break;
+    case "n-audio": leerForm(); FORM.audio = b.dataset.v === "1"; pintar(); break;
+    case "crear-ent": case "crear-ent-espera": {
+      leerForm(); const cod = codigoForm();
+      const err = !FORM.consent ? "Sin consentimiento firmado no se registra al participante." : FORM.audio === null ? "Marque si el participante autoriza o no la grabación." :
+        !(+FORM.num > 0) ? "Escriba el número de participante." : (FORM.tipo !== "RD" || !COMUNIDADES[FORM.provincia]) && !FORM.comuTxt.trim() ? "Escriba la comunidad." :
+        ENT.some(x => x.codigo === cod) ? `Ya existe ${cod} en este equipo.` : "";
+      if (err) { $("#nError").innerHTML = `<div class="aviso mal">${err}</div>`; return; }
+      const comu = FORM.tipo === "RD" && COMUNIDADES[FORM.provincia] ? COMUNIDADES[FORM.provincia].find(x => x[0] === FORM.comu)[1] : FORM.comuTxt.trim();
+      const n = entrevistaVacia({ codigo: cod, tipo: FORM.tipo, provincia: FORM.provincia, comunidad: comu, num: FORM.num, fecha: FORM.fecha, consent: true, consentAudio: FORM.audio });
+      ENT.unshift(n); await guardarYa(n);
+      a === "crear-ent" ? ir("entrevista", n, 0) : ir("inicio"); break;
+    }
+    case "abrir-ent": { const x = ENT.find(z => z.id === b.dataset.id); const p = PASOS.findIndex((_, i) => !pasoCompleto(x, i)); ir("entrevista", x, x.cerrada || x.retirado ? PASOS.length - 1 : Math.max(0, p)); break; }
+    case "resp": if (e.retirado) return; e.r[b.dataset.clave] = +b.dataset.k; marcarInicio(e); guardar(e); pintar(); break;
+    case "punt": if (e.retirado) return; e.edv[b.dataset.n] = +b.dataset.v; marcarInicio(e); guardar(e); pintar(); break;
+    case "ant": await detenerGrabacion(); ir("entrevista", e, Math.max(0, PASO - 1)); break;
+    case "sig": await detenerGrabacion(); ir("entrevista", e, Math.min(PASOS.length - 1, PASO + 1)); break;
+    case "ir-paso": ir("entrevista", e, +b.dataset.p); break;
+    case "indice": {
+      const html = `<h2>Índice de la entrevista</h2><div class="indice">${PASOS.map((p, i) => `<button data-r="1" data-p="${i}" class="${i === PASO ? "actual" : ""}"><span class="marca-ok">${pasoCompleto(e, i) ? "✓" : ""}</span>${esc(p.rotulo)}</button>`).join("")}</div><div class="btn-fila" style="margin-top:12px"><button class="btn" data-r="0">Cerrar</button></div>`;
+      const d = document.createElement("div"); d.className = "dialogo"; d.innerHTML = `<div class="tarjeta" style="max-width:760px">${html}</div>`; document.body.appendChild(d);
+      d.addEventListener("click", async x => { const t = x.target.closest("[data-r]"); if (!t) return; d.remove(); if (t.dataset.p != null) { await detenerGrabacion(); ir("entrevista", e, +t.dataset.p); } });
+      break;
+    }
+    case "grabar": await iniciarGrabacion(e, b.dataset.item); pintar(); break;
+    case "parar": await detenerGrabacion(); break;
+    case "oir": reproducir(e, b.dataset.id); break;
+    case "borrar-audio": if (await confirmar("¿Borrar este audio? No se puede recuperar.", "Borrar", "peligro")) { await bdDel("audios", b.dataset.id); e.audios = e.audios.filter(x => x.id !== b.dataset.id); guardar(e); pintar(); } break;
+    case "queja": e.queja.hubo = !e.queja.hubo; guardar(e); pintar(); break;
+    case "cerrar": e.cerrada = true; e.fin = new Date().toISOString(); await guardarYa(e); pintar(); toast("Entrevista completada."); break;
+    case "reabrir": e.cerrada = false; e.fin = null; await guardarYa(e); pintar(); break;
+    case "retirar": { const m = await pedirTexto("El participante decide no continuar. Lo respondido se conserva y cuenta como retirado en el reporte.", "Motivo (si lo dio)"); if (m === null) return; await detenerGrabacion(); e.retirado = true; e.motivoRetiro = m.trim(); e.cerrada = false; await guardarYa(e); pintar(); break; }
+    case "reactivar": e.retirado = false; e.motivoRetiro = ""; await guardarYa(e); pintar(); break;
+    case "ir-inicio": await detenerGrabacion(); await guardarTodo(); ENT.sort((x, y) => (y.actualizada || "").localeCompare(x.actualizada || "")); ir("inicio"); break;
+    case "ver-resumen": ir("resumen"); break;
+    case "solo-reales": SOLO_REALES = !SOLO_REALES; pintar(); break;
+    case "copiar-resumen": copiar(RESUMEN_TXT); break;
+    case "ver-exportar": ir("exportar"); break;
+    case "ver-ajustes": ir("ajustes"); break;
+    case "ejemplos": await cargarEjemplos(); pintar(); break;
+    case "borrar-ejemplos": for (const x of ENT.filter(z => z.demo)) { for (const au of x.audios) await bdDel("audios", au.id); await bdDel("entrevistas", x.id); } ENT = ENT.filter(z => !z.demo); pintar(); break;
+    case "generar-codigo": case "generar-codigo-todo": case "codigo-una": {
+      await guardarTodo();
+      const lista = a === "codigo-una" ? [e] : a === "generar-codigo" ? ENT.filter(porEnviar) : ENT;
+      b.disabled = true; b.textContent = "Cifrando…";
+      await prepararCodigo(lista); pintar(); break;
+    }
+    case "copiar-codigo": copiar(CODIGO.txt); await marcarEnviado(); break;
+    case "compartir-codigo": if (await compartirTexto(CODIGO.txt)) { await marcarEnviado(); toast("Código entregado a la aplicación elegida."); } break;
+    case "exportar": {
+      await guardarTodo();
+      const lista = $("#xTodas").checked ? ENT : ENT.filter(x => !x.exportada || x.actualizada > x.exportada);
+      if (!lista.length) { $("#xError").innerHTML = `<div class="aviso">No hay nada nuevo que exportar. Marque «Incluir también lo ya exportado» para repetir el paquete.</div>`; return; }
+      b.disabled = true; b.textContent = "Armando el paquete…";
+      const sello = new Date().toISOString(), base = `EdV_${(META.encuestador.normalize("NFD").replace(/[̀-ͯ]/g, "").replace(/[^A-Za-z]+/g, "") || "equipo").slice(0, 20)}_${hoyISO()}_${sello.slice(11, 16).replace(":", "")}`;
+      const blob = await cifrarPaquete(await armarPaquete(lista));
+      const ok = await entregarArchivo(blob, base + ".edv");
+      if (ok) { lista.forEach(x => { x.exportada = sello; }); for (const x of lista) await guardarYa(x); toast(`Paquete con ${lista.length} entrevista${lista.length === 1 ? "" : "s"}.`); }
+      pintar(); break;
+    }
+    case "borrar-exportadas": {
+      const lista = ENT.filter(x => x.exportada && x.actualizada <= x.exportada);
+      if (!(await confirmar(`¿Borrar ${lista.length} entrevista${lista.length === 1 ? "" : "s"} ya entregada${lista.length === 1 ? "" : "s"} al CIIGC, con sus audios?`, "Borrar", "peligro"))) return;
+      for (const x of lista) { for (const au of x.audios) await bdDel("audios", au.id); await bdDel("entrevistas", x.id); }
+      ENT = ENT.filter(x => !lista.includes(x)); pintar(); break;
+    }
+    case "vaciar": {
+      const t = await dialogo(`<p style="margin-top:0">Se borra todo lo capturado en este equipo y la clave. Escriba <b>VACIAR</b> para confirmar.</p><label class="campo"><span>Confirmación</span><input type="text" autocapitalize="characters"></label><div class="btn-fila"><button class="btn peligro" data-r="1">Vaciar</button><button class="btn" data-r="0">Cancelar</button></div>`);
+      if (t !== "VACIAR") return;
+      await Promise.all(["meta", "entrevistas", "audios"].map(bdClear)); META = null; Llave.k = null; ENT = []; ir("llave"); break;
+    }
+  }
+});
+$("#btnInicio").addEventListener("click", async () => { await detenerGrabacion(); await guardarTodo(); ir("inicio"); });
+
+function pintarRed() { const el = $("#estadoRed"); el.textContent = navigator.onLine ? "Con conexión" : "Sin conexión"; el.className = "chip " + (navigator.onLine ? "completado" : "activo"); }
+addEventListener("online", pintarRed); addEventListener("offline", pintarRed);
+
+// ---------------------------------------------------------------------------
+// Arranque
+// ---------------------------------------------------------------------------
+(async function () {
+  pintarRed();
+  if (!window.isSecureContext || !window.crypto || !crypto.subtle || !window.indexedDB) {
+    $("#app").innerHTML = `<div class="aviso mal">Este navegador no ofrece cifrado o almacenamiento local. Abra la página desde su dirección https.</div>`; return;
+  }
+  if ("serviceWorker" in navigator) navigator.serviceWorker.register("sw.js").catch(() => {});
+  if (navigator.storage && navigator.storage.persist) { try { PERSISTE = await navigator.storage.persist(); } catch (e) {} }
+  await abrirBD();
+  META = await bdGet("meta", "llave") || null;
+  ir("llave");
+})();
+</script>
+</body>
+</html>
