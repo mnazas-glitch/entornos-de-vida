@@ -95,6 +95,8 @@ details.reflex li{margin:6px 0}
 .chip.activo{background:var(--alerta-suave);color:var(--alerta)}
 .chip.completado{background:var(--ok-suave);color:var(--ok)}
 .chip.retirado{background:var(--mal-suave);color:var(--mal)}
+.chip.pendiente,.chip.noacepto{background:var(--fondo);color:var(--tenue);border-color:var(--linea)}
+.op:disabled{opacity:.5;cursor:not-allowed}
 .chip.demo{border-color:var(--linea);color:var(--tenue)}
 .lista{display:grid;gap:8px}
 .fila-ent{display:flex;align-items:center;gap:12px;padding:12px 14px;border:1px solid var(--linea);border-radius:12px;background:var(--sup);width:100%;text-align:left}
@@ -106,6 +108,14 @@ footer.nav .barra-fila{gap:10px}
 .grab .btn.rec{border-color:var(--grab);color:var(--grab)}
 .grab .btn.rec.on{background:var(--grab);color:#fff}
 .latido{width:10px;height:10px;border-radius:50%;background:#fff;animation:lat 1s infinite}
+.indgrab{display:inline-flex;align-items:center;gap:8px;padding:4px 6px 4px 12px;border-radius:999px;border:1px solid var(--linea);font-size:14px;white-space:nowrap;font-variant-numeric:tabular-nums}
+.indgrab.on{background:var(--grab);border-color:var(--grab);color:#fff}
+.indgrab.on .btn{background:#fff;color:var(--grab);border-color:#fff}
+.indgrab.pausa{background:var(--alerta-suave);color:var(--alerta);border-color:transparent}
+.indgrab .btn.chico{min-height:34px;padding:4px 12px}
+@media (max-width:600px){.marca small{display:none}}
+.casilla-texto p{margin:0 0 12px}
+.op.grande{min-height:64px;font-size:18px;font-weight:600}
 @keyframes lat{50%{opacity:.25}}
 .clip{display:flex;align-items:center;gap:10px;padding:6px 0;border-top:1px solid var(--linea);font-size:15px}
 .clip:first-of-type{border-top:0}
@@ -138,6 +148,7 @@ table.datos td.n{text-align:right;font-variant-numeric:tabular-nums}
   <div class="barra-fila">
     <div class="marca">Entornos de Vida<small id="subtitulo">Determinantes de salud con enfoque territorial · CSS · CIIGC</small></div>
     <div class="espacio"></div>
+    <span id="indGrab" class="indgrab" hidden></span>
     <span id="estadoRed" class="chip enrolado">Sin conexión</span>
     <button class="btn chico" id="btnInicio" hidden>Inicio</button>
   </div>
@@ -151,7 +162,7 @@ table.datos td.n{text-align:right;font-variant-numeric:tabular-nums}
 "use strict";
 const INST = {"version": "V2.0 17/7/2026", "titulo": "Análisis de determinantes de salud con enfoque territorial, en población de 18 años o más. República de Panamá. Años 2026-2027", "investigadores": "Investigadores: Dra. Iranela Miranda, Dr.Gresky Gutiérrez,Dra. María Mercedes Castrejón, Dra. Luz Romero, Dr.Jaime Sevillano, Dr. Manuel Nazas, Dr. Juan Carlos Luria, Mgter Iset Trujillo, Dr. Heraclides Gómez, Dra. Tamara Villafañez, Licda. Muriel Rangel y Licda. Ariadna Candanedo, Dra. Olga Quirós, Dr. Alexis Castillo y Licda. Shanira Pineda.", "parte1_instruccion": "Parte I. Responda cada pregunta marcando la respuesta seleccionada.", "parte1": [{"letra": "A", "titulo": "Preguntas sobre aspectos sociodemográficos", "preguntas": [{"texto": "El sexo al que pertenece es:", "opciones": ["Hombre", "Mujer"]}, {"texto": "Indique a qué grupo de edad pertenece:", "opciones": ["18 a 24 años", "25 a 34 años", "35 a 44 años", "45 a 54 años", "55 a 64 años", "65 años o más"]}, {"texto": "Coloque el Nivel Educativo al que pertenece:", "opciones": ["Sin estudios formales", "Primaria", "Secundaria", "Técnico", "Licenciatura", "Postgrado o especialización", "Doctorado"]}, {"texto": "Indique su Nacionalidad:", "opciones": ["Panameña", "Extranjero/a"]}, {"texto": "Marque la situación actual en cuanto a su ocupación:", "opciones": ["Empleado: del gobierno, de empresa privada, de una cooperativa, de servicio doméstico o de una organización sin fines de lucro.", "Trabajador por cuenta propia: que ha desarrollado su propio negocio o empresa o ejerce por su cuenta propia su profesión. No tiene a su cargo otros empleados.", "Patrono o Dueño: persona que ha explotado su propia empresa, solo o asociado, ejerce por su cuenta una profesión, pero tiene a su cargo uno o más empleados que reciben una remuneración.", "Trabajador Familiar: ejerce una profesión no remunerada, en una empresa o negocio explotado por un miembro de su familia.", "Miembro de una Cooperativa de Producción: participa de una modalidad asociativa de empresa que se dedica a producir algún artículo o bien."]}, {"texto": "Coloque el grupo ocupacional al que pertenece:", "opciones": ["Directores y gerentes de los sectores públicos, privados y de organizaciones de interés social.", "Profesionales, científicos y otros intelectuales.", "Técnicos y profesionales de nivel medio.", "Empleados de oficina.", "Trabajadores de los servicios y vendedores de comercios y mercados.", "Agricultores, trabajadores agropecuarios, forestales, de la pesca y caza.", "Artesanos, trabajadores de la minería, la construcción, la industria manufacturera, la mecánica y ocupaciones afines.", "Operadores de instalaciones fijas y máquinas (Manejo de máquinas e instalaciones industriales de gran tamaño); montadores, ensambladores, conductores y operadores de maquinarias móviles.", "Trabajadores no calificados de los servicios (Vendedores ambulantes, personal de limpieza, conserjería, mensajeros, porteros), la minería, la construcción, industria manufacturera, transporte y otras ocupaciones elementales.", "Sin ocupación en estos momentos."]}, {"texto": "Su clase social de acuerdo al promedio de ingreso mensual en el hogar es:", "opciones": ["Clase Baja (Menos de B/. 771.75)", "Clase media (Entre B/. 771.75 y B/. 2058)", "Clase Alta (Mayor a B/. 2058 balboas)"]}]}, {"letra": "B", "titulo": "Preguntas sobre diversidad funcional", "preguntas": [{"texto": "¿Tiene alguna discapacidad física, auditiva, visual, intelectual, mental, de órganos y sistemas u otros, que no le permite realizar sus tareas y actividades habituales?", "opciones": ["Sí", "No"]}]}, {"letra": "C", "titulo": "Preguntas sobre antecedentes de cáncer", "preguntas": [{"texto": "¿Usted tiene o ha tenido cáncer alguna vez?", "opciones": ["Sí", "No"]}, {"texto": "¿Alguno de sus familiares tiene o ha tenido cáncer en algún momento?", "opciones": ["Sí", "No"]}]}, {"letra": "D", "titulo": "Preguntas relacionadas con aspectos ambientales", "preguntas": [{"texto": "¿Tiene usted acceso a agua potable en su hogar de manera regular?", "opciones": ["Sí", "No"]}, {"texto": "¿De dónde obtiene el agua en su hogar?", "opciones": ["Acueducto público (IDAAN)", "Acueducto Particular dentro de la vivienda.", "Pluma o toma de agua comunitaria.", "Pozos", "Agua de río, quebrada o manantial, sin tratar.", "Agua de lluvia", "Agua embotellada", "Carros cisternas"]}, {"texto": "¿Cuál es el sistema sanitario que utiliza en su hogar para la disposición y eliminación de excretas (heces y aguas negras)?", "opciones": ["Alcantarillado", "Tanque séptico", "Letrina", "Otros", "No tiene"]}, {"texto": "¿Dispone de un servicio de aseo formal para la recolección de basura en su comunidad?", "opciones": ["Sí", "No"]}, {"texto": "¿Alguna vez ha estado expuesto a plaguicidas en su trabajo, comunidad o lugar donde reside?", "opciones": ["Si", "No"]}]}, {"letra": "E", "titulo": "Preguntas relacionadas a hábitos y estilos de vida", "preguntas": [{"texto": "¿Realiza usted al menos 30 minutos de actividad física de intensidad moderada (caminar, pedalear, montar bicicleta, deportes, juegos, actividades recreativas, bailar, tareas domésticas) al día (Equivalente de 150 a 300 minutos semanales)?", "opciones": ["Sí, todos los días.", "Sí, algunos días de la semana.", "No realizo actividad física regularmente."]}, {"texto": "¿Ha fumado, masticado o aspirado algún producto derivado del tabaco, como cigarrillos, cigarrillo electrónico o vaper, tabaco de masticar durante los últimos 12 meses?", "opciones": ["Sí", "No"]}, {"texto": "¿Alguien fuma cerca de usted con frecuencia, en casa, el trabajo u otros lugares?", "opciones": ["Sí", "No"]}, {"texto": "¿Con qué frecuencia consume bebidas que contienen alcohol?", "opciones": ["Nunca", "Una o menos veces al mes.", "2 a 4 veces al mes", "2 a 3 veces por semana", "4 o más veces a la semana"]}]}], "fuente": "Fuente: ICGES, MINSA e INEC, 2019; OPS/NMH/19-001, 2019; Clasificación Nacional de Ocupaciones-2000; Ministerio de Economía y finanzas, 2010; Babor T, Higgins-Biddle J. Saunders J. y Monteiro M., 2001; MINSA, 2019; https://www.inec.gob.pa/archivos/P0705547520250124083204Comentarios%20EML%20octubre%202024.pdf", "edv_presentacion": ["Entornos de vida es una herramienta que se utiliza para mejorar la calidad de los lugares donde las personas viven, trabajan, se relacionan, envejecen…", "Es un cuestionario fácil y sencillo de usar. Consiste en 14 preguntas sobre elementos físicos, económicos y sociales del territorio a evaluar. Una vez contestadas, los resultados se trasladan a un simple diagrama en el que se muestra gráficamente la valoración sobre las áreas preguntadas.", "¿Por qué es importante el lugar donde vives?", "Los lugares donde pasamos gran parte de nuestro tiempo tienen un efecto importante sobre nuestra salud y bienestar. Conocer qué fortalezas y debilidades tiene nuestro entorno nos ayuda a pensar qué se necesita para mejorarlo. Las 14 dimensiones que incluye Entornos de vida están relacionadas con la salud y bienestar que nos proporciona nuestro entorno.", "¿Cómo se utiliza Entornos de Vida?", "La herramienta consta de 14 dimensiones. Cada dimensión tiene una pregunta principal y una serie de preguntas que te ayudarán a reflexionar sobre el tema. Una vez lo hayas valorado, deberás puntuarlo del 1 al 10 y explicar brevemente los motivos de tu puntuación.", "Cuando hayas evaluado las 14 dimensiones podrás traspasar tu puntuación al diagrama situado al final del cuestionario. De esta forma, y de un solo vistazo, verás cómo has evaluado tu entorno.", "Finalmente, podrás proponer acciones prioritarias que se pueden realizar para mejorar las áreas que peor has puntuado.", "Tú eres quien mejor conoce dónde vives,", "¿participas?", "Desplazamiento a pie o en bicicleta"], "edv_escala": "A continuación, puntúa mediante una escala del 1 a 10, donde 1 significa que no está en buenas condiciones y 10 significa que está en muy buenas condiciones. Registra tu valoración marcando con una X el número que consideres que refleja tu puntuación.", "dimensiones": [{"nombre": "Desplazamiento a pie o en bicicleta", "intro": "Caminar e ir en bicicleta son actividades que benefician nuestra salud y el medio ambiente. Poder realizar trayectos agradables y seguros nos anima a caminar o a ir en bicicleta.", "pregunta": "¿Puedes caminar y/o desplazarte en bicicleta (o en otro medio de transporte no motorizado) fácilmente y por trayectos agradables y seguros por tu barrio, corregimiento o distrito?", "reflexion": ["¿Hay zonas específicas para ir a caminar y/o montar en bicicleta (rutas señalizadas, circunvalaciones, caminos escolares, zonas peatonales, carriles bici…)?", "¿Las zonas para andar y/o montar en bicicleta tienen aceras amplias, buena señalización, rampas, sombra, asientos o banquetas, fuentes…? ¿Hay elementos que lo dificulten (postes, lámparas de alumbrado público, mobiliario urbano, pendiente excesiva, mal estado, poca separación de calzada, mucho tráfico, insuficiente seguridad vial…)?", "¿Tienen prioridad peatones o ciclistas frente a los coches u otros vehículos a motor (calles peatonales, semáforos y señalización específica)?", "¿Se puede ir caminando o en bicicleta a los colegios, universidad, tiendas, parques, o estaciones de transporte público (autobús, tren, metro…)?", "¿Tienen elementos que favorezcan la movilidad y la autonomía de todas las personas (ausencia de barreras arquitectónicas, asientos o banquetas, fuentes, baños públicos, sombra…), independientemente de la edad, el sexo género o la diversidad funcional?"]}, {"nombre": "Transporte público", "intro": "Poder acceder a un servicio de transporte público asequible, regular y bien conectado es importante para todas las personas. Un buen transporte público favorece realizar actividad física y anima a desplazarse de una forma más sostenible para el medio ambiente.", "pregunta": "¿El transporte público responde a las necesidades de todas las personas del barrio, corregimiento o distrito?", "reflexion": ["¿Hay variedad suficiente de transporte público, con horario regular y con frecuencias de paso adecuadas?", "¿Permite llegar a las instalaciones y servicios básicos (como centros educativos, de salud, sociales, administrativos, comerciales…) y los conecta entre sí? ¿Hay zonas a las que no se puede llegar en transporte público?", "¿El transporte público es seguro y accesible (por ejemplo, para las personas mayores, sillas de ruedas, carritos para bebés o carros de la compra) independientemente de la edad, el sexo, el género, la movilidad o la diversidad funcional?", "¿Hay información suficiente sobre el transporte público (horarios, precios, frecuencias, líneas, etc.)?", "Las paradas y/o estaciones de autobús, tren, metro, las estaciones de bicicletas o de otro tipo de transporte público ¿están en lugares adecuados y a una distancia a la que se puede llegar a pie desde casa, el trabajo u otras instalaciones o servicios básicos (como centros de estudios, de salud, administrativos, comerciales…)?", "Las paradas y/o estaciones de autobús, tren, metro, bicicletas u otro tipo de transporte público, ¿tienen baños públicos, zonas cubiertas, asientos, iluminación adecuada, paneles informativos o zonas de estacionamiento para vehículos a motor y bicicletas?", "¿Las paradas, estaciones y vehículos (autobuses, trenes, metro, bicicletas…) están en buenas condiciones y bien mantenidos?", "¿El transporte público tiene un coste económico asequible? ¿Hay boletos con descuento para las personas con menores recursos?"]}, {"nombre": "Tráfico y aparcamiento", "intro": "Demasiado tráfico afecta negativamente a la salud de las personas que viven, trabajan o visitan un lugar. Una buena regulación y políticas que restrinjan el tráfico de vehículos privados y ordenen las zonas de estacionamiento en la vía pública, contribuyen a minimizar este impacto.", "pregunta": "¿La regulación del tráfico y de las zonas de estacionamiento es adecuada en tu barrio, corregimiento o distrito?", "reflexion": ["¿Se han tomado medidas para disminuir los efectos negativos del tráfico (reducción de velocidad, restricción del tráfico, paneles acústicos, fomento del transporte sostenible, etc.)?", "¿Existen medidas que favorezcan la convivencia entre peatones, vehículos a motor y/o bicicletas y que mejoren la seguridad de peatones (como pasarelas en pasos a nivel, medidas para reducir la velocidad, espejos, señalización, etc.)?", "¿Existen suficientes plazas de aparcamiento o zonas de estacionamiento?", "¿Hay espacios gratuitos de estacionamiento a precios asequibles? ¿Tienen espacios reservados o de uso preferente para personas con movilidad reducida o en otras situaciones (embarazo, crianza)?", "¿Hay aparcamientos o zonas de estacionamiento públicos, seguros y bien señalizados? ¿Hay estacionamientos de transferencia (Son los que están situados en los alrededores para dejar los vehículos y tomar otro medio de transporte y así disminuir el tráfico en el barrio, corregimiento o distrito)? ¿Están conectados con el transporte público?"]}, {"nombre": "Calles y espacios públicos", "intro": "Las características del entorno construido del barrio, corregimiento o distrito, como edificios, lugares emblemáticos, calles, avenidas, plazas, calles arboladas… ayudan a crear entornos que mejoran el bienestar de sus vecinos/as y aumentan el sentimiento de pertenencia al lugar.", "pregunta": "¿Están los edificios bien cuidados y las calles y espacios públicos abiertos son agradables y fáciles para transitar por ellos?", "reflexion": ["Los edificios o espacios públicos, ¿hacen que transitar por esa zona sea una experiencia agradable?", "Los edificios, calles y espacios públicos abiertos, ¿están bien señalizados, están limpios, bien iluminados y cuidados en general?", "¿Existen elementos negativos como ruido, contaminación, suciedad o basura, grafitis, falta de iluminación, solares o edificios en ruinas?"]}, {"nombre": "Espacios naturales", "intro": "Los espacios naturales incluyen parques y bosques, campos, playas, arroyos y ríos y espacios verdes a lo largo de caminos y carreteras. Estos espacios mejoran la calidad del aire y benefician nuestra salud y bienestar.", "pregunta": "¿Puedes disfrutar en tu barrio, corregimiento o distrito de un espacio natural atractivo, seguro y de fácil acceso?", "reflexion": ["Estos espacios, ¿están dotados de elementos que los hagan atractivos y animen a la gente a ir y a permanecer en ellos (como paradas de transporte público cercanas, baños públicos, zonas de sombra, asientos, fuentes, buena iluminación, elementos de seguridad, áreas recreativas específicas, columpios…)?", "¿Tienen aspectos negativos como demasiado ruido, suciedad, poco mantenimiento o elementos que pueden ser peligrosos?", "¿Todas las personas pueden disfrutar de estos espacios (independientemente de su edad, sexo, género, grupo étnico, movilidad, diversidad funcional, nivel socioeconómico…)?"]}, {"nombre": "Juego y ocio", "intro": "Un buen entorno motiva a jugar y a disfrutar de espacios de ocio activo y esparcimiento. Contar con lugares que promuevan realizar actividades de ocio saludable, como la actividad física o las actividades culturales, mejoran la calidad de nuestras vidas y de nuestra salud.", "pregunta": "¿Se pueden realizar actividades de ocio y esparcimiento en tu barrio, corregimiento o distrito?", "reflexion": ["¿Existen lugares o instalaciones donde se puede jugar, hacer ejercicio físico o disfrutar de actividades culturales u otro tipo de (piensa en grupos específicos de personas como adolescentes, personas mayores, niños y niñas, personas con diversidad funcional…)?", "Estos lugares o instalaciones, ¿son de buena calidad y están bien mantenidos?", "¿son gratuitos o tienen un costo asequible? ¿se aprovechan al máximo?", "¿Todas las personas los pueden utilizar (independientemente de su edad, género, grupo étnico, lugar de nacimiento, movilidad, creencias religiosas, diversidad funcional, nivel socioeconómico…)?", "¿Se pueden utilizar en cualquier momento del día o la noche y del año?", "¿Se fomenta el uso de espacios para que los niños y niñas jueguen al aire libre?"]}, {"nombre": "Servicios", "intro": "Los servicios de los que disponemos en nuestro entorno pueden facilitar nuestras condiciones de vida. Estos incluyen comercios, escuelas infantiles, colegios, bibliotecas, lugares de culto, centros de salud y lugares para comer, beber y encontrarse con amistades… Poder acceder a ellos es importante para mejorar nuestra calidad de vida.", "pregunta": "¿Los servicios que tiene tu barrio, corregimiento o distrito satisfacen las necesidades de todas las personas?", "reflexion": ["¿Hay suficiente variedad de servicios para cubrir las necesidades básicas de tu barrio, corregimiento o distrito (educación, salud, compras, actividad física, ocio, cultura, relaciones sociales, etc.)?", "¿Son de calidad y están bien mantenidos?", "¿Todas las personas los pueden utilizar (independientemente de su nivel económico, edad, sexo, género, grupo étnico, movilidad, creencias religiosas, diversidad funcional y sexual)?", "¿Hay servicios dirigidos a grupos de población vulnerable?", "Los servicios disponibles, ¿favorecen la alimentación saludable, la actividad física y las relaciones sociales?"]}, {"nombre": "Trabajo y economía local", "intro": "Los beneficios de un buen empleo, como un salario adecuado, el tipo de actividad desarrollada, las relaciones sociales que favorece o la realización personal, promueven la salud y el bienestar.", "pregunta": "¿Hay una economía local activa en el barrio, corregimiento o distrito que favorezca el acceso a un buen empleo?", "reflexion": ["¿Existe una economía local activa que favorezca la creación de empleo?", "¿Hay diferentes oportunidades para que las personas adquieran habilidades para trabajar (como módulos o actividades formativas, escuelas de formación profesional, convenios con sectores económicos o empresas, prácticas…)?", "¿Se puede conseguir un buen empleo (independientemente de la edad, sexo, género, grupo étnico, movilidad, creencias religiosas, discapacidad, diversidad sexual)?", "¿Hay servicios locales (como oficinas de empleo, agencias de contratación, asociaciones u otras entidades) que ayuden a encontrar un puesto de trabajo?", "¿Hay facilidades para crear y poner en marcha nuevos negocios locales?"]}, {"nombre": "Vivienda y comunidad", "intro": "Las características de las viviendas del barrio o municipio afectan a las condiciones de vida de las personas que viven en él. Viviendas espaciosas, bien aisladas y mantenidas, seguras, accesibles y adaptadas impactan positivamente en la salud y el bienestar.", "pregunta": "¿Las viviendas de tu barrio, corregimiento o distrito satisfacen las necesidades de la población?", "reflexion": ["¿Existen viviendas espaciosas, seguras, bien aisladas (Que reducen la transferencia de calor o frío del exterior al interior de la vivienda) y mantenidas y bien comunicadas?", "¿Estas viviendas son accesibles para todas las personas (independientemente de su edad, género, sexo, movilidad, discapacidad, grupo étnico, nivel económico…) de tal forma que se puede vivir en ellas de manera segura, cómoda y autónoma?", "¿Existen diferentes formas de tener acceso a una vivienda (alquiler, compra, u otras) que satisfagan las necesidades las personas? ¿Se facilita el acceso a la vivienda (Descuentos, ayudas, programas u otras fórmulas) a algún grupo de población específico?", "¿El tamaño de las viviendas se adapta al tamaño o al tipo de las familias que las habitan?", "¿Las viviendas favorecen la convivencia de personas de diferentes edades, ingresos, movilidad, diversidad étnica, funcional, sexual…?", "¿Existen circunstancias que dificulten el acceso a la vivienda o fuercen el desplazamiento de sus vecinas/os a otros barrios, corregimiento o distrito (gentrificación o reurbanización de viviendas con mejor poder adquisitivo, alquileres turísticos, “guetificación del barrio”…)?"]}, {"nombre": "Contacto social", "intro": "Sentirnos solas o solos afecta a nuestra salud y bienestar. Un buen entorno ofrece una variedad suficiente de espacios y actividades donde relacionarse y pasar el tiempo con otras personas.", "pregunta": "¿Hay oportunidad y variedad suficiente de espacios y actividades para relacionarse con otras personas en tu barrio, corregimiento o distrito?", "reflexion": ["¿Existen espacios y actividades donde las personas tengan oportunidad de relacionarse (independientemente de su edad, sexo, género, lugar de nacimiento, grupo étnico, religión, movilidad, discapacidad, nivel económico…)?", "¿Hay actividades o programas específicos para grupos de población concretos (personas mayores, infancia, adolescencia, personas adultas…)?", "¿Existen diferentes lugares (interiores, al aire libre, construidos especialmente para ello o más informales) donde la gente pueda encontrarse y relacionarse?", "¿Esos espacios pueden ser usados en cualquier momento del día, del año, y en diferentes condiciones climáticas?", "Los espacios y actividades ¿favorecen que se integren todas las personas de la comunidad y se conozcan (independientemente de su edad, sexo, género, lugar de nacimiento, grupo étnico, religión, movilidad, diversidad funcional, nivel económico…)?"]}, {"nombre": "Identidad y pertenencia", "intro": "La apariencia de un lugar, su historia y lo que otras personas piensan de él, pueden condicionar cómo nos sentimos. Una fuerte identidad local positiva puede ayudarnos a sentirnos orgullosos/as de nuestro entorno, de nuestra comunidad y de nosotros/as mismos/as.", "pregunta": "¿Tu barrio, corregimiento o distrito tiene una identidad positiva y sientes que perteneces o que puedes pertenecer a él?", "reflexion": ["¿Las personas que viven en tu barrio, corregimiento o distrito lo valoran positivamente?", "¿Se favorece que se conozca y celebre la historia, el patrimonio cultural, la cultura y costumbres del lugar?", "¿Existen grupos locales, asociaciones y redes sociales que ayuden a las personas a sentirse involucradas en su comunidad?", "¿Se favorece la interculturalidad y la conexión entre vecinos y vecinas, independientemente de su edad, sexo, género, lugar de nacimiento, religión, grupo étnico, nivel socioeconómico, discapacidad …?"]}, {"nombre": "Seguridad", "intro": "La seguridad de un lugar afecta al bienestar de las personas y a cómo éstas pasan su tiempo en él. Los entornos bien diseñados contribuyen a crear espacios seguros y a reducir la delincuencia, el vandalismo y el mal uso de las instalaciones.", "pregunta": "¿Te sientes segura/o en tu barrio, corregimiento o distrito?", "reflexion": ["¿Se dan casos de delincuencia con frecuencia (vandalismo, robos, asaltos, agresiones…)?", "¿Existen puntos o zonas concretas con mayor riesgo de que se produzcan situaciones conflictivas o agresiones?", "¿Las calles, caminos, plazas, parques y espacios naturales son seguros, están bien iluminados y se pueden utilizar tanto de día como de noche? ¿Las personas pueden caminar solas por la noche con tranquilidad?", "¿Todos los lugares e instalaciones se pueden utilizar en cualquier momento del día o la noche y del año?", "¿Existen medidas para garantizar la seguridad de las personas que viven en el barrio (¿buen mantenimiento de las instalaciones y espacios, buena iluminación, agentes de policía, vigilancia de estaciones de transporte público…?", "¿La gente se siente segura tanto en su casa como fuera de ella?", "¿La zona es segura para todas las personas (independientemente de su edad, sexo, género, grupo étnico, movilidad, creencias religiosas, discapacidad y diversidad sexual)?"]}, {"nombre": "Cuidado y mantenimiento", "intro": "Los lugares bien cuidados y mantenidos nos hacen sentir bien, mientras que los que no están en buenas condiciones pueden producirnos el efecto contrario. Un buen mantenimiento y acondicionamiento del barrio o municipio nos ayuda a sentirnos más a gusto y a tener una opinión más favorable del entorno.", "pregunta": "¿Se cuidan adecuadamente los edificios y espacios del barrio, corregimiento o distrito, tanto públicos como privados?", "reflexion": ["¿Se encuentran las instalaciones, como parques, espacios abiertos o edificios públicos, en buen estado y bien mantenidos (se arreglan los desperfectos, hay cestos de basura suficientes, se limpian con frecuencia…)?", "¿Existe algún problema específico en la zona (como basura, malos olores, vandalismo, excrementos de perros u otros animales, relacionados con los negocios locales…)?", "¿Hay contenedores y servicios para el reciclaje y almacenamiento de desechos? ¿está bien organizada su recogida? ¿se utilizan adecuadamente?", "La administración local, asociaciones de vecinos y vecinas, propietarios/as de viviendas y residentes del barrio, ¿conocen cuáles son sus deberes y responsabilidades? ¿actúan de acuerdo a éstos?"]}, {"nombre": "Influencia y participación", "intro": "La opinión que tienen las personas sobre su entorno debería ser escuchada. Tener voz en la toma de decisiones y sentirse capaz de cambiar las cosas, ayuda a construir comunidades más fuertes y mejores entornos. Sentir que se puede influir y participar en la comunidad hace que las personas se sientan bien.", "pregunta": "¿Sientes que puedes participar en la toma de decisiones y ayudar a cambiar las cosas para mejorar tu barrio, corregimiento o distrito?", "reflexion": ["¿Existen mecanismos y canales que favorezcan la participación? ¿Hay algún órgano de participación activo?", "¿Se están realizando o se han realizado procesos en los que participas en tu barrio o municipio (de urbanismo, movilidad, presupuestos participativos…)?", "¿Pueden participar todas las personas en la toma de decisiones que les afectan (independientemente de su edad, sexo, género, grupo étnico, movilidad, creencias religiosas, discapacidad y diversidad sexual)?", "¿Existen organizaciones, plataformas, entidades o grupos que favorezcan la participación (¿asociaciones de vecinos y vecinas, ONGs, ciudadanía organizada, otras asociaciones o entidades…?", "La administración local, servicios de salud u otros servicios públicos, ¿trabajan activamente con la comunidad para entender y atender sus necesidades?", "¿Hay un buen nivel de transparencia de las acciones y decisiones políticas que afectan al barrio o municipio?", "¿La gente se siente escuchada? ¿Sabe la gente cómo hacerse escuchar?"]}], "diagrama": ["Recuerda que el 1 se encuentra en el centro y el 10 en la parte coloreada de cada dimensión.", "Cuanto mejor hayas evaluado tu barrio o municipio, mayor será la figura que aparecerá en el diagrama al unir los puntos."], "prioridades": {"problemas": "De las catorce dimensiones preguntadas, ¿cuáles son los principales problemas que has identificado? Enumera los tres problemas más importantes:", "acciones": "¿Qué acciones crees que pueden llevarse a cabo para solucionarlos? Enumera tres acciones que consideres prioritarias:"}, "gracias": "Gracias por completar la herramienta Entornos de vida."};
 const LLAVE = {"kty": "RSA", "alg": "RSA-OAEP-256", "ext": true, "key_ops": ["encrypt"], "n": "x0NF3DKhL4SeDrHSKxWLKwgvi_SSGHG8ByuQldu_lonOu8Ta1XDM1sQzldL2uMI7x37ThervtsXPKtFByY8GYkzMdZwP3k_v65_Icm6mv3C3JmVt9UKuf1iu5ZeoZycOCm3DYEs0WvhyZFMc1wutWXan5fKQQU1qxzvbnUJ8bx63uCvG7IV8eFnUD8D8A0ChP877o7LLo3g9c8zEUY7cboCxJe_PKqk7_ZURarE7cOV1xBVU1ay4MwIuRF2xsBo9SS31ZLjvOdpKur1EiTyscyFVqxZllVnfGfZd6DhnCv9-p7nmTUm-zvvzz0nG0-tZBCqgawcaJPoBDAghgtEGOLH6297XehvXoOnZ34RIMcEXu0mju_jD89kRkEtKYPIHHi2MbXxG9K2J6LD-g_5eiRHdUeidRqYfjGJXyi5rCGzCAdXkGyLgY3sWa1dmGk8G52hjnOMPDB0uWvmVktH8R720r3lmdvoBof8macDTprYv6CKBM--5kzyahKVZO5zj", "e": "AQAB"}; // llave pública del receptor: lo que sale del equipo solo se abre con su llave privada
-const APP_VERSION = "0.2.0-prototipo";
+const APP_VERSION = "0.3.0-prototipo";
 
 // ---------------------------------------------------------------------------
 // Utilidades
@@ -168,7 +179,21 @@ function toast(t) { const d = document.createElement("div"); d.className = "toas
 // Pasos del instrumento: 5 secciones de la Parte I, presentación, 14 dimensiones, diagrama, prioridades, cierre.
 const PREG = []; // lista plana de la Parte I: {clave:"A1", s, q, texto, opciones}
 INST.parte1.forEach((s, si) => s.preguntas.forEach((q, qi) => PREG.push({ clave: s.letra + (qi + 1), s: si, q: qi, texto: q.texto, opciones: q.opciones })));
+// Texto de la casilla de grabación tal como lo propone la adenda N.° 1 (sección 6) para el Anexo 6.
+const CASILLA_AUDIO = {
+  titulo: "Grabación de audio de la entrevista (opcional)",
+  parrafos: [
+    "Con su permiso, la entrevista se grabará en audio. Así podremos escribir después, con sus propias palabras, las razones que usted da en cada tema. La grabación es voluntaria. Si no la acepta, la entrevista se hace igual y usted sigue participando en el estudio, sin ninguna consecuencia.",
+    "Su voz puede identificarle. Por eso la grabación llevará solo un código, se guardará separada de cualquier dato que permita saber quién es usted y la escucharán solo las personas del equipo de investigación encargadas de escribirla. Al escribirla se borrará cualquier nombre o dato que permita identificarle. La grabación se destruirá en cuanto se haya escrito y revisado, a más tardar seis meses después de la entrevista.",
+    "Usted puede pedir que se detenga la grabación en cualquier momento, o que se borre durante la entrevista o al terminarla, sin dar explicaciones.",
+  ],
+  si: "Sí acepto que la entrevista se grabe en audio.",
+  no: "No acepto que la entrevista se grabe en audio.",
+  declaracion: "Que la grabación de audio es opcional y que puede rechazarla sin dejar de participar en el estudio.",
+};
 const PASOS = [
+  { tipo: "consentimiento", rotulo: "Consentimiento informado" },
+  { tipo: "grabacion", rotulo: "Autorización de grabación" },
   ...INST.parte1.map((s, i) => ({ tipo: "seccion", i, rotulo: `${s.letra}. ${s.titulo.replace(/^Preguntas (sobre|relacionadas (con|a)) /, "")}` })),
   { tipo: "presentacion", rotulo: "Presentación de Entornos de Vida" },
   ...INST.dimensiones.map((d, i) => ({ tipo: "dimension", i, rotulo: `${i + 1}. ${d.nombre}` })),
@@ -234,7 +259,10 @@ async function guardarYa(e) {
   const c = await cifrarObj(e); c.id = e.id; await bdPut("entrevistas", e.id, c);
 }
 async function guardarTodo() { for (const e of ENT) if (pendientes.has(e.id)) await guardarYa(e); }
-document.addEventListener("visibilitychange", () => { if (document.visibilityState === "hidden") { guardarTodo(); detenerGrabacion(); } });
+document.addEventListener("visibilitychange", async () => {
+  if (document.visibilityState === "hidden") { guardarTodo(); await detenerGrabacion(); cerrarMicrofono(); }
+  else grabarPasoActual();
+});
 
 // ---------------------------------------------------------------------------
 // Estado de cada participante, con las categorías del reporte al Comité
@@ -246,22 +274,38 @@ function respondidas(e) {
   return n;
 }
 const TOTAL_OBLIG = PREG.length + 14;
+// Primer paso de la encuesta propiamente dicha: antes solo van el consentimiento y la grabación.
+const PRIMER_PASO = PASOS.findIndex(p => p.tipo === "seccion");
+const pasoDe = (tipo, i) => PASOS.findIndex(p => p.tipo === tipo && (i == null || p.i === i));
+const autorizado = e => e.consent === true && (e.consentAudio === true || e.consentAudio === false);
+// Pasos en que se graba sola la entrevista, si el participante lo autorizó
+const SE_GRABA = new Set(["seccion", "presentacion", "dimension", "diagrama", "prioridades"]);
+function itemDePaso(p) {
+  const P = PASOS[p];
+  if (P.tipo === "seccion") return INST.parte1[P.i].letra;
+  if (P.tipo === "dimension") return "D" + String(P.i + 1).padStart(2, "0");
+  return { presentacion: "EDV", diagrama: "DIAG", prioridades: "P" }[P.tipo];
+}
 function estado(e) {
+  if (e.consent === false) return "noacepto";
+  if (e.consent !== true) return "pendiente";
   if (e.retirado) return "retirado";
   if (e.cerrada) return "completado";
   if (respondidas(e) > 0 || Object.values(e.razones).some(Boolean) || e.problemas.some(Boolean) || e.acciones.some(Boolean)) return "activo";
   return "enrolado";
 }
-const ESTADO_TXT = { enrolado: "Enrolado", activo: "Activo", completado: "Completado", retirado: "Retirado" };
+const ESTADO_TXT = { enrolado: "Enrolado", activo: "Activo", completado: "Completado", retirado: "Retirado", pendiente: "Sin consentimiento", noacepto: "No aceptó" };
 const chipEstado = e => `<span class="chip ${estado(e)}">${ESTADO_TXT[estado(e)]}</span>${e.demo ? ' <span class="chip demo">Ejemplo</span>' : ""}`;
 function faltantes(e) {
   const f = [];
-  PREG.forEach(p => { if (e.r[p.clave] == null) f.push({ paso: p.s, txt: `${p.clave}. ${p.texto}` }); });
-  INST.dimensiones.forEach((d, i) => { if (!e.edv[i + 1]) f.push({ paso: 6 + i, txt: `Dimensión ${i + 1}: ${d.nombre} (puntuación)` }); });
+  PREG.forEach(p => { if (e.r[p.clave] == null) f.push({ paso: pasoDe("seccion", p.s), txt: `${p.clave}. ${p.texto}` }); });
+  INST.dimensiones.forEach((d, i) => { if (!e.edv[i + 1]) f.push({ paso: pasoDe("dimension", i), txt: `Dimensión ${i + 1}: ${d.nombre} (puntuación)` }); });
   return f;
 }
 function pasoCompleto(e, p) {
   const P = PASOS[p];
+  if (P.tipo === "consentimiento") return e.consent === true;
+  if (P.tipo === "grabacion") return e.consentAudio === true || e.consentAudio === false;
   if (P.tipo === "seccion") return PREG.filter(q => q.s === P.i).every(q => e.r[q.clave] != null);
   if (P.tipo === "dimension") return !!e.edv[P.i + 1];
   if (P.tipo === "presentacion") return e.vistos.includes(p);
@@ -274,53 +318,78 @@ function pasoCompleto(e, p) {
 // ---------------------------------------------------------------------------
 // Grabación de audio (solo si el participante la autorizó)
 // ---------------------------------------------------------------------------
+// Un solo permiso de micrófono por entrevista: el micrófono queda abierto mientras dura la encuesta y
+// cada paso se guarda como un audio aparte (A…E, EDV, D01…D14, DIAG, P), que es como se analiza.
 const Grab = { rec: null, stream: null, partes: [], item: null, ent: null, t0: 0, timer: null };
 function tipoAudio() {
   if (!window.MediaRecorder) return null;
   for (const t of ["audio/mp4", "audio/webm;codecs=opus", "audio/webm", "audio/ogg;codecs=opus"]) if (MediaRecorder.isTypeSupported && MediaRecorder.isTypeSupported(t)) return t;
   return "";
 }
+async function abrirMicrofono() {
+  if (Grab.stream && Grab.stream.getTracks().some(t => t.readyState === "live")) return true;
+  if (!navigator.mediaDevices || !navigator.mediaDevices.getUserMedia || tipoAudio() === null) { toast("Este equipo no permite grabar desde la página."); return false; }
+  try { Grab.stream = await navigator.mediaDevices.getUserMedia({ audio: { echoCancellation: true, noiseSuppression: true } }); return true; }
+  catch (err) { Grab.stream = null; toast("No se dio permiso al micrófono: la entrevista sigue sin grabar."); return false; }
+}
+function cerrarMicrofono() { if (Grab.stream) Grab.stream.getTracks().forEach(t => t.stop()); Grab.stream = null; }
 async function iniciarGrabacion(e, item) {
   if (Grab.rec) await detenerGrabacion();
-  if (!navigator.mediaDevices || !navigator.mediaDevices.getUserMedia || tipoAudio() === null) { toast("Este equipo no permite grabar desde la página."); return; }
-  try {
-    Grab.stream = await navigator.mediaDevices.getUserMedia({ audio: { echoCancellation: true, noiseSuppression: true } });
-  } catch (err) { toast("No se dio permiso al micrófono."); return; }
+  if (!(await abrirMicrofono())) { pintarGrab(); return false; }
   const mime = tipoAudio();
   Grab.rec = new MediaRecorder(Grab.stream, mime ? { mimeType: mime } : undefined);
   Grab.partes = []; Grab.item = item; Grab.ent = e; Grab.t0 = Date.now();
   Grab.rec.ondataavailable = ev => { if (ev.data && ev.data.size) Grab.partes.push(ev.data); };
   Grab.rec.start(1000);
-  Grab.timer = setInterval(pintarGrab, 500);
-  pintarGrab();
+  clearInterval(Grab.timer); Grab.timer = setInterval(pintarGrab, 500);
+  pintarGrab(); return true;
 }
 function detenerGrabacion() {
   return new Promise(ok => {
-    if (!Grab.rec) return ok();
+    if (!Grab.rec) { pintarGrab(); return ok(); }
     const rec = Grab.rec, e = Grab.ent, item = Grab.item, dur = (Date.now() - Grab.t0) / 1000;
     rec.onstop = async () => {
-      clearInterval(Grab.timer);
-      Grab.stream.getTracks().forEach(t => t.stop());
       const mime = rec.mimeType || (Grab.partes[0] && Grab.partes[0].type) || "audio/mp4";
       const blob = new Blob(Grab.partes, { type: mime });
-      Object.assign(Grab, { rec: null, stream: null, partes: [], item: null, ent: null });
-      if (blob.size > 0) {
+      Object.assign(Grab, { rec: null, partes: [], item: null, ent: null });
+      clearInterval(Grab.timer); pintarGrab();
+      if (blob.size > 0 && dur >= 1) { // los pasos que solo se cruzan no dejan audio
         const id = uid();
         const c = await cifrar(await blob.arrayBuffer());
         await bdPut("audios", id, c);
         e.audios.push({ id, item, mime: mime.split(";")[0], dur: Math.round(dur), t: new Date().toISOString(), bytes: blob.size });
         guardar(e);
       }
-      pintar(); ok();
+      ok();
     };
     rec.stop();
   });
 }
+// Arranca sola la grabación del paso en curso, si el participante la autorizó y no la pidió pausar
+async function grabarPasoActual() {
+  const e = ACT;
+  if (VISTA !== "entrevista" || !e || e.consentAudio !== true || e.audioPausado || e.retirado || e.cerrada || !SE_GRABA.has(PASOS[PASO].tipo)) return;
+  if (Grab.rec && Grab.item === itemDePaso(PASO) && Grab.ent === e) return;
+  await iniciarGrabacion(e, itemDePaso(PASO));
+}
 function pintarGrab() {
-  document.querySelectorAll("[data-grab-estado]").forEach(el => {
-    const activo = Grab.rec && el.dataset.grabEstado === Grab.item;
-    el.textContent = activo ? `Grabando ${mmss((Date.now() - Grab.t0) / 1000)}` : "";
-  });
+  const ind = $("#indGrab"); if (!ind) return;
+  const e = ACT;
+  if (VISTA !== "entrevista" || !e || e.consentAudio !== true || e.cerrada || e.retirado) { ind.hidden = true; return; }
+  ind.hidden = false;
+  if (Grab.rec) {
+    ind.className = "indgrab on";
+    ind.innerHTML = `<span class="latido"></span><b>Grabando</b><span>${mmss((Date.now() - Grab.t0) / 1000)}</span><button class="btn chico" data-acc="pausar">Pausar</button>`;
+  } else if (e.audioPausado) {
+    ind.className = "indgrab pausa";
+    ind.innerHTML = `<b>Grabación en pausa</b><button class="btn chico" data-acc="reanudar">Reanudar</button>`;
+  } else if (!SE_GRABA.has(PASOS[PASO].tipo)) {
+    ind.className = "indgrab";
+    ind.innerHTML = `<b>Autoriza grabar</b><span>la grabación empieza con la Parte I</span>`;
+  } else {
+    ind.className = "indgrab pausa";
+    ind.innerHTML = `<b>Sin grabar</b><button class="btn chico" data-acc="reanudar">Grabar</button>`;
+  }
 }
 async function reproducir(e, id) {
   const a = e.audios.find(x => x.id === id); const c = await bdGet("audios", id);
@@ -328,17 +397,12 @@ async function reproducir(e, id) {
   const url = URL.createObjectURL(new Blob([await descifrar(c)], { type: a.mime }));
   const el = new Audio(url); el.onended = () => URL.revokeObjectURL(url); el.play().catch(() => toast("No se pudo reproducir."));
 }
-function bloqueGrabacion(e, item, rotulo) {
-  if (!e.consentAudio) return `<p class="tenue" style="font-size:15px;margin:8px 0 0">El participante no autorizó la grabación: solo se escriben las razones.</p>`;
+// Audios ya guardados de un paso (la grabación en curso se ve en el indicador de arriba)
+function bloqueGrabacion(e, item) {
+  if (e.consentAudio !== true) return `<p class="tenue" style="font-size:15px;margin:8px 0 0">El participante no autorizó la grabación: solo se escriben las razones.</p>`;
   const clips = e.audios.filter(a => a.item === item);
-  const enCurso = Grab.rec && Grab.item === item;
-  return `<div class="grab">
-    <div class="btn-fila" style="align-items:center">
-      <button class="btn rec ${enCurso ? "on" : ""}" data-acc="${enCurso ? "parar" : "grabar"}" data-item="${item}">${enCurso ? '<span class="latido"></span> Detener' : "Grabar " + esc(rotulo)}</button>
-      <span class="tenue" data-grab-estado="${item}"></span>
-    </div>
-    ${clips.length ? `<div style="margin-top:8px">${clips.map((a, k) => `<div class="clip"><span>Audio ${k + 1} · ${mmss(a.dur)}</span><span class="espacio"></span><button class="btn chico" data-acc="oir" data-id="${a.id}">Escuchar</button><button class="btn chico peligro" data-acc="borrar-audio" data-id="${a.id}">Borrar</button></div>`).join("")}</div>` : ""}
-  </div>`;
+  if (!clips.length) return "";
+  return `<div class="grab">${clips.map((a, k) => `<div class="clip"><span>Audio ${k + 1} de este paso · ${mmss(a.dur)}</span><span class="espacio"></span><button class="btn chico" data-acc="oir" data-id="${a.id}">Escuchar</button><button class="btn chico peligro" data-acc="borrar-audio" data-id="${a.id}">Borrar</button></div>`).join("")}</div>`;
 }
 
 // ---------------------------------------------------------------------------
@@ -372,7 +436,15 @@ function radarSVG(edv, opts = {}) {
 // Vistas
 // ---------------------------------------------------------------------------
 let VISTA = "cargando", ACT = null, PASO = 0;
-function ir(v, e = null, paso = 0) { VISTA = v; ACT = e; PASO = paso; CODIGO = { txt: "", ids: [] }; pintar(); window.scrollTo(0, 0); }
+// Cambiar de pantalla guarda el audio del paso que se deja; la grabación del paso nuevo arranca sola.
+async function ir(v, e = null, paso = 0) {
+  await detenerGrabacion();
+  if (v !== "entrevista" || e !== ACT) cerrarMicrofono();
+  if (v === "entrevista" && e && !autorizado(e) && paso >= PRIMER_PASO) paso = e.consent === true ? pasoDe("grabacion") : pasoDe("consentimiento");
+  VISTA = v; ACT = e; PASO = paso; CODIGO = { txt: "", ids: [] };
+  pintar(); window.scrollTo(0, 0);
+  grabarPasoActual();
+}
 
 function pintar() {
   const app = $("#app"), nav = $("#nav"), navFila = $("#navFila");
@@ -383,9 +455,10 @@ function pintar() {
   if (VISTA === "entrevista") {
     $("#progBar").style.width = `${Math.round(100 * (PASO + 1) / PASOS.length)}%`;
     nav.classList.remove("oculto");
+    const e = ACT, bloqueado = (PASOS[PASO].tipo === "consentimiento" && e.consent !== true) || (PASOS[PASO].tipo === "grabacion" && !autorizado(e));
     navFila.innerHTML = `<button class="btn" data-acc="ant" ${PASO === 0 ? "disabled" : ""}>Anterior</button>
-      <button class="btn" data-acc="indice">Paso ${PASO + 1} de ${PASOS.length}</button><span class="espacio"></span>
-      ${PASO < PASOS.length - 1 ? `<button class="btn pri" data-acc="sig">Siguiente</button>` : ""}`;
+      <button class="btn" data-acc="indice" ${autorizado(e) ? "" : "disabled"}>Paso ${PASO + 1} de ${PASOS.length}</button><span class="espacio"></span>
+      ${PASO < PASOS.length - 1 ? `<button class="btn pri" data-acc="sig" ${bloqueado || e.consent === false ? "disabled" : ""}>${PASO === pasoDe("grabacion") ? "Iniciar la encuesta" : "Siguiente"}</button>` : ""}`;
   }
   pintarGrab();
 }
@@ -405,7 +478,7 @@ const VISTAS = {
   },
 
   inicio() {
-    const c = { enrolado: 0, activo: 0, completado: 0, retirado: 0 };
+    const c = { enrolado: 0, activo: 0, completado: 0, retirado: 0, pendiente: 0, noacepto: 0 };
     ENT.forEach(e => c[estado(e)]++);
     return `<h1>Entrevistas en este equipo</h1>
       <p class="tenue">Encuestador: <b>${esc(META.encuestador)}</b> · ${ENT.length} registro${ENT.length === 1 ? "" : "s"} · instrumento ${esc(INST.version)}</p>
@@ -417,11 +490,12 @@ const VISTAS = {
       </div>
       <div class="cifras" style="margin-bottom:16px">
         ${["enrolado", "activo", "completado", "retirado"].map(k => `<div class="cifra"><b>${c[k]}</b><span>${ESTADO_TXT[k]}s</span></div>`).join("")}
+        ${c.noacepto ? `<div class="cifra"><b>${c.noacepto}</b><span>No aceptaron participar</span></div>` : ""}
       </div>
       ${ENT.length ? `<div class="lista">${ENT.map(e => `<button class="fila-ent" data-acc="abrir-ent" data-id="${e.id}">
           <div style="flex:1;min-width:0"><b>${esc(e.codigo)}</b><div class="tenue">${esc(e.comunidad)}, ${esc(e.provincia)} · ${fechaLarga(e.fecha)} · ${respondidas(e)} de ${TOTAL_OBLIG} ítems${e.audios.length ? ` · ${e.audios.length} audio${e.audios.length === 1 ? "" : "s"}` : ""}${e.exportada ? " · exportada" : ""}</div></div>
           ${chipEstado(e)}</button>`).join("")}</div>`
-        : `<div class="tarjeta"><p style="margin:0">Todavía no hay entrevistas. Para mostrar cómo funciona, puede <button class="btn chico" data-acc="ejemplos">cargar cuatro entrevistas de ejemplo</button>.</p></div>`}`;
+        : `<div class="tarjeta"><p style="margin:0">Todavía no hay entrevistas. Para mostrar cómo funciona, puede <button class="btn chico" data-acc="ejemplos">cargar cinco entrevistas de ejemplo</button>.</p></div>`}`;
   },
 
   nueva() {
@@ -443,30 +517,21 @@ const VISTAS = {
         </div>
         <p>Código de participante: <b id="nCodigo">${esc(codigoForm())}</b></p>
       </div>
-      <div class="tarjeta">
-        <h2>Consentimiento informado</h2>
-        <button class="op ${f.consent ? "sel" : ""}" data-acc="n-consent"><span class="punto"></span><span>El participante tiene 18 años o más, reside en la comunidad hace al menos 6 meses y <b>firmó el consentimiento informado en papel</b>.</span></button>
-        <h3>Grabación de la entrevista</h3>
-        <p class="tenue" style="margin-top:0">Casilla propuesta para la adenda: es opcional y quien no la autorice participa igual.</p>
-        <div class="opciones">
-          <button class="op ${f.audio === true ? "sel" : ""}" data-acc="n-audio" data-v="1"><span class="punto"></span><span>Autoriza que se graben sus respuestas a las razones y a las prioridades.</span></button>
-          <button class="op ${f.audio === false ? "sel" : ""}" data-acc="n-audio" data-v="0"><span class="punto"></span><span>No autoriza la grabación.</span></button>
-        </div>
-      </div>
+      <p class="tenue">Lo siguiente es el consentimiento informado y, después, la autorización de grabación. La encuesta no se abre hasta que el participante decida las dos.</p>
       <div id="nError"></div>
-      <div class="btn-fila"><button class="btn pri" data-acc="crear-ent">Registrar e iniciar</button><button class="btn" data-acc="crear-ent-espera">Registrar como enrolado</button></div>`;
+      <div class="btn-fila"><button class="btn pri" data-acc="crear-ent">Continuar al consentimiento</button></div>`;
   },
 
   entrevista() {
     const e = ACT, P = PASOS[PASO];
     if (!e.vistos.includes(PASO) && (P.tipo === "presentacion" || P.tipo === "diagrama")) { e.vistos.push(PASO); guardar(e); }
-    const cab = `<p class="tenue" style="margin:0 0 6px">${esc(e.codigo)} · ${esc(e.comunidad)} · ${chipEstado(e)}${e.consentAudio ? ' <span class="chip demo">Graba</span>' : ""}</p>`;
+    const cab = `<p class="tenue" style="margin:0 0 6px">${esc(e.codigo)} · ${esc(e.comunidad)} · ${chipEstado(e)}${e.consentAudio === true ? ' <span class="chip demo">Autorizó grabar</span>' : e.consentAudio === false ? ' <span class="chip demo">Sin grabación</span>' : ""}</p>`;
     if (e.retirado) return cab + `<div class="aviso mal"><b>Participante retirado.</b> ${esc(e.motivoRetiro || "")}</div><div class="btn-fila"><button class="btn" data-acc="reactivar">Deshacer el retiro</button></div>` + VISTAS_PASO[P.tipo](e, P);
     return cab + VISTAS_PASO[P.tipo](e, P);
   },
 
   resumen() {
-    const c = { enrolado: 0, activo: 0, completado: 0, retirado: 0 };
+    const c = { enrolado: 0, activo: 0, completado: 0, retirado: 0, pendiente: 0, noacepto: 0 };
     const reales = ENT.filter(e => !e.demo);
     const base = SOLO_REALES ? reales : ENT;
     base.forEach(e => c[estado(e)]++);
@@ -480,7 +545,7 @@ const VISTAS = {
     }
     const quejas = base.filter(e => e.queja && e.queja.hubo);
     const porComu = {};
-    base.forEach(e => { const k = `${e.comunidad} (${e.provincia})`; (porComu[k] = porComu[k] || { enrolado: 0, activo: 0, completado: 0, retirado: 0 })[estado(e)]++; });
+    base.forEach(e => { const k = `${e.comunidad} (${e.provincia})`; (porComu[k] = porComu[k] || { enrolado: 0, activo: 0, completado: 0, retirado: 0, pendiente: 0, noacepto: 0 })[estado(e)]++; });
     const texto = [
       `Reporte de seguimiento, ${fechaLarga(hoyISO())}. Equipo de ${META.encuestador}.`,
       `Sujetos enrolados o reclutados (consentimiento firmado, sin iniciar la encuesta): ${c.enrolado}`,
@@ -489,6 +554,7 @@ const VISTAS = {
       `Sujetos completados: ${c.completado}`,
       `Rango de edad de los participantes a los que se les ha aplicado la encuesta: ${rango}`,
       `Quejas recibidas: ${quejas.length ? quejas.length + ". " + quejas.map(e => `${e.codigo}: ${e.queja.texto}`).join("; ") : "ninguna"}`,
+      `Personas que no aceptaron participar (no se cuentan como enroladas): ${c.noacepto}`,
     ].join("\n");
     RESUMEN_TXT = texto;
     return `<h1>Resumen para el Comité de Bioética</h1>
@@ -541,11 +607,12 @@ const VISTAS = {
   },
 };
 let RESUMEN_TXT = "", SOLO_REALES = false, PERSISTE = false;
-const porEnviar = e => estado(e) !== "enrolado" && (!e.enviado || e.actualizada > e.enviado);
+const porEnviar = e => estado(e) !== "pendiente" && (!e.enviado || e.actualizada > e.enviado);
 let FORM = null;
+const reqOk = e => !!(e.req && e.req.edad && e.req.residencia && e.req.firma);
 function formNuevo() {
   const ult = ENT.filter(e => !e.demo).map(e => +e.num || 0);
-  FORM = { tipo: "RD", provincia: "Chiriquí", comu: "01", comuTxt: "", num: String((ult.length ? Math.max(...ult) : 0) + 1), fecha: hoyISO(), consent: false, audio: null };
+  FORM = { tipo: "RD", provincia: "Chiriquí", comu: "01", comuTxt: "", num: String((ult.length ? Math.max(...ult) : 0) + 1), fecha: hoyISO() };
 }
 function codigoForm() {
   const f = FORM, prov = PROVINCIAS[f.provincia];
@@ -554,6 +621,51 @@ function codigoForm() {
 }
 
 const VISTAS_PASO = {
+  consentimiento(e) {
+    if (e.consent === false) return `<h1>Consentimiento informado</h1>
+      <div class="aviso mal"><b>El participante no aceptó participar.</b> No se le aplica la encuesta ni se guarda ninguna respuesta. Queda contado solo como persona que no aceptó.</div>
+      <div class="btn-fila"><button class="btn" data-acc="ir-inicio">Volver al inicio</button><button class="btn" data-acc="consent-deshacer">Fue un error: volver a preguntar</button></div>`;
+    return `<h1>Consentimiento informado</h1>
+      <div class="tarjeta">
+        <p style="margin-top:0">Antes de cualquier pregunta, lea al participante el consentimiento informado del estudio (Anexo 6, versión aprobada), responda todas sus dudas y, si acepta, pídale que lo firme en papel.</p>
+        <h3>Requisitos</h3>
+        <div class="opciones">
+          ${[["edad", "Tiene 18 años o más."], ["residencia", "Reside en la comunidad hace al menos 6 meses."], ["firma", "Firmó el consentimiento informado en papel, y el encuestador firmó la declaración de quien lo obtiene."]]
+            .map(([k, t]) => `<button class="op ${e.req && e.req[k] ? "sel" : ""}" data-acc="req" data-k="${k}"><span class="punto"></span><span>${t}</span></button>`).join("")}
+        </div>
+      </div>
+      <div class="tarjeta">
+        <h2>Decisión del participante</h2>
+        <div class="opciones">
+          <button class="op grande ${e.consent === true ? "sel" : ""}" data-acc="consent" data-v="1" ${reqOk(e) ? "" : "disabled"}><span class="punto"></span><span>Acepta participar en el estudio</span></button>
+          <button class="op grande" data-acc="consent" data-v="0"><span class="punto"></span><span>No acepta participar</span></button>
+        </div>
+        ${reqOk(e) ? "" : `<p class="tenue" style="font-size:15px;margin-bottom:0">Para marcar que acepta, primero confirme los tres requisitos.</p>`}
+      </div>`;
+  },
+  grabacion(e) {
+    if (e.consent !== true) return `<div class="aviso">Primero el consentimiento informado.</div>`;
+    const decidido = e.consentAudio === true || e.consentAudio === false;
+    return `<h1>Autorización de grabación</h1>
+      <p class="tenue">Entregue el iPad al participante o léale el texto. Es él quien marca su decisión.</p>
+      <div class="tarjeta casilla-texto">
+        <h2>${esc(CASILLA_AUDIO.titulo)}</h2>
+        ${CASILLA_AUDIO.parrafos.map(p => `<p>${esc(p)}</p>`).join("")}
+        <p><b>Marque una sola opción:</b></p>
+        <div class="opciones">
+          <button class="op grande ${e.consentAudio === true ? "sel" : ""}" data-acc="audio" data-v="1" ${e.declAudio ? "" : "disabled"}><span class="punto"></span><span>${esc(CASILLA_AUDIO.si)}</span></button>
+          <button class="op grande ${e.consentAudio === false ? "sel" : ""}" data-acc="audio" data-v="0" ${e.declAudio ? "" : "disabled"}><span class="punto"></span><span>${esc(CASILLA_AUDIO.no)}</span></button>
+        </div>
+      </div>
+      <div class="tarjeta">
+        <h3 style="margin-top:0">Declaración de quien obtiene el consentimiento</h3>
+        <button class="op ${e.declAudio ? "sel" : ""}" data-acc="decl-audio"><span class="punto"></span><span>Expliqué al participante: ${esc(CASILLA_AUDIO.declaracion.charAt(0).toLowerCase() + CASILLA_AUDIO.declaracion.slice(1))}</span></button>
+        ${e.declAudio ? "" : `<p class="tenue" style="font-size:15px;margin-bottom:0">Marque la declaración para habilitar la decisión del participante.</p>`}
+      </div>
+      ${e.consentAudio === true ? `<div class="aviso ${Grab.stream ? "ok" : ""}">${Grab.stream ? "<b>Micrófono listo.</b> La grabación empieza sola al pasar a la Parte I y se guarda un audio por cada paso. El indicador rojo de arriba muestra cuándo se graba; con «Pausar» se detiene si el participante lo pide." : "<b>Falta el permiso del micrófono.</b> <button class=\"btn chico\" data-acc=\"probar-mic\">Activar el micrófono</button>"}</div>` : ""}
+      ${e.consentAudio === false ? `<div class="aviso">La entrevista se hace igual, sin grabar. El participante sigue en el estudio.</div>` : ""}
+      ${decidido ? `<div class="btn-fila"><button class="btn pri" data-acc="sig">Iniciar la encuesta</button><button class="btn" data-acc="ir-inicio">Dejarla para después (queda enrolado)</button></div>` : ""}`;
+  },
   seccion(e, P) {
     const s = INST.parte1[P.i];
     return `<h1>Parte I. ${s.letra}. ${esc(s.titulo)}</h1>
@@ -583,7 +695,7 @@ const VISTAS_PASO = {
       <div class="tarjeta">
         <label class="campo" style="margin-top:0"><span>Utiliza el siguiente espacio para anotar las razones de tu valoración:</span>
         <textarea data-campo="razon" data-n="${n}">${esc(e.razones[n] || "")}</textarea></label>
-        ${bloqueGrabacion(e, "D" + String(n).padStart(2, "0"), "las razones")}
+        ${bloqueGrabacion(e, "D" + String(n).padStart(2, "0"))}
       </div>`;
   },
   diagrama(e) {
@@ -600,14 +712,18 @@ const VISTAS_PASO = {
   prioridades(e) {
     const lista = (campo, arr) => arr.map((t, k) => `<label class="campo"><span>${k + 1})</span><textarea style="min-height:72px" data-campo="${campo}" data-k="${k}">${esc(t)}</textarea></label>`).join("");
     return `<h1>Problemas y acciones prioritarias</h1>
-      <div class="tarjeta"><p class="principal" style="font-size:18px">${esc(INST.prioridades.problemas)}</p>${lista("problema", e.problemas)}${bloqueGrabacion(e, "P1", "los problemas")}</div>
-      <div class="tarjeta"><p class="principal" style="font-size:18px">${esc(INST.prioridades.acciones)}</p>${lista("accion", e.acciones)}${bloqueGrabacion(e, "P2", "las acciones")}</div>`;
+      <div class="tarjeta"><p class="principal" style="font-size:18px">${esc(INST.prioridades.problemas)}</p>${lista("problema", e.problemas)}</div>
+      <div class="tarjeta"><p class="principal" style="font-size:18px">${esc(INST.prioridades.acciones)}</p>${lista("accion", e.acciones)}${bloqueGrabacion(e, "P")}</div>`;
   },
   cierre(e) {
     const f = faltantes(e);
     return `<h1>Cierre de la entrevista</h1>
       ${e.cerrada ? `<div class="aviso ok"><b>${esc(INST.gracias)}</b> Entrevista completada el ${fechaLarga(e.fin)}.</div>` : ""}
       ${f.length && !e.cerrada ? `<div class="tarjeta"><h2>Falta por responder (${f.length})</h2><div class="lista">${f.map(x => `<button class="fila-ent" data-acc="ir-paso" data-p="${x.paso}"><span style="flex:1">${esc(x.txt)}</span><span class="tenue">Ir</span></button>`).join("")}</div></div>` : ""}
+      ${e.consentAudio === true ? `<div class="tarjeta"><h2>Grabaciones</h2>
+        ${e.audios.length ? `<p style="margin-top:0">${e.audios.length} audio${e.audios.length === 1 ? "" : "s"}, ${mmss(e.audios.reduce((s, a) => s + a.dur, 0))} en total. Pregunte al participante si desea que se borre alguna.</p>
+          <button class="btn peligro" data-acc="borrar-todo-audio">Borrar todas, a pedido del participante</button>`
+        : `<p style="margin:0" class="tenue">${e.audioBorradoT ? `Grabaciones borradas a pedido del participante el ${fechaLarga(e.audioBorradoT)}.` : "Sin audios guardados."}</p>`}</div>` : ""}
       <div class="tarjeta">
         <h2>Registro del encuestador</h2>
         <p class="tenue" style="margin-top:0">No forma parte del instrumento: alimenta el reporte al Comité.</p>
@@ -758,22 +874,28 @@ function entrevistaVacia(datos) {
   return Object.assign({ id: uid(), r: {}, edv: {}, razones: {}, problemas: ["", "", ""], acciones: ["", "", ""], queja: { hubo: false, texto: "" }, notas: "", audios: [], vistos: [],
     cerrada: false, retirado: false, motivoRetiro: "", creada: new Date().toISOString(), actualizada: new Date().toISOString(), encuestador: META.encuestador }, datos);
 }
+async function quitarEjemplos() {
+  for (const x of ENT.filter(z => z.demo)) { for (const au of x.audios) await bdDel("audios", au.id); await bdDel("entrevistas", x.id); }
+  ENT = ENT.filter(z => !z.demo);
+}
 async function cargarEjemplos() {
-  const base = { tipo: "PC", provincia: "Chiriquí", comunidad: "Ejemplo", fecha: hoyISO(), consent: true, demo: true };
+  await quitarEjemplos(); // cargar dos veces no duplica
+  const base = { tipo: "PC", provincia: "Chiriquí", comunidad: "Ejemplo", fecha: hoyISO(), consent: true, req: { edad: true, residencia: true, firma: true }, declAudio: true, demo: true };
   const mk = (n, extra) => entrevistaVacia(Object.assign({}, base, { num: String(900 + n), codigo: `DEMO-PC-CHI-EJEMPLO-${900 + n}` }, extra));
   const llena = { r: Object.fromEntries(PREG.map(p => [p.clave, Math.min(p.opciones.length - 1, (p.clave.charCodeAt(0) + +p.clave.slice(1)) % p.opciones.length)])),
     edv: { 1: 4, 2: 3, 3: 5, 4: 6, 5: 8, 6: 5, 7: 6, 8: 4, 9: 7, 10: 7, 11: 8, 12: 5, 13: 4, 14: 3 },
     razones: { 2: "Ejemplo ficticio: el bus pasa cada hora y deja de pasar a las 6 de la tarde.", 14: "Ejemplo ficticio: no conoce la junta comunal ni cómo participar." },
     problemas: ["Transporte público escaso", "Poca participación comunitaria", "Aceras en mal estado"], acciones: ["Pedir rutas nocturnas", "Reunión con la junta comunal", "Jornada de mejora de aceras"] };
   const ej = [
-    mk(1, {}),
+    mk(1, { consentAudio: false }),
     mk(2, { r: { A1: 1, A2: 0, A3: 2 }, consentAudio: false, inicio: new Date().toISOString() }),
-    mk(3, Object.assign({}, JSON.parse(JSON.stringify(llena)), { consentAudio: true, cerrada: true, inicio: new Date(Date.now() - 46 * 60000).toISOString(), fin: new Date().toISOString(), vistos: [5, 20] })),
+    mk(3, Object.assign({}, JSON.parse(JSON.stringify(llena)), { consentAudio: true, cerrada: true, inicio: new Date(Date.now() - 46 * 60000).toISOString(), fin: new Date().toISOString(), vistos: [pasoDe("presentacion"), pasoDe("diagrama")] })),
     mk(4, { r: { A1: 0, A2: 5 }, retirado: true, motivoRetiro: "Ejemplo ficticio: tuvo que salir y prefirió no continuar.", consentAudio: false }),
+    mk(5, { consent: false, consentAudio: null, declAudio: false }),
   ];
   ej[1].r.A2 = 1;
   for (const e of ej) { ENT.unshift(e); await guardarYa(e); }
-  toast("Se cargaron cuatro entrevistas de ejemplo.");
+  toast("Se cargaron cinco entrevistas de ejemplo.");
 }
 
 // ---------------------------------------------------------------------------
@@ -823,18 +945,41 @@ document.addEventListener("click", async ev => {
       await cargarEntrevistas(); ir("inicio"); break;
     }
     case "nueva": formNuevo(); ir("nueva"); break;
-    case "n-consent": leerForm(); FORM.consent = !FORM.consent; pintar(); break;
-    case "n-audio": leerForm(); FORM.audio = b.dataset.v === "1"; pintar(); break;
-    case "crear-ent": case "crear-ent-espera": {
+    case "crear-ent": {
       leerForm(); const cod = codigoForm();
-      const err = !FORM.consent ? "Sin consentimiento firmado no se registra al participante." : FORM.audio === null ? "Marque si el participante autoriza o no la grabación." :
-        !(+FORM.num > 0) ? "Escriba el número de participante." : (FORM.tipo !== "RD" || !COMUNIDADES[FORM.provincia]) && !FORM.comuTxt.trim() ? "Escriba la comunidad." :
+      const err = !(+FORM.num > 0) ? "Escriba el número de participante." : (FORM.tipo !== "RD" || !COMUNIDADES[FORM.provincia]) && !FORM.comuTxt.trim() ? "Escriba la comunidad." :
         ENT.some(x => x.codigo === cod) ? `Ya existe ${cod} en este equipo.` : "";
       if (err) { $("#nError").innerHTML = `<div class="aviso mal">${err}</div>`; return; }
       const comu = FORM.tipo === "RD" && COMUNIDADES[FORM.provincia] ? COMUNIDADES[FORM.provincia].find(x => x[0] === FORM.comu)[1] : FORM.comuTxt.trim();
-      const n = entrevistaVacia({ codigo: cod, tipo: FORM.tipo, provincia: FORM.provincia, comunidad: comu, num: FORM.num, fecha: FORM.fecha, consent: true, consentAudio: FORM.audio });
+      const n = entrevistaVacia({ codigo: cod, tipo: FORM.tipo, provincia: FORM.provincia, comunidad: comu, num: FORM.num, fecha: FORM.fecha, consent: null, consentAudio: null });
       ENT.unshift(n); await guardarYa(n);
-      a === "crear-ent" ? ir("entrevista", n, 0) : ir("inicio"); break;
+      ir("entrevista", n, 0); break;
+    }
+    // Consentimiento informado y autorización de grabación: los decide el participante, en ese orden
+    case "req": e.req = Object.assign({}, e.req, { [b.dataset.k]: !(e.req && e.req[b.dataset.k]) }); if (!reqOk(e) && e.consent === true && respondidas(e) === 0) { e.consent = null; e.consentAudio = null; } guardar(e); pintar(); break;
+    case "consent": {
+      if (b.dataset.v === "1") { e.consent = true; e.consentT = new Date().toISOString(); guardar(e); ir("entrevista", e, pasoDe("grabacion")); break; }
+      if (respondidas(e) > 0 && !(await confirmar("Este participante ya tiene respuestas. ¿Registrar que no acepta? Se borrarán sus respuestas y audios.", "Registrar", "peligro"))) return;
+      await detenerGrabacion(); for (const au of e.audios) await bdDel("audios", au.id);
+      Object.assign(e, { consent: false, consentAudio: null, consentT: new Date().toISOString(), r: {}, edv: {}, razones: {}, problemas: ["", "", ""], acciones: ["", "", ""], audios: [], inicio: null });
+      await guardarYa(e); pintar(); break;
+    }
+    case "consent-deshacer": e.consent = null; e.consentT = null; await guardarYa(e); pintar(); break;
+    case "decl-audio": e.declAudio = !e.declAudio; if (!e.declAudio && respondidas(e) === 0) e.consentAudio = null; guardar(e); pintar(); break;
+    case "audio": {
+      const si = b.dataset.v === "1";
+      if (!si && e.audios.length && !(await confirmar(`Hay ${e.audios.length} audio${e.audios.length === 1 ? "" : "s"} grabado${e.audios.length === 1 ? "" : "s"}. ¿Borrarlos y seguir sin grabar?`, "Borrar y seguir", "peligro"))) return;
+      if (!si) { await detenerGrabacion(); cerrarMicrofono(); for (const au of e.audios) await bdDel("audios", au.id); e.audios = []; }
+      e.consentAudio = si; e.consentAudioT = new Date().toISOString(); guardar(e);
+      if (si) await abrirMicrofono(); // el permiso del micrófono se pide aquí, con el participante presente
+      pintar(); break;
+    }
+    case "probar-mic": await abrirMicrofono(); pintar(); break;
+    case "pausar": e.audioPausado = true; guardar(e); await detenerGrabacion(); toast("Grabación en pausa. Lo grabado hasta ahora queda guardado."); break;
+    case "reanudar": e.audioPausado = false; guardar(e); await grabarPasoActual(); break;
+    case "borrar-todo-audio": {
+      if (!(await confirmar(`¿Borrar las ${e.audios.length} grabaciones de esta entrevista, a pedido del participante? No se pueden recuperar.`, "Borrar todas", "peligro"))) return;
+      await detenerGrabacion(); for (const au of e.audios) await bdDel("audios", au.id); e.audios = []; e.audioBorradoT = new Date().toISOString(); await guardarYa(e); pintar(); break;
     }
     case "abrir-ent": { const x = ENT.find(z => z.id === b.dataset.id); const p = PASOS.findIndex((_, i) => !pasoCompleto(x, i)); ir("entrevista", x, x.cerrada || x.retirado ? PASOS.length - 1 : Math.max(0, p)); break; }
     case "resp": if (e.retirado) return; e.r[b.dataset.clave] = +b.dataset.k; marcarInicio(e); guardar(e); pintar(); break;
@@ -848,12 +993,10 @@ document.addEventListener("click", async ev => {
       d.addEventListener("click", async x => { const t = x.target.closest("[data-r]"); if (!t) return; d.remove(); if (t.dataset.p != null) { await detenerGrabacion(); ir("entrevista", e, +t.dataset.p); } });
       break;
     }
-    case "grabar": await iniciarGrabacion(e, b.dataset.item); pintar(); break;
-    case "parar": await detenerGrabacion(); break;
     case "oir": reproducir(e, b.dataset.id); break;
     case "borrar-audio": if (await confirmar("¿Borrar este audio? No se puede recuperar.", "Borrar", "peligro")) { await bdDel("audios", b.dataset.id); e.audios = e.audios.filter(x => x.id !== b.dataset.id); guardar(e); pintar(); } break;
     case "queja": e.queja.hubo = !e.queja.hubo; guardar(e); pintar(); break;
-    case "cerrar": e.cerrada = true; e.fin = new Date().toISOString(); await guardarYa(e); pintar(); toast("Entrevista completada."); break;
+    case "cerrar": await detenerGrabacion(); cerrarMicrofono(); e.cerrada = true; e.fin = new Date().toISOString(); await guardarYa(e); pintar(); toast("Entrevista completada."); break;
     case "reabrir": e.cerrada = false; e.fin = null; await guardarYa(e); pintar(); break;
     case "retirar": { const m = await pedirTexto("El participante decide no continuar. Lo respondido se conserva y cuenta como retirado en el reporte.", "Motivo (si lo dio)"); if (m === null) return; await detenerGrabacion(); e.retirado = true; e.motivoRetiro = m.trim(); e.cerrada = false; await guardarYa(e); pintar(); break; }
     case "reactivar": e.retirado = false; e.motivoRetiro = ""; await guardarYa(e); pintar(); break;
@@ -864,7 +1007,7 @@ document.addEventListener("click", async ev => {
     case "ver-exportar": ir("exportar"); break;
     case "ver-ajustes": ir("ajustes"); break;
     case "ejemplos": await cargarEjemplos(); pintar(); break;
-    case "borrar-ejemplos": for (const x of ENT.filter(z => z.demo)) { for (const au of x.audios) await bdDel("audios", au.id); await bdDel("entrevistas", x.id); } ENT = ENT.filter(z => !z.demo); pintar(); break;
+    case "borrar-ejemplos": await quitarEjemplos(); pintar(); break;
     case "generar-codigo": case "generar-codigo-todo": case "codigo-una": {
       await guardarTodo();
       const lista = a === "codigo-una" ? [e] : a === "generar-codigo" ? ENT.filter(porEnviar) : ENT;
