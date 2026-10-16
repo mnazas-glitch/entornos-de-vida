@@ -350,6 +350,9 @@ const V = {
     const obs = e => { const o = [], d = duracionMin(e), f = faltan(e);
       if (estado(e) === "completado" && f) o.push(`${f} ítems en blanco`);
       if (cuentaNR(e) >= 5) o.push(`${cuentaNR(e)} ítems con código no responde`);
+      // una entrevista interrumpida cuenta como retirada: el encuestador debe finalizarla o retirarla
+      const dias = e.actualizada ? Math.floor((Date.now() - new Date(e.actualizada)) / 864e5) : 0;
+      if (estado(e) === "activo" && dias >= 2) o.push(`activa sin cerrar hace ${dias} días: finalizarla o registrar el retiro con su motivo`);
       if (d != null && d < 20) o.push(`duró solo ${d} min`); if (d != null && d > 90) o.push(`duró ${d} min`);
       if (e.consentAudio && estado(e) === "completado" && !(e.audios || []).length) o.push("autorizó grabar y no hay audios");
       if (e.queja && e.queja.hubo) o.push("queja registrada"); if (e.retirado) o.push("retirado: " + (e.motivoRetiro || "sin motivo"));
