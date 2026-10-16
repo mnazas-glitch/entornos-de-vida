@@ -1,0 +1,501 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Consola Entornos de Vida</title>
+<meta name="description" content="Consola del equipo investigador: recibe y descifra lo que envían las tabletas, consolida, muestra el avance y organiza la revisión de las transcripciones. Todo ocurre en este equipo.">
+<meta name="theme-color" content="#1f4e79">
+<link rel="icon" href="icono-192.png">
+<style>
+/* Consola de escritorio: barra de pestañas arriba, cada pestaña una tarea del equipo receptor */
+:root{
+  --azul:#1f4e79; --azul-2:#2c6aa3; --azul-suave:#e6eef6;
+  --fondo:#f3f5f8; --sup:#ffffff; --texto:#1b2633; --tenue:#5a6879; --linea:#d6dee8;
+  --ok:#1f7a4d; --ok-suave:#e3f3ea; --alerta:#a55a00; --alerta-suave:#fdf1e2; --mal:#b3261e; --mal-suave:#fbe9e7;
+  --sombra:0 1px 2px rgba(16,32,52,.06),0 4px 14px rgba(16,32,52,.06); --r:12px;
+  --f:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,"Helvetica Neue",Arial,sans-serif;
+  --mono:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;
+}
+@media (prefers-color-scheme: dark){:root:not([data-theme="light"]){
+  --azul:#8fb8e3; --azul-2:#a9c9ec; --azul-suave:#1d2c3d; --fondo:#0f1620; --sup:#172230; --texto:#e5ebf2; --tenue:#9aa8b8; --linea:#2a3a4d;
+  --ok:#6fcf9b; --ok-suave:#143024; --alerta:#f0b45c; --alerta-suave:#33260f; --mal:#ff8a80; --mal-suave:#3a1a18; --sombra:none; color-scheme:dark}}
+:root[data-theme="dark"]{
+  --azul:#8fb8e3; --azul-2:#a9c9ec; --azul-suave:#1d2c3d; --fondo:#0f1620; --sup:#172230; --texto:#e5ebf2; --tenue:#9aa8b8; --linea:#2a3a4d;
+  --ok:#6fcf9b; --ok-suave:#143024; --alerta:#f0b45c; --alerta-suave:#33260f; --mal:#ff8a80; --mal-suave:#3a1a18; --sombra:none; color-scheme:dark}
+*{box-sizing:border-box}
+body{margin:0;background:var(--fondo);color:var(--texto);font:15.5px/1.5 var(--f)}
+button,input,select,textarea{font:inherit;color:inherit}
+a{color:var(--azul)}
+header.top{position:sticky;top:env(safe-area-inset-top,0px);z-index:5;background:var(--sup);border-bottom:1px solid var(--linea)}
+.top-in{max-width:1180px;margin:0 auto;padding-block:10px 0;padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px))}
+.fila{display:flex;align-items:center;gap:12px;flex-wrap:wrap}
+.marca{font-weight:700;color:var(--azul);font-size:18px}
+.marca small{display:block;font-weight:500;color:var(--tenue);font-size:12.5px}
+.esp{flex:1}
+nav.tabs{display:flex;gap:2px;overflow-x:auto;margin-top:8px}
+nav.tabs button{border:0;background:none;padding:10px 14px;border-bottom:3px solid transparent;color:var(--tenue);font-weight:600;cursor:pointer;white-space:nowrap}
+nav.tabs button[aria-selected="true"]{color:var(--azul);border-bottom-color:var(--azul)}
+main{max-width:1180px;margin:0 auto;padding-block:20px 60px;padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px))}
+h1{font-size:23px;line-height:1.25;margin:0 0 6px;text-wrap:balance}
+h2{font-size:18px;margin:0 0 10px}
+h3{font-size:13px;margin:16px 0 8px;color:var(--tenue);text-transform:uppercase;letter-spacing:.6px}
+p{margin:0 0 10px}
+.tenue{color:var(--tenue)}
+.tarjeta{background:var(--sup);border:1px solid var(--linea);border-radius:var(--r);padding:16px 18px;box-shadow:var(--sombra);min-width:0}
+.pila{display:grid;gap:14px}
+.rejilla{display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:14px}
+.btn{display:inline-flex;align-items:center;gap:8px;min-height:40px;padding:8px 16px;border-radius:10px;border:1px solid var(--linea);background:var(--sup);font-weight:600;cursor:pointer}
+.btn.pri{background:var(--azul);border-color:var(--azul);color:var(--sup)}
+.btn.chico{min-height:32px;padding:4px 10px;font-size:14px}
+.btn:disabled{opacity:.45;cursor:not-allowed}
+.btns{display:flex;flex-wrap:wrap;gap:8px}
+.chip{display:inline-flex;align-items:center;padding:2px 10px;border-radius:999px;font-size:12.5px;font-weight:650;white-space:nowrap;border:1px solid transparent}
+.chip.enrolado{background:var(--azul-suave);color:var(--azul)}
+.chip.activo,.chip.borrador{background:var(--alerta-suave);color:var(--alerta)}
+.chip.completado,.chip.verificado{background:var(--ok-suave);color:var(--ok)}
+.chip.retirado{background:var(--mal-suave);color:var(--mal)}
+.chip.noacepto,.chip.pendiente,.chip.corregido{background:var(--fondo);color:var(--tenue);border-color:var(--linea)}
+.chip.corregido{color:var(--azul);border-color:var(--azul)}
+.aviso{padding:10px 14px;border-radius:10px;background:var(--alerta-suave);color:var(--alerta)}
+.aviso.ok{background:var(--ok-suave);color:var(--ok)}
+.aviso.mal{background:var(--mal-suave);color:var(--mal)}
+.cifras{display:grid;grid-template-columns:repeat(auto-fit,minmax(140px,1fr));gap:10px}
+.cifra{background:var(--sup);border:1px solid var(--linea);border-radius:10px;padding:10px 14px}
+.cifra b{display:block;font-size:28px;line-height:1.1;font-variant-numeric:tabular-nums}
+.cifra span{color:var(--tenue);font-size:13.5px}
+.tabla{overflow-x:auto}
+table{border-collapse:collapse;width:100%;font-size:14px}
+th,td{text-align:left;padding:7px 8px;border-bottom:1px solid var(--linea);vertical-align:top}
+th{color:var(--tenue);font-weight:650;font-size:12.5px;text-transform:uppercase;letter-spacing:.4px}
+td.n{text-align:right;font-variant-numeric:tabular-nums}
+.barra{height:10px;border-radius:6px;background:var(--fondo);border:1px solid var(--linea);overflow:hidden;min-width:120px}
+.barra i{display:block;height:100%;background:var(--azul)}
+.zona{border:2px dashed var(--linea);border-radius:12px;padding:22px;text-align:center;color:var(--tenue)}
+.zona.sobre{border-color:var(--azul);background:var(--azul-suave)}
+textarea{width:100%;min-height:90px;padding:8px 10px;border:1px solid var(--linea);border-radius:8px;background:var(--fondo);line-height:1.45}
+input[type=text],select{min-height:38px;padding:6px 10px;border:1px solid var(--linea);border-radius:8px;background:var(--fondo)}
+pre.copia{white-space:pre-wrap;background:var(--fondo);border:1px solid var(--linea);border-radius:10px;padding:12px;font:14px/1.5 var(--mono);margin:0}
+.pasos{counter-reset:p;display:grid;gap:10px;margin:0;padding:0;list-style:none}
+.pasos li{counter-increment:p;display:grid;grid-template-columns:34px 1fr;gap:12px;align-items:start}
+.pasos li::before{content:counter(p);width:30px;height:30px;border-radius:50%;background:var(--azul);color:var(--sup);display:grid;place-items:center;font-weight:700;font-size:14px}
+.pasos b{display:block}
+.trans{border:1px dashed var(--azul);background:var(--azul-suave);border-radius:8px;padding:8px 10px;white-space:pre-wrap}
+.item{border-top:1px solid var(--linea);padding-top:12px;margin-top:12px}
+.item:first-child{border-top:0;margin-top:0;padding-top:0}
+audio{width:100%;max-width:420px;height:36px}
+.toast{position:fixed;left:50%;transform:translateX(-50%);bottom:calc(20px + env(safe-area-inset-bottom,0px));background:var(--texto);color:var(--fondo);padding:10px 16px;border-radius:10px;z-index:30}
+textarea#portapapeles{position:fixed;left:-9999px;top:0;opacity:0}
+</style>
+</head>
+<body>
+<header class="top"><div class="top-in">
+  <div class="fila">
+    <div class="marca">Consola Entornos de Vida<small>Equipo receptor del estudio de determinantes territoriales · CSS · CIIGC</small></div>
+    <div class="esp"></div>
+    <span id="modo" class="chip pendiente">Sin datos</span>
+  </div>
+  <nav class="tabs" role="tablist" id="tabs"></nav>
+</div></header>
+<main id="app"></main>
+<textarea id="portapapeles" aria-hidden="true" tabindex="-1"></textarea>
+<script>
+"use strict";
+const INST = {"version": "V2.0 17/7/2026", "titulo": "Análisis de determinantes de salud con enfoque territorial, en población de 18 años o más. República de Panamá. Años 2026-2027", "investigadores": "Investigadores: Dra. Iranela Miranda, Dr.Gresky Gutiérrez,Dra. María Mercedes Castrejón, Dra. Luz Romero, Dr.Jaime Sevillano, Dr. Manuel Nazas, Dr. Juan Carlos Luria, Mgter Iset Trujillo, Dr. Heraclides Gómez, Dra. Tamara Villafañez, Licda. Muriel Rangel y Licda. Ariadna Candanedo, Dra. Olga Quirós, Dr. Alexis Castillo y Licda. Shanira Pineda.", "parte1_instruccion": "Parte I. Responda cada pregunta marcando la respuesta seleccionada.", "parte1": [{"letra": "A", "titulo": "Preguntas sobre aspectos sociodemográficos", "preguntas": [{"texto": "El sexo al que pertenece es:", "opciones": ["Hombre", "Mujer"]}, {"texto": "Indique a qué grupo de edad pertenece:", "opciones": ["18 a 24 años", "25 a 34 años", "35 a 44 años", "45 a 54 años", "55 a 64 años", "65 años o más"]}, {"texto": "Coloque el Nivel Educativo al que pertenece:", "opciones": ["Sin estudios formales", "Primaria", "Secundaria", "Técnico", "Licenciatura", "Postgrado o especialización", "Doctorado"]}, {"texto": "Indique su Nacionalidad:", "opciones": ["Panameña", "Extranjero/a"]}, {"texto": "Marque la situación actual en cuanto a su ocupación:", "opciones": ["Empleado: del gobierno, de empresa privada, de una cooperativa, de servicio doméstico o de una organización sin fines de lucro.", "Trabajador por cuenta propia: que ha desarrollado su propio negocio o empresa o ejerce por su cuenta propia su profesión. No tiene a su cargo otros empleados.", "Patrono o Dueño: persona que ha explotado su propia empresa, solo o asociado, ejerce por su cuenta una profesión, pero tiene a su cargo uno o más empleados que reciben una remuneración.", "Trabajador Familiar: ejerce una profesión no remunerada, en una empresa o negocio explotado por un miembro de su familia.", "Miembro de una Cooperativa de Producción: participa de una modalidad asociativa de empresa que se dedica a producir algún artículo o bien."]}, {"texto": "Coloque el grupo ocupacional al que pertenece:", "opciones": ["Directores y gerentes de los sectores públicos, privados y de organizaciones de interés social.", "Profesionales, científicos y otros intelectuales.", "Técnicos y profesionales de nivel medio.", "Empleados de oficina.", "Trabajadores de los servicios y vendedores de comercios y mercados.", "Agricultores, trabajadores agropecuarios, forestales, de la pesca y caza.", "Artesanos, trabajadores de la minería, la construcción, la industria manufacturera, la mecánica y ocupaciones afines.", "Operadores de instalaciones fijas y máquinas (Manejo de máquinas e instalaciones industriales de gran tamaño); montadores, ensambladores, conductores y operadores de maquinarias móviles.", "Trabajadores no calificados de los servicios (Vendedores ambulantes, personal de limpieza, conserjería, mensajeros, porteros), la minería, la construcción, industria manufacturera, transporte y otras ocupaciones elementales.", "Sin ocupación en estos momentos."]}, {"texto": "Su clase social de acuerdo al promedio de ingreso mensual en el hogar es:", "opciones": ["Clase Baja (Menos de B/. 771.75)", "Clase media (Entre B/. 771.75 y B/. 2058)", "Clase Alta (Mayor a B/. 2058 balboas)"]}]}, {"letra": "B", "titulo": "Preguntas sobre diversidad funcional", "preguntas": [{"texto": "¿Tiene alguna discapacidad física, auditiva, visual, intelectual, mental, de órganos y sistemas u otros, que no le permite realizar sus tareas y actividades habituales?", "opciones": ["Sí", "No"]}]}, {"letra": "C", "titulo": "Preguntas sobre antecedentes de cáncer", "preguntas": [{"texto": "¿Usted tiene o ha tenido cáncer alguna vez?", "opciones": ["Sí", "No"]}, {"texto": "¿Alguno de sus familiares tiene o ha tenido cáncer en algún momento?", "opciones": ["Sí", "No"]}]}, {"letra": "D", "titulo": "Preguntas relacionadas con aspectos ambientales", "preguntas": [{"texto": "¿Tiene usted acceso a agua potable en su hogar de manera regular?", "opciones": ["Sí", "No"]}, {"texto": "¿De dónde obtiene el agua en su hogar?", "opciones": ["Acueducto público (IDAAN)", "Acueducto Particular dentro de la vivienda.", "Pluma o toma de agua comunitaria.", "Pozos", "Agua de río, quebrada o manantial, sin tratar.", "Agua de lluvia", "Agua embotellada", "Carros cisternas"]}, {"texto": "¿Cuál es el sistema sanitario que utiliza en su hogar para la disposición y eliminación de excretas (heces y aguas negras)?", "opciones": ["Alcantarillado", "Tanque séptico", "Letrina", "Otros", "No tiene"]}, {"texto": "¿Dispone de un servicio de aseo formal para la recolección de basura en su comunidad?", "opciones": ["Sí", "No"]}, {"texto": "¿Alguna vez ha estado expuesto a plaguicidas en su trabajo, comunidad o lugar donde reside?", "opciones": ["Si", "No"]}]}, {"letra": "E", "titulo": "Preguntas relacionadas a hábitos y estilos de vida", "preguntas": [{"texto": "¿Realiza usted al menos 30 minutos de actividad física de intensidad moderada (caminar, pedalear, montar bicicleta, deportes, juegos, actividades recreativas, bailar, tareas domésticas) al día (Equivalente de 150 a 300 minutos semanales)?", "opciones": ["Sí, todos los días.", "Sí, algunos días de la semana.", "No realizo actividad física regularmente."]}, {"texto": "¿Ha fumado, masticado o aspirado algún producto derivado del tabaco, como cigarrillos, cigarrillo electrónico o vaper, tabaco de masticar durante los últimos 12 meses?", "opciones": ["Sí", "No"]}, {"texto": "¿Alguien fuma cerca de usted con frecuencia, en casa, el trabajo u otros lugares?", "opciones": ["Sí", "No"]}, {"texto": "¿Con qué frecuencia consume bebidas que contienen alcohol?", "opciones": ["Nunca", "Una o menos veces al mes.", "2 a 4 veces al mes", "2 a 3 veces por semana", "4 o más veces a la semana"]}]}], "fuente": "Fuente: ICGES, MINSA e INEC, 2019; OPS/NMH/19-001, 2019; Clasificación Nacional de Ocupaciones-2000; Ministerio de Economía y finanzas, 2010; Babor T, Higgins-Biddle J. Saunders J. y Monteiro M., 2001; MINSA, 2019; https://www.inec.gob.pa/archivos/P0705547520250124083204Comentarios%20EML%20octubre%202024.pdf", "edv_presentacion": ["Entornos de vida es una herramienta que se utiliza para mejorar la calidad de los lugares donde las personas viven, trabajan, se relacionan, envejecen…", "Es un cuestionario fácil y sencillo de usar. Consiste en 14 preguntas sobre elementos físicos, económicos y sociales del territorio a evaluar. Una vez contestadas, los resultados se trasladan a un simple diagrama en el que se muestra gráficamente la valoración sobre las áreas preguntadas.", "¿Por qué es importante el lugar donde vives?", "Los lugares donde pasamos gran parte de nuestro tiempo tienen un efecto importante sobre nuestra salud y bienestar. Conocer qué fortalezas y debilidades tiene nuestro entorno nos ayuda a pensar qué se necesita para mejorarlo. Las 14 dimensiones que incluye Entornos de vida están relacionadas con la salud y bienestar que nos proporciona nuestro entorno.", "¿Cómo se utiliza Entornos de Vida?", "La herramienta consta de 14 dimensiones. Cada dimensión tiene una pregunta principal y una serie de preguntas que te ayudarán a reflexionar sobre el tema. Una vez lo hayas valorado, deberás puntuarlo del 1 al 10 y explicar brevemente los motivos de tu puntuación.", "Cuando hayas evaluado las 14 dimensiones podrás traspasar tu puntuación al diagrama situado al final del cuestionario. De esta forma, y de un solo vistazo, verás cómo has evaluado tu entorno.", "Finalmente, podrás proponer acciones prioritarias que se pueden realizar para mejorar las áreas que peor has puntuado.", "Tú eres quien mejor conoce dónde vives,", "¿participas?", "Desplazamiento a pie o en bicicleta"], "edv_escala": "A continuación, puntúa mediante una escala del 1 a 10, donde 1 significa que no está en buenas condiciones y 10 significa que está en muy buenas condiciones. Registra tu valoración marcando con una X el número que consideres que refleja tu puntuación.", "dimensiones": [{"nombre": "Desplazamiento a pie o en bicicleta", "intro": "Caminar e ir en bicicleta son actividades que benefician nuestra salud y el medio ambiente. Poder realizar trayectos agradables y seguros nos anima a caminar o a ir en bicicleta.", "pregunta": "¿Puedes caminar y/o desplazarte en bicicleta (o en otro medio de transporte no motorizado) fácilmente y por trayectos agradables y seguros por tu barrio, corregimiento o distrito?", "reflexion": ["¿Hay zonas específicas para ir a caminar y/o montar en bicicleta (rutas señalizadas, circunvalaciones, caminos escolares, zonas peatonales, carriles bici…)?", "¿Las zonas para andar y/o montar en bicicleta tienen aceras amplias, buena señalización, rampas, sombra, asientos o banquetas, fuentes…? ¿Hay elementos que lo dificulten (postes, lámparas de alumbrado público, mobiliario urbano, pendiente excesiva, mal estado, poca separación de calzada, mucho tráfico, insuficiente seguridad vial…)?", "¿Tienen prioridad peatones o ciclistas frente a los coches u otros vehículos a motor (calles peatonales, semáforos y señalización específica)?", "¿Se puede ir caminando o en bicicleta a los colegios, universidad, tiendas, parques, o estaciones de transporte público (autobús, tren, metro…)?", "¿Tienen elementos que favorezcan la movilidad y la autonomía de todas las personas (ausencia de barreras arquitectónicas, asientos o banquetas, fuentes, baños públicos, sombra…), independientemente de la edad, el sexo género o la diversidad funcional?"]}, {"nombre": "Transporte público", "intro": "Poder acceder a un servicio de transporte público asequible, regular y bien conectado es importante para todas las personas. Un buen transporte público favorece realizar actividad física y anima a desplazarse de una forma más sostenible para el medio ambiente.", "pregunta": "¿El transporte público responde a las necesidades de todas las personas del barrio, corregimiento o distrito?", "reflexion": ["¿Hay variedad suficiente de transporte público, con horario regular y con frecuencias de paso adecuadas?", "¿Permite llegar a las instalaciones y servicios básicos (como centros educativos, de salud, sociales, administrativos, comerciales…) y los conecta entre sí? ¿Hay zonas a las que no se puede llegar en transporte público?", "¿El transporte público es seguro y accesible (por ejemplo, para las personas mayores, sillas de ruedas, carritos para bebés o carros de la compra) independientemente de la edad, el sexo, el género, la movilidad o la diversidad funcional?", "¿Hay información suficiente sobre el transporte público (horarios, precios, frecuencias, líneas, etc.)?", "Las paradas y/o estaciones de autobús, tren, metro, las estaciones de bicicletas o de otro tipo de transporte público ¿están en lugares adecuados y a una distancia a la que se puede llegar a pie desde casa, el trabajo u otras instalaciones o servicios básicos (como centros de estudios, de salud, administrativos, comerciales…)?", "Las paradas y/o estaciones de autobús, tren, metro, bicicletas u otro tipo de transporte público, ¿tienen baños públicos, zonas cubiertas, asientos, iluminación adecuada, paneles informativos o zonas de estacionamiento para vehículos a motor y bicicletas?", "¿Las paradas, estaciones y vehículos (autobuses, trenes, metro, bicicletas…) están en buenas condiciones y bien mantenidos?", "¿El transporte público tiene un coste económico asequible? ¿Hay boletos con descuento para las personas con menores recursos?"]}, {"nombre": "Tráfico y aparcamiento", "intro": "Demasiado tráfico afecta negativamente a la salud de las personas que viven, trabajan o visitan un lugar. Una buena regulación y políticas que restrinjan el tráfico de vehículos privados y ordenen las zonas de estacionamiento en la vía pública, contribuyen a minimizar este impacto.", "pregunta": "¿La regulación del tráfico y de las zonas de estacionamiento es adecuada en tu barrio, corregimiento o distrito?", "reflexion": ["¿Se han tomado medidas para disminuir los efectos negativos del tráfico (reducción de velocidad, restricción del tráfico, paneles acústicos, fomento del transporte sostenible, etc.)?", "¿Existen medidas que favorezcan la convivencia entre peatones, vehículos a motor y/o bicicletas y que mejoren la seguridad de peatones (como pasarelas en pasos a nivel, medidas para reducir la velocidad, espejos, señalización, etc.)?", "¿Existen suficientes plazas de aparcamiento o zonas de estacionamiento?", "¿Hay espacios gratuitos de estacionamiento a precios asequibles? ¿Tienen espacios reservados o de uso preferente para personas con movilidad reducida o en otras situaciones (embarazo, crianza)?", "¿Hay aparcamientos o zonas de estacionamiento públicos, seguros y bien señalizados? ¿Hay estacionamientos de transferencia (Son los que están situados en los alrededores para dejar los vehículos y tomar otro medio de transporte y así disminuir el tráfico en el barrio, corregimiento o distrito)? ¿Están conectados con el transporte público?"]}, {"nombre": "Calles y espacios públicos", "intro": "Las características del entorno construido del barrio, corregimiento o distrito, como edificios, lugares emblemáticos, calles, avenidas, plazas, calles arboladas… ayudan a crear entornos que mejoran el bienestar de sus vecinos/as y aumentan el sentimiento de pertenencia al lugar.", "pregunta": "¿Están los edificios bien cuidados y las calles y espacios públicos abiertos son agradables y fáciles para transitar por ellos?", "reflexion": ["Los edificios o espacios públicos, ¿hacen que transitar por esa zona sea una experiencia agradable?", "Los edificios, calles y espacios públicos abiertos, ¿están bien señalizados, están limpios, bien iluminados y cuidados en general?", "¿Existen elementos negativos como ruido, contaminación, suciedad o basura, grafitis, falta de iluminación, solares o edificios en ruinas?"]}, {"nombre": "Espacios naturales", "intro": "Los espacios naturales incluyen parques y bosques, campos, playas, arroyos y ríos y espacios verdes a lo largo de caminos y carreteras. Estos espacios mejoran la calidad del aire y benefician nuestra salud y bienestar.", "pregunta": "¿Puedes disfrutar en tu barrio, corregimiento o distrito de un espacio natural atractivo, seguro y de fácil acceso?", "reflexion": ["Estos espacios, ¿están dotados de elementos que los hagan atractivos y animen a la gente a ir y a permanecer en ellos (como paradas de transporte público cercanas, baños públicos, zonas de sombra, asientos, fuentes, buena iluminación, elementos de seguridad, áreas recreativas específicas, columpios…)?", "¿Tienen aspectos negativos como demasiado ruido, suciedad, poco mantenimiento o elementos que pueden ser peligrosos?", "¿Todas las personas pueden disfrutar de estos espacios (independientemente de su edad, sexo, género, grupo étnico, movilidad, diversidad funcional, nivel socioeconómico…)?"]}, {"nombre": "Juego y ocio", "intro": "Un buen entorno motiva a jugar y a disfrutar de espacios de ocio activo y esparcimiento. Contar con lugares que promuevan realizar actividades de ocio saludable, como la actividad física o las actividades culturales, mejoran la calidad de nuestras vidas y de nuestra salud.", "pregunta": "¿Se pueden realizar actividades de ocio y esparcimiento en tu barrio, corregimiento o distrito?", "reflexion": ["¿Existen lugares o instalaciones donde se puede jugar, hacer ejercicio físico o disfrutar de actividades culturales u otro tipo de (piensa en grupos específicos de personas como adolescentes, personas mayores, niños y niñas, personas con diversidad funcional…)?", "Estos lugares o instalaciones, ¿son de buena calidad y están bien mantenidos?", "¿son gratuitos o tienen un costo asequible? ¿se aprovechan al máximo?", "¿Todas las personas los pueden utilizar (independientemente de su edad, género, grupo étnico, lugar de nacimiento, movilidad, creencias religiosas, diversidad funcional, nivel socioeconómico…)?", "¿Se pueden utilizar en cualquier momento del día o la noche y del año?", "¿Se fomenta el uso de espacios para que los niños y niñas jueguen al aire libre?"]}, {"nombre": "Servicios", "intro": "Los servicios de los que disponemos en nuestro entorno pueden facilitar nuestras condiciones de vida. Estos incluyen comercios, escuelas infantiles, colegios, bibliotecas, lugares de culto, centros de salud y lugares para comer, beber y encontrarse con amistades… Poder acceder a ellos es importante para mejorar nuestra calidad de vida.", "pregunta": "¿Los servicios que tiene tu barrio, corregimiento o distrito satisfacen las necesidades de todas las personas?", "reflexion": ["¿Hay suficiente variedad de servicios para cubrir las necesidades básicas de tu barrio, corregimiento o distrito (educación, salud, compras, actividad física, ocio, cultura, relaciones sociales, etc.)?", "¿Son de calidad y están bien mantenidos?", "¿Todas las personas los pueden utilizar (independientemente de su nivel económico, edad, sexo, género, grupo étnico, movilidad, creencias religiosas, diversidad funcional y sexual)?", "¿Hay servicios dirigidos a grupos de población vulnerable?", "Los servicios disponibles, ¿favorecen la alimentación saludable, la actividad física y las relaciones sociales?"]}, {"nombre": "Trabajo y economía local", "intro": "Los beneficios de un buen empleo, como un salario adecuado, el tipo de actividad desarrollada, las relaciones sociales que favorece o la realización personal, promueven la salud y el bienestar.", "pregunta": "¿Hay una economía local activa en el barrio, corregimiento o distrito que favorezca el acceso a un buen empleo?", "reflexion": ["¿Existe una economía local activa que favorezca la creación de empleo?", "¿Hay diferentes oportunidades para que las personas adquieran habilidades para trabajar (como módulos o actividades formativas, escuelas de formación profesional, convenios con sectores económicos o empresas, prácticas…)?", "¿Se puede conseguir un buen empleo (independientemente de la edad, sexo, género, grupo étnico, movilidad, creencias religiosas, discapacidad, diversidad sexual)?", "¿Hay servicios locales (como oficinas de empleo, agencias de contratación, asociaciones u otras entidades) que ayuden a encontrar un puesto de trabajo?", "¿Hay facilidades para crear y poner en marcha nuevos negocios locales?"]}, {"nombre": "Vivienda y comunidad", "intro": "Las características de las viviendas del barrio o municipio afectan a las condiciones de vida de las personas que viven en él. Viviendas espaciosas, bien aisladas y mantenidas, seguras, accesibles y adaptadas impactan positivamente en la salud y el bienestar.", "pregunta": "¿Las viviendas de tu barrio, corregimiento o distrito satisfacen las necesidades de la población?", "reflexion": ["¿Existen viviendas espaciosas, seguras, bien aisladas (Que reducen la transferencia de calor o frío del exterior al interior de la vivienda) y mantenidas y bien comunicadas?", "¿Estas viviendas son accesibles para todas las personas (independientemente de su edad, género, sexo, movilidad, discapacidad, grupo étnico, nivel económico…) de tal forma que se puede vivir en ellas de manera segura, cómoda y autónoma?", "¿Existen diferentes formas de tener acceso a una vivienda (alquiler, compra, u otras) que satisfagan las necesidades las personas? ¿Se facilita el acceso a la vivienda (Descuentos, ayudas, programas u otras fórmulas) a algún grupo de población específico?", "¿El tamaño de las viviendas se adapta al tamaño o al tipo de las familias que las habitan?", "¿Las viviendas favorecen la convivencia de personas de diferentes edades, ingresos, movilidad, diversidad étnica, funcional, sexual…?", "¿Existen circunstancias que dificulten el acceso a la vivienda o fuercen el desplazamiento de sus vecinas/os a otros barrios, corregimiento o distrito (gentrificación o reurbanización de viviendas con mejor poder adquisitivo, alquileres turísticos, “guetificación del barrio”…)?"]}, {"nombre": "Contacto social", "intro": "Sentirnos solas o solos afecta a nuestra salud y bienestar. Un buen entorno ofrece una variedad suficiente de espacios y actividades donde relacionarse y pasar el tiempo con otras personas.", "pregunta": "¿Hay oportunidad y variedad suficiente de espacios y actividades para relacionarse con otras personas en tu barrio, corregimiento o distrito?", "reflexion": ["¿Existen espacios y actividades donde las personas tengan oportunidad de relacionarse (independientemente de su edad, sexo, género, lugar de nacimiento, grupo étnico, religión, movilidad, discapacidad, nivel económico…)?", "¿Hay actividades o programas específicos para grupos de población concretos (personas mayores, infancia, adolescencia, personas adultas…)?", "¿Existen diferentes lugares (interiores, al aire libre, construidos especialmente para ello o más informales) donde la gente pueda encontrarse y relacionarse?", "¿Esos espacios pueden ser usados en cualquier momento del día, del año, y en diferentes condiciones climáticas?", "Los espacios y actividades ¿favorecen que se integren todas las personas de la comunidad y se conozcan (independientemente de su edad, sexo, género, lugar de nacimiento, grupo étnico, religión, movilidad, diversidad funcional, nivel económico…)?"]}, {"nombre": "Identidad y pertenencia", "intro": "La apariencia de un lugar, su historia y lo que otras personas piensan de él, pueden condicionar cómo nos sentimos. Una fuerte identidad local positiva puede ayudarnos a sentirnos orgullosos/as de nuestro entorno, de nuestra comunidad y de nosotros/as mismos/as.", "pregunta": "¿Tu barrio, corregimiento o distrito tiene una identidad positiva y sientes que perteneces o que puedes pertenecer a él?", "reflexion": ["¿Las personas que viven en tu barrio, corregimiento o distrito lo valoran positivamente?", "¿Se favorece que se conozca y celebre la historia, el patrimonio cultural, la cultura y costumbres del lugar?", "¿Existen grupos locales, asociaciones y redes sociales que ayuden a las personas a sentirse involucradas en su comunidad?", "¿Se favorece la interculturalidad y la conexión entre vecinos y vecinas, independientemente de su edad, sexo, género, lugar de nacimiento, religión, grupo étnico, nivel socioeconómico, discapacidad …?"]}, {"nombre": "Seguridad", "intro": "La seguridad de un lugar afecta al bienestar de las personas y a cómo éstas pasan su tiempo en él. Los entornos bien diseñados contribuyen a crear espacios seguros y a reducir la delincuencia, el vandalismo y el mal uso de las instalaciones.", "pregunta": "¿Te sientes segura/o en tu barrio, corregimiento o distrito?", "reflexion": ["¿Se dan casos de delincuencia con frecuencia (vandalismo, robos, asaltos, agresiones…)?", "¿Existen puntos o zonas concretas con mayor riesgo de que se produzcan situaciones conflictivas o agresiones?", "¿Las calles, caminos, plazas, parques y espacios naturales son seguros, están bien iluminados y se pueden utilizar tanto de día como de noche? ¿Las personas pueden caminar solas por la noche con tranquilidad?", "¿Todos los lugares e instalaciones se pueden utilizar en cualquier momento del día o la noche y del año?", "¿Existen medidas para garantizar la seguridad de las personas que viven en el barrio (¿buen mantenimiento de las instalaciones y espacios, buena iluminación, agentes de policía, vigilancia de estaciones de transporte público…?", "¿La gente se siente segura tanto en su casa como fuera de ella?", "¿La zona es segura para todas las personas (independientemente de su edad, sexo, género, grupo étnico, movilidad, creencias religiosas, discapacidad y diversidad sexual)?"]}, {"nombre": "Cuidado y mantenimiento", "intro": "Los lugares bien cuidados y mantenidos nos hacen sentir bien, mientras que los que no están en buenas condiciones pueden producirnos el efecto contrario. Un buen mantenimiento y acondicionamiento del barrio o municipio nos ayuda a sentirnos más a gusto y a tener una opinión más favorable del entorno.", "pregunta": "¿Se cuidan adecuadamente los edificios y espacios del barrio, corregimiento o distrito, tanto públicos como privados?", "reflexion": ["¿Se encuentran las instalaciones, como parques, espacios abiertos o edificios públicos, en buen estado y bien mantenidos (se arreglan los desperfectos, hay cestos de basura suficientes, se limpian con frecuencia…)?", "¿Existe algún problema específico en la zona (como basura, malos olores, vandalismo, excrementos de perros u otros animales, relacionados con los negocios locales…)?", "¿Hay contenedores y servicios para el reciclaje y almacenamiento de desechos? ¿está bien organizada su recogida? ¿se utilizan adecuadamente?", "La administración local, asociaciones de vecinos y vecinas, propietarios/as de viviendas y residentes del barrio, ¿conocen cuáles son sus deberes y responsabilidades? ¿actúan de acuerdo a éstos?"]}, {"nombre": "Influencia y participación", "intro": "La opinión que tienen las personas sobre su entorno debería ser escuchada. Tener voz en la toma de decisiones y sentirse capaz de cambiar las cosas, ayuda a construir comunidades más fuertes y mejores entornos. Sentir que se puede influir y participar en la comunidad hace que las personas se sientan bien.", "pregunta": "¿Sientes que puedes participar en la toma de decisiones y ayudar a cambiar las cosas para mejorar tu barrio, corregimiento o distrito?", "reflexion": ["¿Existen mecanismos y canales que favorezcan la participación? ¿Hay algún órgano de participación activo?", "¿Se están realizando o se han realizado procesos en los que participas en tu barrio o municipio (de urbanismo, movilidad, presupuestos participativos…)?", "¿Pueden participar todas las personas en la toma de decisiones que les afectan (independientemente de su edad, sexo, género, grupo étnico, movilidad, creencias religiosas, discapacidad y diversidad sexual)?", "¿Existen organizaciones, plataformas, entidades o grupos que favorezcan la participación (¿asociaciones de vecinos y vecinas, ONGs, ciudadanía organizada, otras asociaciones o entidades…?", "La administración local, servicios de salud u otros servicios públicos, ¿trabajan activamente con la comunidad para entender y atender sus necesidades?", "¿Hay un buen nivel de transparencia de las acciones y decisiones políticas que afectan al barrio o municipio?", "¿La gente se siente escuchada? ¿Sabe la gente cómo hacerse escuchar?"]}], "diagrama": ["Recuerda que el 1 se encuentra en el centro y el 10 en la parte coloreada de cada dimensión.", "Cuanto mejor hayas evaluado tu barrio o municipio, mayor será la figura que aparecerá en el diagrama al unir los puntos."], "prioridades": {"problemas": "De las catorce dimensiones preguntadas, ¿cuáles son los principales problemas que has identificado? Enumera los tres problemas más importantes:", "acciones": "¿Qué acciones crees que pueden llevarse a cabo para solucionarlos? Enumera tres acciones que consideres prioritarias:"}, "gracias": "Gracias por completar la herramienta Entornos de vida."};
+const APP_VERSION = "0.4.2-prototipo";
+const $ = s => document.querySelector(s);
+const te = new TextEncoder(), td = new TextDecoder();
+const esc = s => String(s == null ? "" : s).replace(/[&<>"']/g, c => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c]));
+function toast(t) { const d = document.createElement("div"); d.className = "toast"; d.textContent = t; document.body.appendChild(d); setTimeout(() => d.remove(), 2800); }
+const PREG = []; INST.parte1.forEach((s, si) => s.preguntas.forEach((q, qi) => PREG.push({ clave: s.letra + (qi + 1), s: si, texto: q.texto, opciones: q.opciones })));
+const ESTADO_TXT = { enrolado: "Enrolado", activo: "Activo", completado: "Completado", retirado: "Retirado", pendiente: "Sin consentimiento", noacepto: "No aceptó" };
+const COMUS = { "01": "Alanje", "02": "David Centro", "03": "Boquete" };
+const CUOTA_COMU = 70, CUOTA_PC = 34;
+function estado(e) {
+  if (e.consent === false) return "noacepto";
+  if (e.consent !== true) return "pendiente";
+  if (e.retirado) return "retirado";
+  if (e.cerrada) return "completado";
+  const algo = Object.keys(e.r || {}).length || Object.values(e.edv || {}).some(Boolean) || Object.values(e.razones || {}).some(Boolean) || (e.problemas || []).some(Boolean) || (e.acciones || []).some(Boolean);
+  return algo ? "activo" : "enrolado";
+}
+const chip = e => `<span class="chip ${estado(e)}">${ESTADO_TXT[estado(e)]}</span>`;
+const fechaHora = iso => { if (!iso) return ""; const d = new Date(iso), p = n => String(n).padStart(2, "0"), h = d.getHours(); return `${p(d.getDate())}/${p(d.getMonth() + 1)}/${d.getFullYear()}, ${h % 12 || 12}:${p(d.getMinutes())} ${h >= 12 ? "p. m." : "a. m."}`; };
+const comuCodigo = e => { const m = /^CIIGC-RD-[A-Z]{3}-(\d\d)-/.exec(e.codigo || ""); return m ? m[1] : null; };
+const faltan = e => PREG.filter(p => (e.r || {})[p.clave] == null).length + INST.dimensiones.filter((d, i) => !(e.edv || {})[i + 1]).length;
+const duracionMin = e => e.inicio && e.fin ? Math.round((new Date(e.fin) - new Date(e.inicio)) / 60000) : null;
+
+// ---------------------------------------------------------------------------
+// Estado de la consola: todo vive en la memoria de esta pestaña; nada se envía a ningún servidor
+// ---------------------------------------------------------------------------
+const D = { llave: null, llaveNombre: "", entrevistas: new Map(), audios: new Map(), consents: new Map(), trans: new Map(), archivos: [], demo: false };
+let REV = {}; try { REV = JSON.parse(localStorage.getItem("edv_revision") || "{}"); } catch (e) { REV = {}; }
+const guardarRev = () => { try { localStorage.setItem("edv_revision", JSON.stringify(REV)); } catch (e) {} };
+let REVISOR = ""; try { REVISOR = localStorage.getItem("edv_revisor") || ""; } catch (e) {}
+
+// ---------------------------------------------------------------------------
+// Descifrado: el mismo esquema que la aplicación (RSA-OAEP 3072 envuelve AES-256-GCM)
+// ---------------------------------------------------------------------------
+async function cargarLlave(file) {
+  const pem = await file.text();
+  const b64 = pem.replace(/-----[^-]+-----/g, "").replace(/\s+/g, "");
+  if (!/BEGIN PRIVATE KEY/.test(pem)) throw new Error("El archivo no es una llave privada PKCS#8 (llave_privada.pem).");
+  const der = Uint8Array.from(atob(b64), c => c.charCodeAt(0));
+  D.llave = await crypto.subtle.importKey("pkcs8", der, { name: "RSA-OAEP", hash: "SHA-256" }, false, ["decrypt"]);
+  D.llaveNombre = file.name;
+}
+async function abrirBytes(b) {
+  const n = D.llave.algorithm.modulusLength / 8;
+  const raw = await crypto.subtle.decrypt({ name: "RSA-OAEP" }, D.llave, b.slice(0, n));
+  const aes = await crypto.subtle.importKey("raw", raw, "AES-GCM", false, ["decrypt"]);
+  return new Uint8Array(await crypto.subtle.decrypt({ name: "AES-GCM", iv: b.slice(n, n + 12) }, aes, b.slice(n + 12)));
+}
+const deb64u = s => Uint8Array.from(atob(s.replace(/-/g, "+").replace(/_/g, "/") + "=".repeat((4 - s.length % 4) % 4)), c => c.charCodeAt(0));
+async function gunzip(u) { return new Uint8Array(await new Response(new Blob([u]).stream().pipeThrough(new DecompressionStream("gzip"))).arrayBuffer()); }
+// ZIP sin compresión, como lo escribe la aplicación
+function leerZip(u) {
+  const dv = new DataView(u.buffer, u.byteOffset, u.byteLength), out = []; let o = 0;
+  while (o + 30 <= u.length && dv.getUint32(o, true) === 0x04034b50) {
+    const tam = dv.getUint32(o + 18, true), ln = dv.getUint16(o + 26, true), lx = dv.getUint16(o + 28, true);
+    const nombre = td.decode(u.subarray(o + 30, o + 30 + ln)), ini = o + 30 + ln + lx;
+    out.push({ nombre, datos: u.slice(ini, ini + tam) }); o = ini + tam;
+  }
+  return out;
+}
+function sumarEntrevistas(lista, origen) {
+  for (const e of lista) {
+    if (e.demo && !D.demo) continue; // los ejemplos de la tableta no cuentan
+    const prev = D.entrevistas.get(e.codigo);
+    if (!prev || (e.actualizada || "") >= (prev.actualizada || "")) D.entrevistas.set(e.codigo, Object.assign({}, e, { _origen: origen }));
+  }
+}
+async function procesarArchivo(f) {
+  const u = new Uint8Array(await f.arrayBuffer()), magia = td.decode(u.subarray(0, 4));
+  if (magia === "EDVZ" || magia === "EDVC") {
+    if (!D.llave) throw new Error("Primero cargue la llave privada.");
+    const z = leerZip(await abrirBytes(u.subarray(4)));
+    if (magia === "EDVZ") {
+      const j = JSON.parse(td.decode(z.find(x => x.nombre === "respuestas.json").datos));
+      sumarEntrevistas(j.entrevistas, f.name);
+      for (const x of z) if (x.nombre.startsWith("audios/")) {
+        const stem = x.nombre.slice(7).replace(/\.[^.]+$/, ""), ext = x.nombre.split(".").pop();
+        D.audios.set(stem, { url: URL.createObjectURL(new Blob([x.datos], { type: ext === "m4a" ? "audio/mp4" : "audio/" + ext })), nombre: x.nombre.slice(7) });
+      }
+      return `${f.name}: ${j.entrevistas.filter(e => !e.demo).length} entrevista(s) y ${z.filter(x => x.nombre.startsWith("audios/")).length} audio(s)`;
+    }
+    let n = 0;
+    for (const x of z) if (x.nombre.startsWith("consentimientos/") && x.nombre.endsWith(".html")) { D.consents.set(x.nombre.slice(16, -5), td.decode(x.datos)); n++; }
+    return `${f.name}: ${n} consentimiento(s) firmado(s)`;
+  }
+  const texto = td.decode(u);
+  if (f.name.endsWith(".json") && texto.includes('"segmentos"')) {
+    const t = JSON.parse(texto); D.trans.set(t.audio.replace(/\.[^.]+$/, ""), t); return `${f.name}: transcripción`;
+  }
+  return procesarTexto(texto, f.name);
+}
+async function procesarTexto(texto, origen) {
+  const cods = texto.match(/EDV1\.[A-Za-z0-9_-]{300,}/g) || [];
+  if (!cods.length) return `${origen}: no trae códigos ni paquetes de Entornos de Vida`;
+  if (!D.llave) throw new Error("Primero cargue la llave privada.");
+  let n = 0, malos = 0;
+  for (const c of cods) {
+    try { const p = await abrirBytes(deb64u(c.slice(5))); const j = JSON.parse(td.decode(p[0] === 1 ? await gunzip(p.subarray(1)) : p.subarray(1))); sumarEntrevistas(j.entrevistas, origen); n += j.entrevistas.length; }
+    catch (e) { malos++; }
+  }
+  return `${origen}: ${cods.length} código(s), ${n} entrevista(s)${malos ? `, ${malos} código(s) que no abren (¿llegaron cortados?)` : ""}`;
+}
+
+// ---------------------------------------------------------------------------
+// Datos de demostración (ficticios) para mostrar la consola sin datos reales
+// ---------------------------------------------------------------------------
+function cargarDemo() {
+  D.demo = true; D.entrevistas.clear(); D.consents.clear(); D.audios.clear(); D.trans.clear();
+  let s = 7; const az = () => (s = (s * 16807) % 2147483647) / 2147483647, elige = n => Math.floor(az() * n);
+  const razones = ["El bus pasa cada hora y de noche no hay transporte.", "Las aceras están rotas y no hay rampas.", "Hay un parque, pero sin luz por la noche.", "La junta comunal casi no convoca reuniones.", "Se va el agua casi todos los días en verano.", "Los vecinos se conocen y se ayudan.", "Hay trabajo en el campo, pero mal pagado.", ""];
+  const encs = ["Estudiante A", "Estudiante B", "Estudiante C", "Estudiante D"];
+  const plan = [["01", 46, 0.8], ["02", 52, 0.75], ["03", 21, 0.7]];
+  const hoy = Date.now();
+  plan.forEach(([cc, n, pc]) => { for (let k = 1; k <= n; k++) {
+    const ini = new Date(hoy - (30 - Math.floor(az() * 30)) * 864e5 - elige(8) * 36e5);
+    const fin = new Date(ini.getTime() + (30 + elige(35)) * 6e4);
+    const est = az() < pc ? "c" : az() < 0.5 ? "a" : az() < 0.5 ? "r" : az() < 0.6 ? "e" : "n";
+    const e = { codigo: `CIIGC-RD-CHI-${cc}-${String(k).padStart(2, "0")}`, tipo: "RD", provincia: "Chiriquí", comunidad: COMUS[cc], fecha: ini.toISOString().slice(0, 10), encuestador: encs[elige(4)],
+      consent: est !== "n", consentAudio: az() < 0.7, consentT: ini.toISOString(), r: {}, edv: {}, razones: {}, problemas: ["", "", ""], acciones: ["", "", ""], audios: [], queja: { hubo: az() < 0.02, texto: "Ejemplo ficticio: la entrevista se alargó." }, notas: "",
+      cerrada: est === "c", retirado: est === "r", motivoRetiro: est === "r" ? "Ejemplo ficticio: tuvo que salir." : "", inicio: est === "e" || est === "n" ? null : ini.toISOString(), fin: est === "c" ? fin.toISOString() : null, actualizada: fin.toISOString(), _origen: "demostración" };
+    if (est === "c" || est === "a" || est === "r") {
+      PREG.forEach(p => { if (est === "c" || az() < 0.4) e.r[p.clave] = elige(p.opciones.length); });
+      INST.dimensiones.forEach((d, i) => { if (est === "c" || az() < 0.3) { e.edv[i + 1] = Math.max(1, Math.min(10, Math.round(5 + (az() - 0.5) * 7 + (cc === "03" ? 1.5 : 0)))); e.razones[i + 1] = razones[elige(razones.length)]; } });
+      if (est === "c") { e.problemas = ["Transporte de noche", "Agua en verano", "Poca participación"]; e.acciones = ["Ruta nocturna", "Reparar el tanque", "Reunión con el representante"]; }
+      if (e.consentAudio && est === "c") e.audios = [{ item: "D02", dur: 40 }, { item: "D12", dur: 35 }];
+    }
+    D.entrevistas.set(e.codigo, e);
+  } });
+  const ej = [["CIIGC-RD-CHI-01-03", "D02", "Mire, el bus de Alanje a David pasa cada hora y después de las seis ya no hay. Uno tiene que pagar taxi."],
+    ["CIIGC-RD-CHI-02-05", "D12", "De día uno camina tranquilo, pero de noche la calle se pone oscura porque las lámparas están dañadas."],
+    ["CIIGC-RD-CHI-03-02", "D14", "La junta comunal no convoca reuniones, y uno no sabe cómo hacerse escuchar."]];
+  ej.forEach(([cod, item, t]) => D.trans.set(`${cod}_${item}_1`, { audio: `${cod}_${item}_1.m4a`, duracion_s: 30, modelo: "large-v3-turbo", borrador: true, texto: t, segmentos: [{ ini: 0, fin: 30, texto: t }] }));
+  pintar(); toast("Datos de demostración cargados: todo es ficticio.");
+}
+
+// ---------------------------------------------------------------------------
+// Pestañas
+// ---------------------------------------------------------------------------
+const TABS = [["como", "Cómo funciona"], ["recibir", "Recibir"], ["avance", "Avance"], ["calidad", "Calidad"], ["cualitativo", "Cualitativo"], ["documentos", "Documentos"], ["exportar", "Exportar"]];
+let TAB = "como";
+function lista() { return [...D.entrevistas.values()].sort((a, b) => a.codigo.localeCompare(b.codigo)); }
+function pintar() {
+  $("#tabs").innerHTML = TABS.map(([k, t]) => `<button role="tab" aria-selected="${k === TAB}" data-tab="${k}">${t}</button>`).join("");
+  const m = $("#modo");
+  if (D.demo) { m.className = "chip activo"; m.textContent = "Demostración: datos ficticios"; }
+  else if (D.entrevistas.size) { m.className = "chip completado"; m.textContent = `${D.entrevistas.size} entrevistas cargadas`; }
+  else { m.className = "chip pendiente"; m.textContent = D.llave ? "Llave cargada" : "Sin datos"; }
+  $("#app").innerHTML = V[TAB]();
+}
+document.addEventListener("click", ev => { const t = ev.target.closest("[data-tab]"); if (t) { TAB = t.dataset.tab; pintar(); window.scrollTo(0, 0); } });
+
+const sinDatos = () => `<div class="tarjeta"><p style="margin:0">Todavía no hay datos. Vaya a <b>Recibir</b> para cargar la llave y los paquetes, o <button class="btn chico" data-acc="demo">cargue la demostración</button> para ver cómo se ve con datos ficticios.</p></div>`;
+
+const V = {
+  como() {
+    return `<div class="pila">
+      <div><h1>Cómo funciona el instrumento digital</h1>
+      <p class="tenue">Del primer contacto en la vivienda hasta la base para el análisis. Esta consola es el paso 5 en adelante y trabaja solo en este equipo.</p>
+      <div class="btns"><button class="btn pri" data-acc="demo">Ver la consola con datos de demostración</button><a class="btn" href="./" target="_blank" rel="noopener">Abrir la aplicación de la tableta</a></div></div>
+      <div class="rejilla">
+        <div class="tarjeta"><h2>El recorrido de una entrevista</h2><ol class="pasos">
+          <li><div><b>Registro en la tableta</b>El encuestador crea la entrevista con su código (fase, comunidad y número). La aplicación funciona sin internet.</div></li>
+          <li><div><b>Consentimiento en pantalla</b>Se lee el consentimiento v2.0 sellado con la sección de grabación de la adenda. Firman el participante, el testigo si hace falta y quien lo obtiene. Sin firma, la encuesta no abre.</div></li>
+          <li><div><b>Encuesta y grabación</b>Parte I, las 14 dimensiones, diagrama y prioridades. Si el participante lo autorizó, cada paso se graba solo, con un indicador visible y pausa a pedido.</div></li>
+          <li><div><b>Envío cifrado</b>Las respuestas salen en un código de texto (WhatsApp o correo) y los audios y consentimientos en archivos aparte. Todo va cifrado con la llave pública del estudio: la tableta no puede abrir lo que envía.</div></li>
+          <li><div><b>Recepción en esta consola</b>Se carga la llave privada desde el disco y se sueltan aquí los paquetes y los códigos. Se descifran en este equipo y se consolidan, quedándose con la versión más reciente de cada entrevista.</div></li>
+          <li><div><b>Transcripción local</b>En este mismo equipo, sin internet, el programa Whisper (faster-whisper) escribe un borrador de cada audio. Se corre con <code>entornos.py transcribir</code> y sus resultados se sueltan aquí.</div></li>
+          <li><div><b>Revisión humana</b>En Cualitativo, una persona corrige cada borrador escuchando el audio y suprime datos que identifiquen; una segunda persona lo verifica. El audio se destruye una vez verificada la transcripción.</div></li>
+          <li><div><b>Reporte y análisis</b>Avance da los datos del reporte al Comité; Exportar entrega la base para R y las transcripciones revisadas para el análisis cualitativo del Anexo 8.</div></li>
+        </ol></div>
+        <div class="pila">
+          <div class="tarjeta"><h2>Quién hace qué</h2><table>
+            <tr><th>Rol</th><th>Tarea</th></tr>
+            <tr><td>Encuestador</td><td>Aplica el consentimiento y la entrevista en la tableta y envía lo capturado al final del día.</td></tr>
+            <tr><td>Receptor (CIIGC)</td><td>Custodia la llave privada, recibe en esta consola, corre la transcripción y confirma la recepción para que la tableta borre.</td></tr>
+            <tr><td>Transcriptor designado</td><td>Corrige el borrador contra el audio. Con BPC y compromiso de confidencialidad.</td></tr>
+            <tr><td>Verificador</td><td>Una segunda persona confirma la transcripción contra el audio.</td></tr>
+            <tr><td>Investigadora principal</td><td>Custodia los consentimientos y el libro de control de codificación; usa Avance para el reporte trimestral.</td></tr>
+          </table></div>
+          <div class="tarjeta"><h2>Dónde queda cada dato</h2><table>
+            <tr><th>Dato</th><th>Viaja en</th><th>Identifica</th></tr>
+            <tr><td>Respuestas, razones, prioridades</td><td>Código de texto o paquete .edv</td><td>No: solo el código</td></tr>
+            <tr><td>Audios</td><td>Paquete .edv</td><td>Sí: la voz. Se destruye tras la transcripción verificada</td></tr>
+            <tr><td>Nombre y firmas</td><td>Paquete .edvc, aparte</td><td>Sí: es el libro de control de codificación</td></tr>
+          </table></div>
+          <div class="aviso">Prototipo para revisión del equipo investigador. La aplicación en tableta, la grabación, el consentimiento en pantalla y la transcripción automática local están pendientes de la adenda N.° 1 ante el Comité.</div>
+        </div>
+      </div></div>`;
+  },
+
+  recibir() {
+    return `<div class="pila">
+      <div><h1>Recibir</h1><p class="tenue">La llave privada se lee desde su disco y se queda en la memoria de esta pestaña: no se sube a ningún lado. Al cerrar la pestaña hay que volver a cargarla.</p></div>
+      <div class="rejilla">
+        <div class="tarjeta"><h2>1. Llave privada</h2>
+          ${D.llave ? `<div class="aviso ok">Llave cargada: ${esc(D.llaveNombre)} (${D.llave.algorithm.modulusLength} bits).</div>` : `<p>Archivo <code>llave_privada.pem</code>, en la carpeta privada del estudio.</p><input type="file" id="fLlave" accept=".pem">`}
+        </div>
+        <div class="tarjeta"><h2>2. Paquetes y transcripciones</h2>
+          <div class="zona" id="zona">Suelte aquí los archivos <b>.edv</b>, <b>.edvc</b>, chats exportados de WhatsApp (.txt) y los <b>.json</b> de transcripciones<br><input type="file" id="fArch" multiple style="margin-top:10px"></div>
+        </div>
+      </div>
+      <div class="tarjeta"><h2>3. Códigos pegados</h2><p class="tenue">Pegue aquí uno o varios códigos <code>EDV1.</code>, o el chat completo copiado de WhatsApp.</p>
+        <textarea id="tCod" placeholder="EDV1.…"></textarea><div class="btns" style="margin-top:8px"><button class="btn pri" data-acc="abrir-codigos">Abrir los códigos</button></div></div>
+      <div class="tarjeta"><h2>Registro de esta sesión</h2>${D.archivos.length ? `<ul>${D.archivos.map(a => `<li class="${a.mal ? "" : ""}">${esc(a.txt)}</li>`).join("")}</ul>` : `<p class="tenue" style="margin:0">Nada cargado todavía.</p>`}
+        <p class="tenue" style="margin:8px 0 0">${D.entrevistas.size} entrevistas · ${D.audios.size} audios · ${D.trans.size} transcripciones · ${D.consents.size} consentimientos.</p></div>
+    </div>`;
+  },
+
+  avance() {
+    const L = lista(); if (!L.length) return sinDatos();
+    const c = { enrolado: 0, activo: 0, completado: 0, retirado: 0, pendiente: 0, noacepto: 0 }; L.forEach(e => c[estado(e)]++);
+    const rd = L.filter(e => e.tipo === "RD"), pc = L.filter(e => e.tipo === "PC");
+    const filaCuota = (nombre, xs, cuota) => { const comp = xs.filter(e => estado(e) === "completado").length; const p = Math.min(100, Math.round(100 * comp / cuota));
+      return `<tr><td>${esc(nombre)}</td><td class="n">${comp} / ${cuota}</td><td><div class="barra"><i style="width:${p}%"></i></div></td><td class="n">${p} %</td><td class="n">${xs.filter(e => estado(e) === "activo").length}</td><td class="n">${xs.filter(e => estado(e) === "retirado").length}</td><td class="n">${xs.filter(e => estado(e) === "noacepto").length}</td></tr>`; };
+    const aplicadas = L.filter(e => ["activo", "completado"].includes(estado(e)) && (e.r || {}).A2 != null), grupos = INST.parte1[0].preguntas[1].opciones;
+    let rango = "sin encuestas aplicadas";
+    if (aplicadas.length) { const mn = Math.min(...aplicadas.map(e => e.r.A2)), mx = Math.max(...aplicadas.map(e => e.r.A2)); rango = `de ${grupos[mn].match(/^\d+/)[0]} a ${/o más/.test(grupos[mx]) ? grupos[mx].match(/^\d+/)[0] + " años o más" : grupos[mx].match(/(\d+) años/)[1] + " años"} (por grupo de edad)`; }
+    const quejas = L.filter(e => e.queja && e.queja.hubo);
+    const texto = [`Reporte de seguimiento, ${fechaHora(new Date().toISOString()).split(",")[0]}. Chiriquí.`,
+      `Sujetos enrolados o reclutados: ${c.enrolado}`, `Sujetos retirados del estudio: ${c.retirado}`, `Sujetos activos en el estudio: ${c.activo}`, `Sujetos completados: ${c.completado}`,
+      `Rango de edad de los participantes encuestados: ${rango}`, `Quejas recibidas: ${quejas.length || "ninguna"}`, `Personas que no aceptaron participar: ${c.noacepto}`].join("\n");
+    const porEnc = {}; L.forEach(e => { const k = e.encuestador || "sin nombre"; (porEnc[k] = porEnc[k] || { t: 0, c: 0 }).t++; if (estado(e) === "completado") porEnc[k].c++; });
+    const porSem = {}; L.filter(e => e.fin).forEach(e => { const d = new Date(e.fin); const lunes = new Date(d); lunes.setDate(d.getDate() - ((d.getDay() + 6) % 7)); const k = lunes.toISOString().slice(0, 10); porSem[k] = (porSem[k] || 0) + 1; });
+    const sem = Object.entries(porSem).sort(), maxS = Math.max(1, ...sem.map(x => x[1]));
+    return `<div class="pila">
+      <div><h1>Avance</h1><p class="tenue">Cuota de Chiriquí: 3 comunidades × 70 entrevistas completas = 210, más 34 de la prueba de campo.</p></div>
+      <div class="cifras">${["enrolado", "activo", "completado", "retirado"].map(k => `<div class="cifra"><b>${c[k]}</b><span>${ESTADO_TXT[k]}s</span></div>`).join("")}<div class="cifra"><b>${c.noacepto}</b><span>No aceptaron participar</span></div></div>
+      <div class="tarjeta"><h2>Cuota por comunidad</h2><div class="tabla"><table><thead><tr><th>Comunidad</th><th>Completas</th><th>Avance</th><th></th><th>Activas</th><th>Retirados</th><th>No aceptaron</th></tr></thead><tbody>
+        ${Object.entries(COMUS).map(([k, n]) => filaCuota(`${k} · ${n}`, rd.filter(e => comuCodigo(e) === k), CUOTA_COMU)).join("")}
+        ${filaCuota("Total recolección", rd, CUOTA_COMU * 3)}${pc.length ? filaCuota("Prueba de campo", pc, CUOTA_PC) : ""}
+      </tbody></table></div><p class="tenue" style="margin:8px 0 0;font-size:14px">El avance por conglomerado (5 × 14 por comunidad) requiere que la tableta registre el conglomerado de cada entrevista.</p></div>
+      <div class="rejilla">
+        <div class="tarjeta"><h2>Texto para el reporte al Comité</h2><pre class="copia" id="txtRep">${esc(texto)}</pre><div class="btns" style="margin-top:8px"><button class="btn pri" data-acc="copiar-rep">Copiar</button></div></div>
+        <div class="pila">
+          <div class="tarjeta"><h2>Por encuestador</h2><table><thead><tr><th>Encuestador</th><th>Entrevistas</th><th>Completas</th></tr></thead><tbody>${Object.entries(porEnc).sort().map(([k, v]) => `<tr><td>${esc(k)}</td><td class="n">${v.t}</td><td class="n">${v.c}</td></tr>`).join("")}</tbody></table></div>
+          ${sem.length ? `<div class="tarjeta"><h2>Completas por semana</h2><table><tbody>${sem.map(([k, v]) => `<tr><td style="width:110px">${k.split("-").reverse().join("/")}</td><td><div class="barra"><i style="width:${Math.round(100 * v / maxS)}%"></i></div></td><td class="n" style="width:40px">${v}</td></tr>`).join("")}</tbody></table></div>` : ""}
+        </div>
+      </div></div>`;
+  },
+
+  calidad() {
+    const L = lista(); if (!L.length) return sinDatos();
+    const obs = e => { const o = [], d = duracionMin(e), f = faltan(e);
+      if (estado(e) === "completado" && f) o.push(`${f} ítems sin responder`);
+      if (d != null && d < 20) o.push(`duró solo ${d} min`); if (d != null && d > 90) o.push(`duró ${d} min`);
+      if (e.consentAudio && estado(e) === "completado" && !(e.audios || []).length) o.push("autorizó grabar y no hay audios");
+      if (e.queja && e.queja.hubo) o.push("queja registrada"); if (e.retirado) o.push("retirado: " + (e.motivoRetiro || "sin motivo"));
+      return o; };
+    const conObs = L.filter(e => obs(e).length);
+    const durs = L.map(duracionMin).filter(x => x != null).sort((a, b) => a - b), med = durs.length ? durs[Math.floor(durs.length / 2)] : null;
+    return `<div class="pila">
+      <div><h1>Calidad</h1><p class="tenue">Lo que conviene revisar con el encuestador antes de cerrar cada semana.</p></div>
+      <div class="cifras"><div class="cifra"><b>${med ?? "–"}</b><span>Minutos, mediana de duración</span></div><div class="cifra"><b>${L.filter(e => e.consentAudio).length}</b><span>Autorizaron grabar</span></div><div class="cifra"><b>${L.reduce((s, e) => s + (e.audios || []).length, 0)}</b><span>Audios declarados</span></div><div class="cifra"><b>${conObs.length}</b><span>Entrevistas con observaciones</span></div></div>
+      <div class="tarjeta"><h2>Entrevistas con observaciones</h2>${conObs.length ? `<div class="tabla"><table><thead><tr><th>Código</th><th>Estado</th><th>Encuestador</th><th>Observaciones</th></tr></thead><tbody>
+        ${conObs.map(e => `<tr><td><b>${esc(e.codigo)}</b></td><td>${chip(e)}</td><td>${esc(e.encuestador)}</td><td>${obs(e).map(esc).join("; ")}</td></tr>`).join("")}</tbody></table></div>` : `<p class="tenue" style="margin:0">Ninguna.</p>`}</div>
+    </div>`;
+  },
+
+  cualitativo() {
+    if (!D.trans.size) return `<div class="pila"><div><h1>Cualitativo</h1><p class="tenue">Revisión de las transcripciones en dos pasos: corrección y verificación, por personas distintas.</p></div>${D.entrevistas.size ? `<div class="tarjeta"><p style="margin:0">No hay transcripciones cargadas. Córralas en este equipo con <code>python entornos.py transcribir</code> y suelte en Recibir los archivos <code>.json</code> de la carpeta <code>consolidado/transcripciones</code>.</p></div>` : sinDatos()}</div>`;
+    const items = [...D.trans.entries()].sort();
+    const cuenta = { borrador: 0, corregido: 0, verificado: 0 }; items.forEach(([k]) => cuenta[(REV[k] || {}).estado || "borrador"]++);
+    return `<div class="pila">
+      <div><h1>Cualitativo</h1><p class="tenue">Cada borrador lo corrige una persona escuchando el audio, suprimiendo nombres y datos que identifiquen, y lo verifica otra. La revisión se guarda en este navegador; expórtela para continuar en otro equipo.</p></div>
+      <div class="tarjeta fila"><label for="revisor"><b>Su nombre</b></label><input type="text" id="revisor" value="${esc(REVISOR)}" placeholder="Nombre de quien revisa" style="flex:1;min-width:200px">
+        <span class="chip borrador">${cuenta.borrador} borradores</span><span class="chip corregido">${cuenta.corregido} corregidos</span><span class="chip verificado">${cuenta.verificado} verificados</span></div>
+      <div class="tarjeta">${items.map(([k, t]) => { const [cod, item] = [k.split("_")[0], k.split("_")[1]], r = REV[k] || {}, e = D.entrevistas.get(cod) || {}, n = /^D(\d\d)$/.test(item) ? +item.slice(1) : null;
+        const est = r.estado || "borrador", au = D.audios.get(k);
+        return `<div class="item" data-stem="${esc(k)}"><div class="fila"><b>${esc(cod)}</b><span class="tenue">${n ? `${n}. ${esc(INST.dimensiones[n - 1].nombre)}` : item === "P" ? "Prioridades" : item === "EDV" ? "Presentación" : item === "DIAG" ? "Diagrama" : "Parte I, sección " + esc(item)}</span><span class="chip ${est}">${est === "borrador" ? "Borrador" : est === "corregido" ? "Corregido por " + esc(r.corrector) : "Verificado por " + esc(r.verificador)}</span></div>
+          ${n && e.edv ? `<p class="tenue" style="margin:6px 0">Puntuación ${e.edv[n] || "sin puntuar"}. Razones anotadas: ${esc((e.razones || {})[n] || "ninguna")}</p>` : ""}
+          ${au ? `<audio controls preload="none" src="${au.url}"></audio>` : `<p class="tenue" style="font-size:13.5px;margin:4px 0">${D.demo ? "Audio no incluido en la demostración." : "Cargue el paquete .edv para escuchar el audio."}</p>`}
+          <p class="tenue" style="font-size:13px;margin:6px 0 2px">Borrador automático (${esc(t.modelo || "Whisper")}):</p><div class="trans">${esc(t.texto)}</div>
+          <p class="tenue" style="font-size:13px;margin:8px 0 2px">Transcripción corregida:</p><textarea data-corr="${esc(k)}" ${est === "verificado" ? "readonly" : ""}>${esc(r.texto != null ? r.texto : t.texto)}</textarea>
+          <div class="btns" style="margin-top:6px">${est !== "verificado" ? `<button class="btn chico" data-acc="corregir" data-k="${esc(k)}">Marcar corregido</button>` : ""}${est === "corregido" ? `<button class="btn chico pri" data-acc="verificar" data-k="${esc(k)}">Verificar</button>` : ""}${est !== "borrador" ? `<button class="btn chico" data-acc="reabrir-rev" data-k="${esc(k)}">Reabrir</button>` : ""}</div></div>`; }).join("")}</div>
+    </div>`;
+  },
+
+  documentos() {
+    const L = lista().filter(e => !["pendiente", "noacepto"].includes(estado(e))); if (!L.length) return sinDatos();
+    return `<div class="pila"><div><h1>Documentos</h1><p class="tenue">La encuesta de cada participante con el formato del instrumento, y su consentimiento firmado si llegó el paquete .edvc. Desde la ventana que se abre se imprime o se guarda como PDF.</p></div>
+      <div class="tarjeta tabla"><table><thead><tr><th>Código</th><th>Comunidad</th><th>Estado</th><th>Encuesta</th><th>Consentimiento</th></tr></thead><tbody>
+      ${L.map(e => `<tr><td><b>${esc(e.codigo)}</b></td><td>${esc(e.comunidad)}</td><td>${chip(e)}</td><td><button class="btn chico" data-acc="ver-enc" data-k="${esc(e.codigo)}">Abrir</button></td>
+        <td>${D.consents.has(e.codigo) ? `<button class="btn chico" data-acc="ver-cons" data-k="${esc(e.codigo)}">Abrir</button>` : `<span class="tenue">${D.demo ? "no en la demostración" : "falta el .edvc"}</span>`}</td></tr>`).join("")}</tbody></table></div></div>`;
+  },
+
+  exportar() {
+    if (!D.entrevistas.size) return sinDatos();
+    return `<div class="pila"><div><h1>Exportar</h1><p class="tenue">Archivos para el análisis. Se generan en este equipo; guárdelos en la carpeta privada del estudio, nunca en un repositorio.</p></div>
+      <div class="rejilla">
+        <div class="tarjeta"><h2>Base de respuestas</h2><p>Una fila por participante, separador punto y coma, abre en Excel y en R con <code>read.csv2()</code>.</p><button class="btn pri" data-acc="exp-csv">Descargar respuestas.csv</button></div>
+        <div class="tarjeta"><h2>Transcripciones revisadas</h2><p>Código, ítem, estado, quién corrigió y verificó, y el texto. Para el análisis cualitativo del Anexo 8.</p><button class="btn pri" data-acc="exp-trans" ${D.trans.size ? "" : "disabled"}>Descargar transcripciones.csv</button></div>
+        <div class="tarjeta"><h2>Estado de la revisión</h2><p>Para seguir revisando en otro equipo: se exporta aquí y se importa allá.</p><div class="btns"><button class="btn" data-acc="exp-rev">Exportar revisión</button><label class="btn">Importar revisión<input type="file" id="fRev" accept=".json" hidden></label></div></div>
+      </div></div>`;
+  },
+};
+
+// ---------------------------------------------------------------------------
+// Encuesta en formato del instrumento (la misma que descarga la tableta)
+// ---------------------------------------------------------------------------
+function radarSVG(edv) {
+  const W = 640, H = 600, cx = W / 2, cy = H / 2 + 6, R = 200, n = 14;
+  const pt = (i, v) => { const a = -Math.PI / 2 + 2 * Math.PI * i / n, r = R * (v - 1) / 9; return [cx + r * Math.cos(a), cy + r * Math.sin(a)]; };
+  let s = `<svg viewBox="0 0 ${W} ${H}" xmlns="http://www.w3.org/2000/svg" style="width:100%"><rect width="${W}" height="${H}" fill="#fff"/>`;
+  for (let v = 2; v <= 10; v++) s += `<polygon points="${[...Array(n)].map((_, i) => pt(i, v).join(",")).join(" ")}" fill="none" stroke="#c9d3de" stroke-width="${v === 10 ? 1.5 : .8}"/>`;
+  for (let i = 0; i < n; i++) { const a = -Math.PI / 2 + 2 * Math.PI * i / n, lx = cx + (R + 22) * Math.cos(a), ly = cy + (R + 22) * Math.sin(a);
+    s += `<text x="${lx}" y="${ly}" text-anchor="${Math.abs(Math.cos(a)) < .2 ? "middle" : Math.cos(a) > 0 ? "start" : "end"}" font-size="12" fill="#1b2633" font-family="Arial">${esc(INST.dimensiones[i].nombre)}</text>`; }
+  const vals = [...Array(n)].map((_, i) => (edv || {})[i + 1] || 0);
+  if (vals.some(Boolean)) s += `<polygon points="${vals.map((v, i) => pt(i, v || 1).join(",")).join(" ")}" fill="rgba(31,78,121,.22)" stroke="#1f4e79" stroke-width="2.5"/>`;
+  return s + "</svg>";
+}
+function encuestaHTML(e) {
+  const marca = on => on ? "☒" : "☐", r = e.r || {}, edv = e.edv || {}, raz = e.razones || {};
+  const trans = it => [...D.trans.entries()].filter(([k]) => k.startsWith(e.codigo + "_" + it + "_")).map(([k, t]) => { const rv = REV[k] || {}; return `<p style="font-size:11px;color:#555;margin:6px 0 2px">Transcripción ${rv.estado === "verificado" ? "verificada" : rv.estado === "corregido" ? "corregida, sin verificar" : "automática (borrador)"}:</p><div style="border:1px dashed #1f4e79;background:#f2f6fa;padding:6px 8px;white-space:pre-wrap">${esc(rv.texto != null ? rv.texto : t.texto)}</div>`; }).join("");
+  const css = `body{font:12.5px/1.45 Arial,sans-serif;color:#111;max-width:760px;margin:18px auto;padding:0 14px}h2{font-size:14px;background:#1f4e79;color:#fff;padding:5px 8px;margin:18px 0 8px;-webkit-print-color-adjust:exact;print-color-adjust:exact}h3{font-size:13px;margin:12px 0 4px}table{border-collapse:collapse;width:100%}td,th{border:1px solid #555;padding:4px 6px;vertical-align:top}.op{margin:1px 0 1px 14px}.esc td{text-align:center;width:10%}.esc td.sel{background:#1f4e79;color:#fff;font-weight:bold;-webkit-print-color-adjust:exact;print-color-adjust:exact}.caja{border:1px solid #555;padding:6px 8px;min-height:30px;white-space:pre-wrap}.dim{page-break-inside:avoid}@page{size:letter;margin:14mm}`;
+  const h = [`<!doctype html><html lang="es"><head><meta charset="utf-8"><title>Encuesta ${esc(e.codigo)}</title><style>${css}</style></head><body>`,
+    `<table><tr><th colspan="4">Instrumento de Recolección de Datos</th></tr><tr><td colspan="4"><b>${esc(INST.titulo)}</b></td></tr>`,
+    `<tr><td><b>Nombre del Encuestador:</b></td><td colspan="3">${esc(e.encuestador)}</td></tr><tr><td><b>Fecha de Aplicación:</b></td><td>${esc(e.fecha)}</td><td><b>Código de Participante:</b></td><td>${esc(e.codigo)}</td></tr>`,
+    `<tr><td><b>Comunidad:</b></td><td>${esc(e.comunidad)}</td><td><b>Provincia:</b></td><td>${esc(e.provincia)}</td></tr></table>`, `<h2>${esc(INST.parte1_instruccion)}</h2>`];
+  INST.parte1.forEach(s => { h.push(`<h3>${s.letra}. ${esc(s.titulo)}</h3>`); s.preguntas.forEach((q, i) => { const k = s.letra + (i + 1); h.push(`<div class="dim"><p style="margin:6px 0 2px"><b>${k}.</b> ${esc(q.texto)}</p>${q.opciones.map((o, j) => `<div class="op">${marca(r[k] === j)} ${esc(o)}</div>`).join("")}</div>`); }); h.push(trans(s.letra)); });
+  h.push(`<h2>Entornos de vida</h2>`);
+  INST.dimensiones.forEach((d, i) => { const n = i + 1, v = edv[n]; h.push(`<div class="dim"><h3>${n}. ${esc(d.nombre)}</h3><p><b>${esc(d.pregunta)}</b></p><table class="esc"><tr>${[...Array(10)].map((_, k) => `<td class="${v === k + 1 ? "sel" : ""}">${k + 1}</td>`).join("")}</tr></table><p style="margin:6px 0 2px">Razones de la valoración:</p><div class="caja">${esc(raz[n] || "")}</div>${trans("D" + String(n).padStart(2, "0"))}</div>`); });
+  h.push(`<h2>Diagrama</h2><div style="max-width:520px;margin:0 auto">${radarSVG(edv)}</div>`);
+  h.push(`<h2>Prioridades</h2><p><b>${esc(INST.prioridades.problemas)}</b></p>${(e.problemas || []).map((t, k) => `<div class="caja">${k + 1}) ${esc(t)}</div>`).join("")}<p><b>${esc(INST.prioridades.acciones)}</b></p>${(e.acciones || []).map((t, k) => `<div class="caja">${k + 1}) ${esc(t)}</div>`).join("")}${trans("P")}`);
+  h.push(`<p style="font-size:11px;color:#555;border-top:1px solid #999;margin-top:18px;padding-top:4px">${esc(INST.gracias)} Instrumento ${esc(INST.version)}. Generado en la consola Entornos de Vida.</p></body></html>`);
+  return h.join("\n");
+}
+function abrirDoc(html) { const w = window.open(URL.createObjectURL(new Blob([html], { type: "text/html" })), "_blank"); if (!w) toast("El navegador bloqueó la ventana: permita ventanas emergentes para este sitio."); }
+
+// ---------------------------------------------------------------------------
+// Exportación y portapapeles
+// ---------------------------------------------------------------------------
+function bajar(nombre, texto, tipo = "text/csv;charset=utf-8") { const a = document.createElement("a"); a.href = URL.createObjectURL(new Blob([texto], { type: tipo })); a.download = nombre; document.body.appendChild(a); a.click(); a.remove(); }
+const q = v => { const s = v == null ? "" : String(v); return /[";\n\r]/.test(s) ? `"${s.replace(/"/g, '""')}"` : s; };
+function csvRespuestas() {
+  const col = ["codigo", "fase", "provincia", "comunidad", "fecha", "encuestador", "estado", "motivo_retiro", "autoriza_grabacion", ...PREG.map(p => p.clave), ...INST.dimensiones.map((d, i) => "EdV" + String(i + 1).padStart(2, "0")), ...INST.dimensiones.map((d, i) => "razones" + String(i + 1).padStart(2, "0")), "problema1", "problema2", "problema3", "accion1", "accion2", "accion3", "queja", "duracion_min", "audios", "origen"];
+  const filas = lista().map(e => [e.codigo, e.tipo, e.provincia, e.comunidad, e.fecha, e.encuestador, estado(e), e.motivoRetiro, e.consentAudio ? "sí" : "no", ...PREG.map(p => (e.r || {})[p.clave] != null ? p.opciones[e.r[p.clave]] : ""), ...INST.dimensiones.map((d, i) => (e.edv || {})[i + 1] || ""), ...INST.dimensiones.map((d, i) => (e.razones || {})[i + 1] || ""), ...(e.problemas || ["", "", ""]), ...(e.acciones || ["", "", ""]), e.queja && e.queja.hubo ? "sí" : "no", duracionMin(e) ?? "", (e.audios || []).length, e._origen].map(q).join(";"));
+  return "﻿" + [col.join(";"), ...filas].join("\r\n");
+}
+function copiar(texto) {
+  const ta = $("#portapapeles"); ta.value = texto; ta.focus(); ta.select(); let ok = false; try { ok = document.execCommand("copy"); } catch (e) {} ta.blur();
+  if (ok) return toast("Copiado.");
+  if (navigator.clipboard) navigator.clipboard.writeText(texto).then(() => toast("Copiado."), () => toast("No se pudo copiar: selecciónelo a mano."));
+}
+
+// ---------------------------------------------------------------------------
+// Eventos
+// ---------------------------------------------------------------------------
+async function cargarArchivos(files) {
+  for (const f of files) {
+    try { D.archivos.push({ txt: await procesarArchivo(f) }); }
+    catch (err) { D.archivos.push({ txt: `${f.name}: ${err.message.startsWith("Primero") ? err.message : "no se pudo abrir (¿llave equivocada o archivo dañado?)"}`, mal: true }); }
+  }
+  if (D.demo && D.entrevistas.size) { /* al cargar datos reales se sale de la demostración */ }
+  pintar();
+}
+document.addEventListener("change", async ev => {
+  const t = ev.target;
+  if (t.id === "fLlave" && t.files[0]) {
+    try { if (D.demo) { D.demo = false; D.entrevistas.clear(); D.trans.clear(); D.audios.clear(); D.consents.clear(); } await cargarLlave(t.files[0]); toast("Llave cargada."); }
+    catch (err) { toast(err.message || "No se pudo leer la llave."); }
+    pintar();
+  }
+  if (t.id === "fArch") await cargarArchivos([...t.files]);
+  if (t.id === "fRev" && t.files[0]) { try { const j = JSON.parse(await t.files[0].text()); Object.assign(REV, j); guardarRev(); toast("Revisión importada."); pintar(); } catch (e) { toast("Ese archivo no es una revisión exportada."); } }
+});
+document.addEventListener("input", ev => {
+  const t = ev.target;
+  if (t.id === "revisor") { REVISOR = t.value.trim(); try { localStorage.setItem("edv_revisor", REVISOR); } catch (e) {} }
+  if (t.dataset.corr) { const k = t.dataset.corr; REV[k] = Object.assign({ estado: "borrador" }, REV[k], { texto: t.value }); guardarRev(); }
+});
+document.addEventListener("dragover", ev => { const z = ev.target.closest("#zona"); if (z) { ev.preventDefault(); z.classList.add("sobre"); } });
+document.addEventListener("dragleave", ev => { const z = ev.target.closest("#zona"); if (z) z.classList.remove("sobre"); });
+document.addEventListener("drop", async ev => { const z = ev.target.closest("#zona"); if (!z) return; ev.preventDefault(); z.classList.remove("sobre"); await cargarArchivos([...ev.dataTransfer.files]); });
+document.addEventListener("click", async ev => {
+  const b = ev.target.closest("[data-acc]"); if (!b || b.disabled) return;
+  const a = b.dataset.acc, k = b.dataset.k;
+  if (a === "demo") { cargarDemo(); TAB = "avance"; pintar(); }
+  if (a === "abrir-codigos") { const t = $("#tCod").value; if (!t.trim()) return; try { D.archivos.push({ txt: await procesarTexto(t, "texto pegado") }); } catch (err) { D.archivos.push({ txt: "texto pegado: " + err.message, mal: true }); } pintar(); }
+  if (a === "copiar-rep") copiar($("#txtRep").textContent);
+  if (a === "corregir" || a === "verificar") {
+    if (!REVISOR) { toast("Escriba su nombre arriba antes de marcar."); $("#revisor").focus(); return; }
+    const r = REV[k] = Object.assign({ texto: D.trans.get(k).texto }, REV[k]);
+    if (a === "corregir") Object.assign(r, { estado: "corregido", corrector: REVISOR, fechaCorr: new Date().toISOString() });
+    else { if (r.corrector === REVISOR) { toast("La verificación la hace una persona distinta de quien corrigió."); return; } Object.assign(r, { estado: "verificado", verificador: REVISOR, fechaVer: new Date().toISOString() }); }
+    guardarRev(); pintar();
+  }
+  if (a === "reabrir-rev") { REV[k] = Object.assign({}, REV[k], { estado: "borrador", verificador: null }); guardarRev(); pintar(); }
+  if (a === "ver-enc") abrirDoc(encuestaHTML(D.entrevistas.get(k)));
+  if (a === "ver-cons") abrirDoc(D.consents.get(k));
+  if (a === "exp-csv") bajar(`respuestas_${new Date().toISOString().slice(0, 10)}.csv`, csvRespuestas());
+  if (a === "exp-trans") bajar(`transcripciones_${new Date().toISOString().slice(0, 10)}.csv`, "﻿" + [["audio", "codigo", "item", "estado", "corrector", "verificador", "texto"].join(";"), ...[...D.trans.entries()].sort().map(([kk, t]) => { const r = REV[kk] || {}; return [kk, kk.split("_")[0], kk.split("_")[1], r.estado || "borrador", r.corrector || "", r.verificador || "", r.texto != null ? r.texto : t.texto].map(q).join(";"); })].join("\r\n"));
+  if (a === "exp-rev") bajar(`revision_transcripciones_${new Date().toISOString().slice(0, 10)}.json`, JSON.stringify(REV, null, 1), "application/json");
+});
+pintar();
+</script>
+</body>
+</html>

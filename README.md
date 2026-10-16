@@ -11,6 +11,11 @@ instrumento v2.0 (17-jul-2026): Parte I y las 14 dimensiones de la herramienta E
   encuestador.
 - Lo que sale del equipo (un código de texto para WhatsApp o correo, o un paquete con los audios)
   va cifrado con la llave pública del estudio: solo el equipo investigador lo puede abrir.
+- **Consola del equipo receptor:** https://mnazas-glitch.github.io/entornos-de-vida/consola.html
+  explica el recorrido completo y, con la llave privada cargada desde el disco, descifra,
+  consolida, muestra el avance y organiza la revisión de las transcripciones. Todo ocurre en el
+  navegador de quien la abre; la página no trae ni guarda datos. Tiene un modo de demostración
+  con datos ficticios.
 - **Prototipo.** La grabación de respuestas y el paso de papel a tableta están pendientes de
   adenda ante el Comité de Bioética. No se usa con participantes hasta su aprobación.
 
