@@ -1,6 +1,6 @@
 // Entornos de Vida: deja la página guardada en el equipo para abrirla sin internet.
 // VERSION cambia en cada construcción: así el equipo toma la página nueva.
-const VERSION = "edv-1f56fbc8d6";
+const VERSION = "edv-537f949ab0";
 const ARCHIVOS = ["./", "index.html", "manifest.webmanifest", "icono-180.png", "icono-192.png", "icono-512.png"];
 self.addEventListener("install", e => { e.waitUntil(caches.open(VERSION).then(c => c.addAll(ARCHIVOS)).then(() => self.skipWaiting())); });
 self.addEventListener("activate", e => {
